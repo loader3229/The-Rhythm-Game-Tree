@@ -259,7 +259,10 @@ function NaNcheck(data) {
 }
 function exportSave() {
 	//if (NaNalert) return
+	var t=player.subtabs;delete player.subtabs;
 	let str = btoa(JSON.stringify(player));
+	player.subtabs=t;
+
 
 	const el = document.createElement("textarea");
 	el.value = str;

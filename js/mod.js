@@ -1,12 +1,12 @@
 let modInfo = {
 	name:"音乐游戏树",
-	id: "Rhythm Game",
-	author: "QqQe308",
+	id: "rhythmgametree_loader",
+	author: "QqQe308, loader3229",
 	pointsName: "notes",
 	modFiles: ["layers.js", "tree.js"],
 	discordName: "B站一只新手Up",
 	discordLink: "https://b23.tv/Hlg9D5u",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 	endgame: new Decimal("e210000"),
 }
@@ -79,21 +79,22 @@ function getPointGen() {
 		return new Decimal(0)
 	let gain = new Decimal(1)
 	gain = gain.times(player['a'].points).add(1)
-	if (hasUpgrade('s', 11)) gain = gain.times(1e100)
+	if (hasUpgrade('lo', 11)) gain = gain.times(buyableEffect('lo',11))
 	if (hasUpgrade('s', 12)) gain = gain.times(upgradeEffect('s', 12))
-	if (hasUpgrade('s', 13)) gain = gain.times(1e200)
+	if (hasUpgrade('s', 13)) gain = gain.times(10)
 	if (hasUpgrade('s', 14)) gain = gain.times(upgradeEffect('s', 14))
-	if (hasAchievement('A', 13)) gain = gain.times(1e50)
+	if (hasAchievement('A', 13)) gain = gain.times(player.A.ach)
+	if (hasUpgrade('lo', 13)) gain = gain.times(upgradeEffect('lo',13))
 	if (hasUpgrade('s', 21)) gain = gain.times(upgradeEffect('s', 21))
-	if (hasUpgrade('a', 16)) gain = gain.times(1e30)
-	if (inChallenge('a', 12)) gain = gain.times('1e-500')
-	if (inChallenge('a', 13)) gain = gain.times('1e-500')
-	if(buyableEffect('s',12)>1) gain = gain.times(buyableEffect('s',12))
-	if (inChallenge('a', 14)) gain = gain.times('1e-800')
+	if (hasUpgrade('a', 16)) gain = gain.times(1e10)
+	if (inChallenge('a', 12)) gain = gain.times(1e-40)
+	if (inChallenge('a', 13)) gain = gain.times(1e-45)
+	gain = gain.times(buyableEffect('s',12))
+	if (inChallenge('a', 14)) gain = gain.times(1e-60)
 	if (hasUpgrade('p', 14)) gain = gain.times(upgradeEffect('p', 14))
-	if (inChallenge('p', 13)) gain = gain.times(1e-55)
+	if (inChallenge('p', 13)) gain = gain.times(1e-10)
 	if (hasUpgrade('p', 25)) gain = gain.times(1e308)
-	if(buyableEffect('c',11)>1) gain = gain.times(buyableEffect('c',11))
+	if(buyableEffect('c',11).gt(1)) gain = gain.times(buyableEffect('c',11))
 	if (hasUpgrade('s', 31)) gain = gain.times(upgradeEffect('s', 31))
 	if (hasUpgrade('a', 41)) gain = gain.times(upgradeEffect('a',41))
 if (hasUpgrade('a', 42)) gain = gain.times(upgradeEffect('a',42))
@@ -105,11 +106,16 @@ if (hasUpgrade('a', 45)) gain = gain.times(upgradeEffect('a', 45))
 if (hasMilestone('ch', 0)) gain = gain.times('1e960')
 if (hasMilestone('ch', 1)) gain = gain.times('1e1145')
 	if (hasUpgrade('ch', 13)) gain = gain.times(upgradeEffect('ch', 13))
-	
+		
 	if(inChallenge('p',12)){gain= gain.pow(0.1)}
+	if (hasUpgrade('l', 12)) gain = gain.pow(upgradeEffect('l', 12))
 	if(hasChallenge('p',13)){gain = gain.pow(challengeEffect('p',13))}
 	if(inChallenge('p',15)){gain= gain.pow(0.3)}
-	if (hasUpgrade('l', 12)) gain = gain.pow(upgradeEffect('l', 12))
+	
+		
+	
+	
+	
 	if (hasUpgrade('l', 14)) gain = gain.pow(upgradeEffect('l', 14))
 	if (hasUpgrade('ch', 21)) gain = gain.pow(1.01)
  if(tmp.ch.dragEff>1) gain = gain.pow(tmp.ch.dragEff)
