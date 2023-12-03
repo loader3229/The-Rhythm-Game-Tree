@@ -743,6 +743,10 @@ addLayer("lo", {
 		
       return exp
     },
+    ptt() {
+        mult = new Decimal(10.8).add(player.lo.points.sqrt().mul(0.02).min(0.11));
+		return mult
+    },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
     ],
@@ -756,6 +760,9 @@ addLayer("lo", {
         ["display-text",
       function() {return '你有 ' + format(player.points) + ' Notes'},
      {"color": "#ffffff", "font-size": "14px", "font-family": "Comic Sans MS"}],
+    ["display-text",
+	 function() {if(!player.l.unlocked)return '';return 'loader3229的PTT：' + format(tmp.lo.ptt) + '（31个Loaded Points时达到上限）'},
+     {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     "upgrades",
 
 ],
@@ -852,7 +859,7 @@ addLayer("lo", {
      effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
 			},
     25:{ 
-		description: "如果你的PTT小于10.8，loader3229可以让你的PTT变为10.8。",
+		description: "如果你的PTT小于loader3229的PTT，loader3229可以让你的PTT变为他的PTT。",
                 cost: new Decimal(11),
     unlocked() { return player.p.unlocked},
 			},
@@ -970,7 +977,7 @@ clickables: {
 		}else{
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 		}
-		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(10.8);
+		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
 	},
 })//Loader3229
 
