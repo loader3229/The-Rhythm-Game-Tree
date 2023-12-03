@@ -400,9 +400,9 @@ addLayer("s", {
         if (hasUpgrade('lo', 14)) mult = mult.times(upgradeEffect('lo', 14))
 	if (hasUpgrade('lo', 22)) mult = mult.times(buyableEffect('lo',11))
         mult=mult.times(buyableEffect('s',11))
-       mult = mult.times(player['p'].points.add(1).pow(1).pow(player.m.points.add(1).pow(0.5)))
-       if(hasUpgrade('p',11)) mult = mult.times(player['p'].points.add(1).pow(0.5).pow(player.m.points.add(1).pow(0.5)))
-       if(hasUpgrade('p',31)) mult = mult.times(player['p'].points.add(1).pow(0.3).pow(player.m.points.add(1).pow(0.5)))
+       mult = mult.times(layers.p.getEffective().add(1).pow(1).pow(player.m.points.add(1).pow(0.5)))
+       if(hasUpgrade('p',11)) mult = mult.times(layers.p.getEffective().add(1).pow(0.5).pow(player.m.points.add(1).pow(0.5)))
+       if(hasUpgrade('p',31)) mult = mult.times(layers.p.getEffective().add(1).pow(0.3).pow(player.m.points.add(1).pow(0.5)))
 	if (hasAchievement('A', 43)) mult = mult.times(player.A.ach)
          if(buyableEffect('c',13).gt(1)) mult = mult.times(buyableEffect('c',13))
 			 
@@ -858,7 +858,7 @@ addLayer("lo", {
 			},
     31:{ 
                 description: "最高连击数增加Cytus力量获取",
-                cost: new Decimal(18),
+                cost: new Decimal(15),
     unlocked() { return player.c.unlocked()},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -1027,9 +1027,9 @@ addLayer("a", {
         if(hasUpgrade('s',25)){mult = mult.times(upgradeEffect('s',25))}
         if(hasUpgrade('a',26)){mult = mult.times(upgradeEffect('a',26))}
         if (hasUpgrade('lo', 15)) mult = mult.times(upgradeEffect('lo', 15))
-       mult = mult.times(player['p'].points.add(1).pow(1).pow(player.m.points.add(1).pow(0.5)))
-       if(hasUpgrade('p',11)) mult = mult.times(player['p'].points.add(1).pow(0.5).pow(player.m.points.add(1).pow(0.5)))
-       if(hasUpgrade('p',31)) mult = mult.times(player['p'].points.add(1).pow(0.3).pow(player.m.points.add(1).pow(0.5)))
+       mult = mult.times(layers.p.getEffective().add(1).pow(1).pow(player.m.points.add(1).pow(0.5)))
+       if(hasUpgrade('p',11)) mult = mult.times(layers.p.getEffective().add(1).pow(0.5).pow(player.m.points.add(1).pow(0.5)))
+       if(hasUpgrade('p',31)) mult = mult.times(layers.p.getEffective().add(1).pow(0.3).pow(player.m.points.add(1).pow(0.5)))
         if (hasChallenge('p',11)) mult = mult.times(challengeEffect('p',11))
         if(buyableEffect('c',21).gte(1)) mult = mult.times(buyableEffect('c',21))
 	if (hasUpgrade('lo', 32)) mult = mult.times(buyableEffect('lo',11))
@@ -1318,8 +1318,8 @@ clickables: {
       title() {return "增加PTT"},
       display() {return "点击或按住以增加PTT！"},
       canClick() {return true},
-      onClick() {player.a.ptt = player.a.ptt.add(new Decimal(10).pow(player.a.pttMax.add(1)).log(2).div(new Decimal(10).pow(player.a.ptt.add(1)).log(2)).log(3).div(5).max(0))},
-      onHold() {player.a.ptt = player.a.ptt.add(new Decimal(10).pow(player.a.pttMax.add(1)).log(2).div(new Decimal(10).pow(player.a.ptt.add(1)).log(2)).log(3).div(5).max(0))},
+      onClick() {player.a.ptt = player.a.ptt.add(new Decimal(10).pow(player.a.pttMax.add(1)).log(2).div(new Decimal(10).pow(player.a.ptt.add(1)).log(2)).log(3).div(5).max(0));if(player.a.ptt.gte(13.1124999999999))player.a.ptt=new Decimal(13.1125)},
+      onHold() {player.a.ptt = player.a.ptt.add(new Decimal(10).pow(player.a.pttMax.add(1)).log(2).div(new Decimal(10).pow(player.a.ptt.add(1)).log(2)).log(3).div(5).max(0));if(player.a.ptt.gte(13.1124999999999))player.a.ptt=new Decimal(13.1125)},
     },
     12: {
       title() {return "增加PTT上限"},
@@ -1333,8 +1333,8 @@ clickables: {
       title() {return "增加PTT上限2"},
       display() {return "增加上一个可点击效果的上限（基于Phidata数量）<br>上限×"+format(new Decimal(1).div(player.a.pttMax2))+"<br>确切来说，×"+new Decimal(1).div(player.a.pttMax2)},
       canClick() {return true},
-      onClick() {player.a.pttMax2 = player.a.pttMax2.sub(player.p.points.add(1).log(100).add(1).div(5).pow(0.5).mul(player.a.pttMax2.pow(10)).max(player.a.pttMax2.div(100)).sub(player.a.pttMax2.div(100)).min(player.a.pttMax2.mul(0.1))).max(0.49835519355035932950647832964172)},
-      onHold() {player.a.pttMax2 = player.a.pttMax2.sub(player.p.points.add(1).log(100).add(1).div(5).pow(0.5).mul(player.a.pttMax2.pow(10)).max(player.a.pttMax2.div(100)).sub(player.a.pttMax2.div(100)).min(player.a.pttMax2.mul(0.1))).max(0.49835519355035932950647832964172)},
+      onClick() {player.a.pttMax2 = player.a.pttMax2.sub(layers.p.getEffective2().add(1).log(100).add(1).div(5).pow(0.5).mul(player.a.pttMax2.pow(10)).max(player.a.pttMax2.div(100)).sub(player.a.pttMax2.div(100)).min(player.a.pttMax2.mul(0.1))).max(0.4983551935503592)},
+      onHold() {player.a.pttMax2 = player.a.pttMax2.sub(layers.p.getEffective2().add(1).log(100).add(1).div(5).pow(0.5).mul(player.a.pttMax2.pow(10)).max(player.a.pttMax2.div(100)).sub(player.a.pttMax2.div(100)).min(player.a.pttMax2.mul(0.1))).max(0.4983551935503592)},
       unlocked() {return hasUpgrade('l',13)}
     },
 },
@@ -1396,6 +1396,7 @@ addLayer("l", {
     }},
     color: "#44DDDD",
     requires() {req=new Decimal(1e85)
+        if(hasUpgrade('lo',23)){req=req.times(1e-57)}
     if(hasUpgrade('a',43))req=req.pow(upgradeEffect('a',43))
     return req},
     resource: "诗篇",
@@ -1406,7 +1407,6 @@ addLayer("l", {
     exponent: 2, 
     gainMult() { 
         mult = new Decimal(1)
-        if(hasUpgrade('lo',23)){mult = mult.times(1e-57)}
         return mult
     },
     gainExp() { 
@@ -1615,16 +1615,24 @@ addLayer("p", {
     baseAmount() {return player['a'].points}, 
     type: "normal", 
     exponent: 0.05, 
+	getEffective(){
+		if(player.p.points.gte(1e100))return Decimal.pow(10,player.p.points.log10().sqrt().mul(10));
+		return player.p.points;
+	},
+	getEffective2(){
+		if(player.p.points.gte(1e100))return Decimal.pow(10,player.p.points.log10().log10().mul(50));
+		return player.p.points;
+	},
     effect(){
-        if(!hasUpgrade('p',11)){return player['p'].points.add(1).pow(player.m.points.add(1).pow(0.5))}
-      if(hasUpgrade('p',11)&&!hasUpgrade('p',31)){return player['p'].points.add(1).pow(1.5).pow(player.m.points.add(1).pow(0.5))}
-      if(hasUpgrade('p',31)){return player['p'].points.add(1).pow(1.8).pow(player.m.points.add(1).pow(0.5))}
+        if(!hasUpgrade('p',11)){return layers.p.getEffective().add(1).pow(player.m.points.add(1).pow(0.5))}
+      if(hasUpgrade('p',11)&&!hasUpgrade('p',31)){return layers.p.getEffective().add(1).pow(1.5).pow(player.m.points.add(1).pow(0.5))}
+      if(hasUpgrade('p',31)){return layers.p.getEffective().add(1).pow(1.8).pow(player.m.points.add(1).pow(0.5))}
     },
     effectDescription() { 
       if(!hasUpgrade('p',11)){
-            return "歌曲和源点增益乘以"+format(player['p'].points.add(1).pow(player.m.points.add(1).pow(0.5)))}
-      if(hasUpgrade('p',11)&&!hasUpgrade('p',31)){return "歌曲和源点增益乘以"+format(player['p'].points.add(1).pow(1.5).pow(player.m.points.add(1).pow(0.5)))}
-      if(hasUpgrade('p',31)){return "歌曲和源点增益乘以"+format(player['p'].points.add(1).pow(1.8).pow(player.m.points.add(1).pow(0.5)))}
+		  return "歌曲和源点增益乘以"+format(layers.p.getEffective().add(1).pow(player.m.points.add(1).pow(0.5)))+"（软上限1e100Phidata开始）"}
+      if(hasUpgrade('p',11)&&!hasUpgrade('p',31)){return "歌曲和源点增益乘以"+format(layers.p.getEffective().add(1).pow(1.5).pow(player.m.points.add(1).pow(0.5)))+"（软上限1e100Phidata开始）"}
+      if(hasUpgrade('p',31)){return "歌曲和源点增益乘以"+format(layers.p.getEffective().add(1).pow(1.8).pow(player.m.points.add(1).pow(0.5)))+"（软上限1e100Phidata开始）"}
     },
     gainMult() { 
         mult = new Decimal(1)
@@ -1807,11 +1815,11 @@ addLayer("p", {
     unlocked() {return hasUpgrade('p',12)},
     },
     14:{ title: "增强data II",
-    description:"根据Phidata增加Note获取（Phidata^30），解锁下一个挑战",
+    description:"根据Phidata增加Note获取（Phidata^30，软上限1e100Phidata开始），解锁下一个挑战",
     cost: new Decimal(15),
     unlocked() {return hasChallenge('p',11)},
     effect() {
-    return player['p'].points.add(1).pow(30)
+    return layers.p.getEffective().add(1).pow(30)
     },
     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" }, },
     15:{ title: "韵律的力量 III",
