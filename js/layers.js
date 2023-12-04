@@ -504,8 +504,8 @@ addLayer("s", {
      if(hasChallenge('p',15)){exp = exp.times(challengeEffect('p',15))}
      if (hasUpgrade('p', 33)) exp = exp.times(upgradeEffect('p', 33))
      if(hasUpgrade('l',15)){exp= exp.times(1.001)}
-     if(tmp.ch.holdEff>1) exp = exp.times(tmp.ch.holdEff)
-     if(buyableEffect('c',33)>1) exp = exp.times(buyableEffect('c',33))
+     if(tmp.ch.holdEff.gte(1)) exp = exp.times(tmp.ch.holdEff)
+     if(buyableEffect('c',33).gte(1)) exp = exp.times(buyableEffect('c',33))
      
      
 
@@ -558,7 +558,7 @@ if(hasAchievement('A',71)) exp=exp.add(0.1)
      {"color": "#ffffff", "font-size": "14px", "font-family": "Comic Sans MS"}],
         ["display-text",
       function() {
-        if(hasChallenge('c',13)&&tmp.s.gainMult.log10().gte(player.s.sc)) return "由于歌曲获取量超过"+format(new Decimal(10).pow(player.s.sc))+"，歌曲获得量超出部分指数^"+format(player.s.sce)+"！//2"
+        //if(hasChallenge('c',13)&&tmp.s.gainMult.log10().gte(player.s.sc)) return "由于歌曲获取量超过"+format(new Decimal(10).pow(player.s.sc))+"，歌曲获得量超出部分指数^"+format(player.s.sce)+"！//2"
       },
      {"color": "#ffffff", "font-size": "14px", "font-family": "Comic Sans MS"}],
     "buyables",
@@ -840,11 +840,13 @@ addLayer("lo", {
 		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',43)?2:0));
 		if(hasUpgrade('lo',44))mult = mult.mul(layers.ch.note().add(1));
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
+		if(hasUpgrade('lo',16))mult = mult.mul(upgradeEffect('lo',16));
 		return mult
     },
     gainMult3() {
         mult = new Decimal(1)
-		mult = mult.mul(player.points.add(10).log10().add(10).log10());
+		if(hasUpgrade('lo',56))mult = mult.mul(player.points.add(10).log10().pow(0.25));
+		else mult = mult.mul(player.points.add(10).log10().add(10).log10());
 		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',52)?2:1));
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
 		if(hasUpgrade('m',19))mult = mult.mul(upgradeEffect('m',19));
@@ -860,7 +862,7 @@ addLayer("lo", {
 		return mult
     },
     rks() {
-        mult = player.lo.points.mul(3).add(40).sqrt().min(12.61);
+        mult = softcap(player.lo.points,new Decimal(36),new Decimal(0.25)).mul(3).add(40).sqrt().min(12.62);
 		return mult
     },
     noteEffect() {
@@ -892,7 +894,7 @@ addLayer("lo", {
 	 function() {if(!player.l.unlocked)return '';return 'loader3229的PTT：' + format(tmp.lo.ptt) + '（31个Loaded Points时达到上限）'},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
-	 function() {if(!player.c.unlocked())return '';return 'loader3229的RKS：' + format(tmp.lo.rks) + '（40个Loaded Points时达到上限）'},
+	 function() {if(!player.c.unlocked())return '';return 'loader3229的RKS：' + format(tmp.lo.rks) + '（54个Loaded Points时达到上限）'},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     "upgrades",
 
@@ -1134,6 +1136,39 @@ addLayer("lo", {
                 cost: new Decimal(36),
     unlocked() { return (hasUpgrade('ch', 27))},
 			},
+    16:{ 
+		description: "诗篇增加判定获取，并且解锁一个可购买项",
+                cost: new Decimal(37),
+    unlocked() { return (hasChallenge('c', 14))},
+                effect() {
+             return player.l.points.add(1).sqrt()
+                },
+     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
+			},
+    26:{ 
+		description: "本层级的速度变为原来的15倍",
+                cost: new Decimal(38),
+    unlocked() { return (hasChallenge('c', 14))},
+			},
+    36:{ 
+		description: "“Arcaea自制谱”的效果变为原来的5次方",
+                cost: new Decimal(40),
+    unlocked() { return (hasChallenge('c', 14))},
+			},
+    46:{ 
+                description: "最高连击数增加Note获取",
+                cost: new Decimal(42),
+    unlocked() { return (hasChallenge('c', 14))},
+                effect() {
+             return Decimal.pow(1e10,player.lo.maxcombo);
+                },
+     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
+			},
+    56:{ 
+		description: "Note对Loaded Notes的获取速度加成变得更好",
+                cost: new Decimal(46),
+    unlocked() { return (hasChallenge('c', 14))},
+			},
 	},
   softcap:new Decimal ("10^^1000"),
   softcapPower:new Decimal(1),
@@ -1198,7 +1233,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e10)},
         display() { return "基于购买次数增加源点获取<br>价格："+format(this.cost())+" Loaded Notes<br>效果：×"+format(this.effect())},
         title: "Arcaea自制谱",
-        effect() {return Decimal.pow(1e20,getBuyableAmount(this.layer,this.id))},
+        effect() {return Decimal.pow(1e20,getBuyableAmount(this.layer,this.id)).pow(hasUpgrade('lo',36)?5:1)},
         unlocked(){unlock=hasUpgrade('lo',61);
           return unlock
         },
@@ -1222,11 +1257,26 @@ clickables: {
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
         },
     },
+    23: {
+        cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e12)},
+        display() { return "基于购买次数减少诗篇需求<br>价格："+format(this.cost())+" Loaded Notes<br>效果：^"+format(this.effect())},
+        title: "Lanota自制谱",
+        effect() {return Decimal.pow(0.9,getBuyableAmount(this.layer,this.id))},
+        unlocked(){unlock=hasUpgrade('lo',16);
+          return unlock
+        },
+        canAfford() { return player[this.layer].note.gte(this.cost()) },
+        buy() {
+            player[this.layer].note = player[this.layer].note.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+    },
 },
 
 
     update(diff) {
 		if(hasUpgrade('lo',64))diff=upgradeEffect('lo',64).mul(diff).toNumber();
+		if(hasUpgrade('lo',26))diff*=15;
 		if(player.lo.play){
 			var f=player.lo.stamina.min(diff);
 			var m=f.mul(Decimal.pow(0.1,new Decimal(1).sub(player.lo.stamina.div(2000))).mul(Decimal.pow(this.buyables[13].effect(),player.lo.stamina.div(2000))));
@@ -1247,7 +1297,7 @@ clickables: {
 		}else{
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff));
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(1e15);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -1605,16 +1655,15 @@ upgrades: {
       effect() {return new Decimal(1e5).pow(getBuyableAmount('c',11).add(getBuyableAmount('c',12)).add(getBuyableAmount('c',13)).add(getBuyableAmount('c',14)).add(getBuyableAmount('c',21)).add(getBuyableAmount('c',22)).add(getBuyableAmount('c',23)).add(getBuyableAmount('c',24)))},
     unlocked() { return hasChallenge('c',11)&&hasUpgrade('l',17)},},
     46:{ 
-      fullDisplay() {return "Testify<br>上一个升级效果提升，并且对所有Cytus可购买都生效<br>当前效果:×"+format(this.effect())+"<br>价格: 1e1775源点"},
-      cost: new Decimal('1e1775'),
-      effect() {return new Decimal(1e50).pow(getBuyableAmount('c',11).add(getBuyableAmount('c',12)).add(getBuyableAmount('c',13)).add(getBuyableAmount('c',14)).add(getBuyableAmount('c',21)).add(getBuyableAmount('c',22)).add(getBuyableAmount('c',23)).add(getBuyableAmount('c',24)).add(getBuyableAmount('c',31)).add(getBuyableAmount('c',32)).add(getBuyableAmount('c',33)).add(getBuyableAmount('c',34)).add(getBuyableAmount('c',41)).add(getBuyableAmount('c',42)).add(getBuyableAmount('c',43)).add(getBuyableAmount('c',44)))
+      fullDisplay() {return "Testify<br>上一个升级效果提升，并且对所有Cytus可购买都生效<br>当前效果:×"+format(this.effect())+"<br>需要：12.72 PTT"},
+    canAfford() {return player.a.ptt.gte(12.72)},
+      effect() {return new Decimal(1e5).pow(getBuyableAmount('c',11).add(getBuyableAmount('c',12)).add(getBuyableAmount('c',13)).add(getBuyableAmount('c',14)).add(getBuyableAmount('c',21)).add(getBuyableAmount('c',22)).add(getBuyableAmount('c',23)).add(getBuyableAmount('c',24)).add(getBuyableAmount('c',31)).add(getBuyableAmount('c',32)).add(getBuyableAmount('c',33)).add(getBuyableAmount('c',34)).add(getBuyableAmount('c',41)).add(getBuyableAmount('c',42)).add(getBuyableAmount('c',43)).add(getBuyableAmount('c',44)))
       },
     unlocked() { return hasChallenge('c',14)},},
     47:{ 
-      fullDisplay() {return "Arcaea Forever<br>点数获取量乘以源点数量^5<br>当前效果:×"+format(this.effect())+"<br>价格: 1e1855源点"},
-      cost: new Decimal('1e1855'),
-      effect() {eff= player.a.points.pow(5)
-    if(eff.gte('1e50000')) eff=new Decimal(10).pow(eff.log(10).sub(50000).pow(0.8).add(50000))
+      fullDisplay() {return "Arcaea Forever<br>点数获取量乘以源点数量^0.2<br>当前效果:×"+format(this.effect())+"<br>需要：12.74 PTT"},
+    canAfford() {return player.a.ptt.gte(12.74)},
+      effect() {eff= player.a.points.pow(0.2)
         return eff},
     unlocked() { return hasUpgrade('ch',35)},},
 },
@@ -1702,6 +1751,7 @@ addLayer("l", {
     color: "#44DDDD",
     requires() {req=new Decimal(1e85)
     if(hasUpgrade('a',43))req=req.pow(upgradeEffect('a',43))
+	if (hasUpgrade('lo', 16)) req=req.pow(buyableEffect('lo',23))
         if(hasUpgrade('lo',23)){req=req.times(1e-57)}
         if(buyableEffect('c',24).gt(1)) req = req.div(buyableEffect('c',24))
     return req},
@@ -1709,7 +1759,14 @@ addLayer("l", {
     baseResource: "歌曲", 
     baseAmount() {return player['s'].points}, 
     type: "static",
-	base: 1000,
+	base(){
+		mult = new Decimal('1000')
+		
+	if (hasUpgrade('lo', 16)) mult = mult.pow(buyableEffect('lo',23))
+		
+	
+		return mult;
+	}, 
     exponent: 2, 
     gainMult() { 
         mult = new Decimal(1)
@@ -2560,10 +2617,8 @@ addLayer("c", {
     },
     gainExp() { 
       exp= new Decimal(1)
-      //if(hasUpgrade('ch',11)) exp= exp.add(0.05)
       if(hasUpgrade('s',33))exp= exp.times(1.2)
       if(hasUpgrade('ch',32))exp= exp.div(upgradeEffect('ch',32))
-      if(hasChallenge('c',14))exp= exp.times(1.1)
       if(buyableEffect('c',42).gte(1)) exp = exp.times(buyableEffect('c',42))
         exp = exp.times(tmp.ch.flickEff)
       return exp
@@ -2987,11 +3042,11 @@ addLayer("c", {
      let cost = Decimal.pow(1.8, x.mul(2).pow(2))
     return cost
                 },
-				effect(x=player[this.layer].buyables[this.id]) {return x.add(16).log(16).mul(0.75).add(0.25).pow(0.2)},
+				effect(x=player[this.layer].buyables[this.id]) {return new Decimal(1e100).pow(x.mul(10))},
 				display() { // Everything else displayed in the buyable button after the title
        let data = tmp[this.layer].buyables[this.id]
        return (("价格: " + format(data.cost) + " Cytus力量")+"<br>数量: " + format(player[this.layer].buyables[this.id])
-      +"<br>谱面获取指数×" + format(data.effect))},
+      +"<br>谱面获取需求/" + format(data.effect))},
       unlocked() { return hasUpgrade('ch',34)}, 
       canAfford() {
       return player[this.layer].power.gte(tmp[this.layer].buyables[this.id].cost)},
@@ -3200,7 +3255,7 @@ addLayer("c", {
         name: "CHAOS∞²",
         challengeDescription() {return "Note获取量变为原来的log1.0001，并且^0.05"},
         goalDescription:"300 Notes",
-        rewardDescription:"解锁两个Arcaea升级和更多谱面升级，Cyten和谱面获取指数*1.1",
+        rewardDescription:"解锁两个Arcaea升级和更多谱面升级",
         style: {'height':'350px'},
         unlocked(){unlock= false
         if(hasUpgrade('ch',34)) unlock=true
@@ -3297,6 +3352,7 @@ addLayer("ch", {
 	if (hasUpgrade('lo', 61)) mult = mult.pow(buyableEffect('lo',22))
 		
 if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
+        if(buyableEffect('c',32).gt(1))mult =mult.div(buyableEffect('c',32))
 		return mult;
 	}, 
     resource: "谱面",
@@ -3659,37 +3715,37 @@ unlocked(){return hasUpgrade('ch',27)}
     cost() {return new Decimal(35)},
   },
   34:{ 
-    fullDisplay() {return "Dead Soul HD 11.7<br>解锁第十个Cytus可购买，解锁第四个Cytus挑战<br>需要：2.4课题能量 && 55谱面"},
+    fullDisplay() {return "Dead Soul HD 11.7<br>解锁第十个Cytus可购买，解锁第四个Cytus挑战<br>需要：1666物量 && 36谱面"},
     unlocked(){return hasUpgrade('ch',33)},
-  canAfford() {return player.ch.en.gte(2.4)},
-    cost() {return new Decimal(55)},
+  canAfford() {return player.ch.note.gte(1666)},
+    cost() {return new Decimal(36)},
   },
   35:{ 
-    fullDisplay() {return "volcanic HD 11.9<br>解锁第11个Cytus可购买，谱面数量增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：2.42课题能量 && 72谱面"},
+    fullDisplay() {return "volcanic HD 11.9<br>解锁第11个Cytus可购买，谱面数量增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：1800物量 && 44谱面"},
     unlocked(){return hasUpgrade('a',46)},
-  canAfford() {return player.ch.en.gte(2.42)},
-    cost() {return new Decimal(72)},
+  canAfford() {return player.ch.note.gte(1800)},
+    cost() {return new Decimal(44)},
     effect() { eff= new Decimal(1e100).pow(player.ch.points)
     if(eff.gte('1e10000')) eff=new Decimal(10).pow(eff.log(10).sub(10000).pow(0.9).add(10000))
         return eff
       },
   },
   36:{ 
-    fullDisplay() {return "Ad Astra Per Aspera HD 12.1<br>解锁第12个Cytus可购买，基于RKS增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：2.44课题能量 && 87谱面"},
+    fullDisplay() {return "Ad Astra Per Aspera HD 12.1<br>解锁第12个Cytus可购买，基于RKS增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：2700物量 && 70谱面"},
     unlocked(){return hasUpgrade('a',47)},
-  canAfford() {return player.ch.en.gte(2.44)},
-    cost() {return new Decimal(87)},
+  canAfford() {return player.ch.note.gte(2700)},
+    cost() {return new Decimal(70)},
     effect() { eff= new Decimal('1e1000').pow(player.p.rks)
     if(eff.gte('1e8000')) eff=new Decimal(10).pow(eff.log(10).sub(8000).pow(0.85).add(8000))
         return eff
       },
   },
   37:{ 
-    fullDisplay() {return "今年も「雪降り、メリクリ」目指して頑張り “IN Ⅰ2”<br>基于课题能量增益点数，谱面定数不再有上限，解锁下一个层级，曲包<br>当前效果：×"+format(this.effect())+"<br>需要：2.45课题能量 && 98谱面"},
+    fullDisplay() {return "今年も「雪降り、メリクリ」目指して頑張り “IN Ⅰ2”<br>基于课题能量增益点数，谱面定数不再有上限，解锁下一个层级，曲包<br>当前效果：×"+format(this.effect())+"<br>需要：2500物量 && 100谱面"},
     unlocked(){return hasUpgrade('ch',36)},
-  canAfford() {return player.ch.en.gte(2.45)},
+  canAfford() {return player.ch.note.gte(2500)},
   tooltip: "这首歌是Phigros 2023年的愚人节曲，当你玩的时候，他会告诉你难度是”IN Ⅰ2”，但是当你打到一半的时候，他的难度就会变成SP Lv.?", 
-    cost() {return new Decimal(98)},
+    cost() {return new Decimal(100)},
     effect() { eff= new Decimal('1e1200').pow(player.ch.en)
     if(eff.gte('1e5000')) eff=new Decimal(10).pow(eff.log(10).sub(5000).pow(0.95).add(5000))
         return eff
@@ -3950,7 +4006,7 @@ buyBox: {
 points: new Decimal(0),
     }},
     color: "#6090ff",
-    requires: new Decimal('1e26500'), 
+    requires: new Decimal('1e999999'), 
     resource: "曲包",
     baseResource: "songs", 
     baseAmount() {return player.s.points}, 

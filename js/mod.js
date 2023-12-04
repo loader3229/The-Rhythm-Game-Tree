@@ -122,6 +122,7 @@ if (hasMilestone('ch', 1)) gain = gain.times('1e1145')
 if (hasUpgrade('a', 38)) gain = gain.times(upgradeEffect('a', 38))
 if (hasUpgrade('lo', 35)) gain = gain.times(tmp.lo.noteEffect)
 if (hasUpgrade('m', 18)) gain = gain.times(upgradeEffect('m', 18))
+	if (hasUpgrade('lo', 46)) gain = gain.times(upgradeEffect('lo',46))
 	
 
 	if (hasUpgrade('l', 12)) gain = gain.pow(upgradeEffect('l', 12))
