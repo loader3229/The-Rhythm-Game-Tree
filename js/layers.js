@@ -3731,9 +3731,9 @@ unlocked(){return hasUpgrade('ch',27)}
       },
   },
   36:{ 
-    fullDisplay() {return "Ad Astra Per Aspera HD 12.1<br>解锁第12个Cytus可购买，基于RKS增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：2700物量 && 70谱面"},
+    fullDisplay() {return "Ad Astra Per Aspera HD 12.1<br>解锁第12个Cytus可购买，基于RKS增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：2000物量 && 70谱面"},
     unlocked(){return hasUpgrade('a',47)},
-  canAfford() {return player.ch.note.gte(2700)},
+  canAfford() {return player.ch.note.gte(2000)},
     cost() {return new Decimal(70)},
     effect() { eff= new Decimal('1e1000').pow(player.p.rks)
     if(eff.gte('1e8000')) eff=new Decimal(10).pow(eff.log(10).sub(8000).pow(0.85).add(8000))
