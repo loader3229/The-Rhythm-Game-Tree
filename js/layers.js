@@ -243,21 +243,21 @@ addLayer("A", {
             name: "异曲同工<br>🏆",
             done() {return hasMilestone('sp',0)},
             onComplete(){player.A.ach=player.A.ach.add(1)},
-            tooltip: "获得一个曲包（第八层重置资源）<br>奖励：歌曲获得指数+0.1（所有效果后）",
+            tooltip: "获得一个曲包（第八层重置资源）<br>奖励：歌曲获得指数+0.01（所有效果后）",
             textStyle: {'color': '#6090ff'},
         },
        72: {
             name: "如此课题",
             done() {return player.p.rks.gte(7)},
-            onComplete(){player.A.ach=32},
+            onComplete(){player.A.ach=player.A.ach.add(1)},
             tooltip: "达到7RKS！",
             textStyle: {'color': '#ff6d3e'},
         },
        73: {
-            name: "歌曲之峰<br>🏆",
+            name: "歌曲之峰",
             done() {return player.s.points.gte('1e41888')},
             onComplete(){player.A.ach=player.A.ach.add(1)},
-            tooltip: "获得1e41888歌曲！<br>奖励：歌曲软上限延后1e4000生效。",
+            tooltip: "获得1e41888歌曲！",
             textStyle: {'color': '#7398ed'},
         },
     },
@@ -270,9 +270,10 @@ addLayer("A", {
      "blank",
     "achievements",
 ],
-  unlocked(){return true}
+  unlocked(){return true},
 },
 },
+  update(diff){player.A.ach=new Decimal(player.A.achievements.length);}
 },
 )//Achievements
 addLayer("t", {
@@ -352,7 +353,7 @@ addLayer("S", {
         {return '你有 ' + format(player.s.points) + ' 歌曲<br>歌曲基本获得量：' + format(tmp.s.gainMult) + '<br>歌曲获得指数：' + format(tmp.s.gainExp) }},
      {"color": "#ffffff", "font-size": "22px", "font-family": "Comic Sans MS"},],//s
       ["display-text",
-      function() {if(player.sp.unlocked())
+      function() {return '';if(player.sp.unlocked())
         {return '歌曲软上限开始于开始于 ' + format(new Decimal(10).pow(player.s.sc)) + ' 歌曲<br>歌曲软上限效果：指数^' + format(player.s.sce) }},
      {"color": "#ffffff", "font-size": "16px", "font-family": "Comic Sans MS"},],//s-sc
      "blank",
@@ -509,9 +510,9 @@ addLayer("s", {
      
      
 
-if(!hasChallenge('c',12)) exp=exp.min(12.5)
+//if(!hasChallenge('c',12)) exp=exp.min(12.5)
 
-if(hasAchievement('A',71)) exp=exp.add(0.1)
+if(hasAchievement('A',71)) exp=exp.add(0.01)
       return exp
     },
     scCal() {
@@ -841,6 +842,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',44))mult = mult.mul(layers.ch.note().add(1));
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
 		if(hasUpgrade('lo',16))mult = mult.mul(upgradeEffect('lo',16));
+		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
 		return mult
     },
     gainMult3() {
@@ -850,6 +852,7 @@ addLayer("lo", {
 		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',52)?2:1));
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
 		if(hasUpgrade('m',19))mult = mult.mul(upgradeEffect('m',19));
+		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
 		return mult
     },
     gainExp() { 
@@ -1169,6 +1172,15 @@ addLayer("lo", {
                 cost: new Decimal(46),
     unlocked() { return (hasChallenge('c', 14))},
 			},
+    66:{ 
+                description: "让loader3229打他自己的自制谱并提升他的自制谱的质量。Loaded Note增加判定和Loaded Note获取",
+                cost: new Decimal(49),
+    unlocked() { return (hasChallenge('c', 14))},
+                effect() {
+             return player.lo.note.add(10).log10();
+                },
+     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
+			},
 	},
   softcap:new Decimal ("10^^1000"),
   softcapPower:new Decimal(1),
@@ -1297,7 +1309,7 @@ clickables: {
 		}else{
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(1e15);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(3e16);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -1548,6 +1560,12 @@ upgrades: {
     description:"再次解锁更多歌曲升级",
     cost: new Decimal(199999),
     unlocked() { return (hasChallenge('a', 12))},},
+    18:{title:"Arcaea 5.0",
+    description:"诗篇增加Note获取",
+    cost: new Decimal('1e17000'),
+      effect() {return new Decimal(10).pow(player.l.points)},
+    effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
+    unlocked() { return (hasChallenge('c', 14))},},
      21:{title:"挑战3的额外奖励？？",
     description:"歌曲基本指数增加0.01",
     cost: new Decimal(3e8),
@@ -2093,12 +2111,15 @@ addLayer("p", {
 			},
         goalDescription(){return "1e"+new Decimal(8).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(4))+"源点"},
         rewardDescription(){return "根据挑战完成次数增益源点（软上限前）<br>效果：×"+challengeEffect(this.layer,this.id).floor()},
-        rewardEffect() {return new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?15:10)},
+		rewardEffect() {eff= new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?15:10)
+          if(hasMilestone('sp',1)) eff=eff.pow(2)
+          return eff
+        },
         unlocked(){unlock= false
         if(hasUpgrade('p',13)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0);
+          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0);
 		  },
         canComplete: function() {
           return player.a.points.gte(new Decimal(10).pow(8).mul(new Decimal(10).pow(new Decimal(challengeCompletions(this.layer,this.id)).mul(4))))},
@@ -2111,12 +2132,15 @@ addLayer("p", {
 		  },
         goalDescription(){return "1e"+new Decimal(10).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(20))+" Notes"},
         rewardDescription(){return "根据挑战完成次数增益Phidata<br>效果：×"+challengeEffect(this.layer,this.id).floor()},
-        rewardEffect() {return new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?3:2)},
+		rewardEffect() {eff= new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?3:2)
+          if(hasMilestone('sp',1)) eff=eff.pow(2)
+          return eff
+        },
         unlocked(){unlock= false
         if(hasUpgrade('p',14)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0);
+          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0);
 		},
         canComplete: function() { return player.points.gte(new Decimal(10).pow(10).mul(new Decimal(10).pow(20).pow(challengeCompletions(this.layer,this.id))))}
         },
@@ -2520,7 +2544,7 @@ addLayer("m", {
     unlocked() {return hasUpgrade('c',13)}, },
     14:{ title: "Cytus II:L10(里谱)",
     description:"基于谱面增益Cytus力量",
-    cost: new Decimal(66),
+    cost: new Decimal(25),
     effect() {
         return new Decimal(2).pow(player.ch.points)},
  effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
@@ -2609,7 +2633,7 @@ addLayer("c", {
     },
     gainMult() { 
         mult = new Decimal(1)
-        if(buyableEffect('c',22)>1) mult = mult.times(buyableEffect('c',22))
+        if(buyableEffect('c',22).gte(1)) mult = mult.times(buyableEffect('c',22))
         if(hasUpgrade('ch',11)) mult = mult.times(upgradeEffect('ch',11))
         
       if(hasUpgrade('lo',34)) mult = mult.times(upgradeEffect('lo',34))
@@ -2626,7 +2650,7 @@ addLayer("c", {
     powercal(){
       mult = player.c.points.add(1).pow(2).sub(1).max(0)
       if(hasUpgrade('ch',17)) mult = player.c.points.add(1).pow(3).sub(1)
-      if(buyableEffect('c',14)>1) mult = mult.times(buyableEffect('c',14))
+      if(buyableEffect('c',14).gte(1)) mult = mult.times(buyableEffect('c',14))
       if(tmp.ch.tapEff>1) mult = mult.times(tmp.ch.tapEff)
       if(hasUpgrade('m',12)) mult = mult.times(upgradeEffect('m',12))
       if(hasUpgrade('c',13)) mult = mult.times(upgradeEffect('c',13))
@@ -3380,6 +3404,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
     },
     note() {
       mult= player.points.add(10).log(4).max(1).pow(0.5).div(4).max(0)
+		if(mult.gte(125))mult=mult.pow(1/3).mul(25);
       if(hasUpgrade('ch',14)) mult=mult.times(upgradeEffect('ch',14))
     if(hasUpgrade('ch',12)) mult=mult.times(upgradeEffect('ch',12))
     if(hasUpgrade('ch',16)) mult=mult.times(upgradeEffect('ch',16))
@@ -3588,7 +3613,7 @@ unlocked(){return hasUpgrade('ch',27)}
 },
    upgrades:{
   11:{ 
-    fullDisplay() {return "Introduction<br>基于物量的Cyten乘数，Cyten基本获得指数*2<br>当前效果："+format(this.effect())+"×<br>需要：50物量 && 2谱面"},
+    fullDisplay() {return "Introduction<br>基于物量的Cyten乘数<br>当前效果："+format(this.effect())+"×<br>需要：50物量 && 2谱面"},
     canAfford() {return player.ch.note.gte(50)},
     cost() {return new Decimal(2)},
       effect() { return player.ch.note.add(1).pow(3)},
@@ -3639,6 +3664,7 @@ unlocked(){return hasUpgrade('ch',27)}
     canAfford() {return player.ch.note.gte(137.95)},
     cost() {return new Decimal(8)},
       effect() { eff= player.c.points.add(1).log(10).pow(0.2).max(1)
+        if(eff.gte(2.3)) eff= eff.mul(27.9841).pow(0.2)
         return eff
       },
   },
@@ -3731,9 +3757,9 @@ unlocked(){return hasUpgrade('ch',27)}
       },
   },
   36:{ 
-    fullDisplay() {return "Ad Astra Per Aspera HD 12.1<br>解锁第12个Cytus可购买，基于RKS增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：2000物量 && 70谱面"},
+    fullDisplay() {return "Ad Astra Per Aspera HD 12.1<br>解锁第12个Cytus可购买，基于RKS增益点数<br>当前效果：×"+format(this.effect())+"<br>需要：2222物量 && 70谱面"},
     unlocked(){return hasUpgrade('a',47)},
-  canAfford() {return player.ch.note.gte(2000)},
+  canAfford() {return player.ch.note.gte(2222)},
     cost() {return new Decimal(70)},
     effect() { eff= new Decimal('1e1000').pow(player.p.rks)
     if(eff.gte('1e8000')) eff=new Decimal(10).pow(eff.log(10).sub(8000).pow(0.85).add(8000))
@@ -4006,12 +4032,19 @@ buyBox: {
 points: new Decimal(0),
     }},
     color: "#6090ff",
-    requires: new Decimal('1e999999'), 
+    requires: new Decimal('1e160000'), 
+	base(){
+		mult = new Decimal('1e5000')
+		
+		
+	
+		return mult;
+	}, 
+    exponent: 2, 
     resource: "曲包",
     baseResource: "songs", 
     baseAmount() {return player.s.points}, 
-    type: "static", 
-    exponent: 1, 
+    type: "static",  
     effect(){ eff = new Decimal(1)
       return eff
     },
@@ -4022,8 +4055,7 @@ points: new Decimal(0),
         return mult
     },
     gainExp() { 
-      exp= new Decimal(0.0001)
-      if(buyableEffect('c',41)>1) exp = exp.times(buyableEffect('c',41))
+      exp= new Decimal(1)
        return exp
     },
     row: 3,
@@ -4060,7 +4092,7 @@ milestones: {
     },
     1: {
         requirementDescription: "获得2个曲包",
-        effectDescription: "提升前两个Phigros挑战（EZ，HD）的效果，Phidata获取指数*1.1，歌曲获得量软上限延后到1e17000",
+        effectDescription: "提升前两个Phigros挑战（EZ，HD）的效果和上限，Phidata获取指数*1.1，歌曲获得量软上限延后到1e17000",
         done() { return player.sp.points.gte(2) }
     },
     2: {
