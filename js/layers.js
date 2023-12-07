@@ -4078,6 +4078,7 @@ points: new Decimal(0),
         if(buyableEffect('c',41).gt(1)) req = req.div(buyableEffect('c',41))
 			return req;
 	}, 
+    requires: new Decimal('1e160000'), 
 	base(){
 		mult = new Decimal('1e5000')
 		
