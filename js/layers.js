@@ -269,7 +269,7 @@ addLayer("A", {
        75: {
             name: "蛇如飞龙",
             done() {return player.a.sn.gte(1e5)},
-            onComplete(){player.A.ach=player.a.Ach.add(1)},
+            onComplete(){player.A.ach=player.A.ach.add(1)},
             tooltip: "让蛇的长度超过100000物量！",
             textStyle: {'color': '#e630dc'},
         },
@@ -909,6 +909,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
 		if(hasUpgrade('m',19))mult = mult.mul(upgradeEffect('m',19));
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
+		if(hasUpgrade('ch',38))mult = mult.mul(upgradeEffect('ch',38));
 		return mult
     },
     gainExp() { 
@@ -1042,7 +1043,7 @@ addLayer("lo", {
      effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
 			},
     21:{ 
-                description: "每个Loaded Point额外提供一个免费的loader3229可购买项等级",
+                description: "每个Loaded Point额外提供一个免费的第1行loader3229可购买项等级",
                 cost: new Decimal(6),
     unlocked() { return player.a.unlocked},
                 effect() {
@@ -1239,13 +1240,33 @@ addLayer("lo", {
 			},
     71:{ 
 		description: "loader3229的增量游戏会尽量减少软上限。去除谱面升级 今年も「雪降り、メリクリ」目指して頑張り “IN Ⅰ2” 的软上限。",
-                cost: new Decimal(53),
+                cost: new Decimal(54),
     unlocked() { return (hasMilestone('sp',3))},
 			},
     72:{ 
 		description: "解锁一个新的loader3229可购买项。",
                 cost: new Decimal(53),
     unlocked() { return (hasMilestone('sp',3))},
+			},
+    73:{ 
+		description: "解锁一个新的loader3229可购买项。",
+                cost: new Decimal(55),
+    unlocked() { return (hasMilestone('sp',3))},
+			},
+    74:{ 
+		description: "loader3229会为你自动增加蛇的长度。",
+                cost: new Decimal(56),
+    unlocked() { return (hasMilestone('sp',4))},
+                effect() {
+					if(hasUpgrade('lo',75))return tmp.a.snaCal.div(500);
+             return tmp.a.snaCal.pow(0.9).div(1000);
+                },
+     effectDisplay() { return "+"+format(upgradeEffect(this.layer, this.id))+"/tick" },
+			},
+    75:{ 
+		description: "提升上一个升级的效果。",
+                cost: new Decimal(61),
+    unlocked() { return (hasUpgrade('sp',17))},
 			},
 	},
   softcap:new Decimal ("10^^1000"),
@@ -1353,8 +1374,22 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e15)},
         display() { return "基于购买次数增加Phidata获取<br>价格："+format(this.cost())+" Loaded Notes<br>效果：×"+format(this.effect())},
         title: "Phigros自制谱",
-        effect() {return Decimal.pow(1e50,getBuyableAmount(this.layer,this.id))},
+        effect() {return Decimal.pow(1e80,getBuyableAmount(this.layer,this.id))},
         unlocked(){unlock=hasUpgrade('lo',72);
+          return unlock
+        },
+        canAfford() { return player[this.layer].note.gte(this.cost()) },
+        buy() {
+            player[this.layer].note = player[this.layer].note.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+    },
+    32: {
+        cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e16)},
+        display() { return "基于购买次数减少曲包需求<br>价格："+format(this.cost())+" Loaded Notes<br>效果：^"+format(this.effect())},
+        title: "自制谱曲包",
+        effect() {if(getBuyableAmount(this.layer,this.id).gte(24))return new Decimal(2).div(getBuyableAmount(this.layer,this.id));return Decimal.pow(0.9,getBuyableAmount(this.layer,this.id))},
+        unlocked(){unlock=hasUpgrade('lo',73);
           return unlock
         },
         canAfford() { return player[this.layer].note.gte(this.cost()) },
@@ -1389,7 +1424,10 @@ clickables: {
 		}else{
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(3e17);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(4e18);
+			}
+			if(hasUpgrade('lo',74)){
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -1473,7 +1511,8 @@ addLayer("a", {
         if(buyableEffect('c',21).gte(1)) mult = mult.times(buyableEffect('c',21))
 	if (hasUpgrade('lo', 41)) mult = mult.times(buyableEffect('lo',11))
 	if (hasUpgrade('lo', 61)) mult = mult.times(buyableEffect('lo',21))
-		
+     if(tmp.a.snEff2.gte(1)) mult = mult.times(tmp.a.snEff2)
+		 
         if (hasUpgrade('a', 45)) mult = mult.pow(1.2)
         
         if(inChallenge('c',11))mult = mult.pow(0.25)
@@ -1487,6 +1526,7 @@ addLayer("a", {
       exp= new Decimal(1)
       if(hasUpgrade('a',23)){exp= exp.add(0.01)}
       if(hasUpgrade('s',24)){exp= exp.add(0.01)}
+      if(hasUpgrade('ch',51)){exp= exp.add(0.001)}
       if(hasChallenge('a',14)){exp= exp.times(1.01)}
       if(inChallenge('p',11)){exp= exp.times(0.5)}
       if(inChallenge('p',12)){exp= exp.times(0.1)}
@@ -1498,13 +1538,12 @@ addLayer("a", {
      if(hasChallenge('p',15)){exp = exp.times(challengeEffect('p',15))}
       if(hasUpgrade('p',34)){exp= exp.times(upgradeEffect('p',34))}
       if(hasUpgrade('a',36)){exp= exp.times(1.005)}
-      //if (hasUpgrade('a', 45)) exp= exp.times(1.1)
-      if(tmp.ch.holdEff>1) exp = exp.times(tmp.ch.holdEff)
-      if(buyableEffect('c',34)>1) exp = exp.times(buyableEffect('c',34))
-      if(hasMilestone('sp', 4)) exp= exp.times(1.035)
+      if(tmp.ch.holdEff.gte(1)) exp = exp.times(tmp.ch.holdEff)
+      if(buyableEffect('c',34).gte(1)) exp = exp.times(buyableEffect('c',34))
+      if(hasMilestone('sp', 4)) exp= exp.times(1.001)
       
      
-     if(tmp.a.snEff5.gte(0)) exp=exp.times(tmp.a.snEff5)
+     if(tmp.a.snEff5.gte(1)) exp=exp.times(tmp.a.snEff5)
      if(!hasChallenge('c',12)) exp=exp.min(4.5)
       return exp
     },
@@ -1552,12 +1591,12 @@ return sna
   sn=player.a.sn.max(1)
 eff=sn.log(10).pow(2).add(1)
 if(tmp.a.drEff2.gte(1)) eff=eff.pow(tmp.a.drEff2)
-if(eff>25) eff = eff.sub(24).pow(0.5).add(24)//sc
+//if(eff>25) eff = eff.sub(24).pow(0.5).add(24)//sc
 return eff
     },
     snEff2() {
     sn=player.a.sn.max(1)
-eff=new Decimal(1e4).pow(sn.pow(0.5))
+eff=new Decimal(1e4).pow(sn.pow(0.5).sub(1))
 if(tmp.a.drEff2.gte(1)) eff=eff.pow(tmp.a.drEff2)
 if(eff.log10()>1000) eff = new Decimal(10).pow(eff.log10().sub(1000).pow(0.8).add(1000))//sc
 if(eff.log10()>5000) eff = new Decimal(10).pow(eff.log10().sub(5000).pow(0.5).add(5000))//sc2
@@ -2051,7 +2090,7 @@ tabFormat: {
       function() {return '1.使课题力量获取量×' + format(tmp.a.snEff1)},
      {"color": "#ffffff", "font-size": "18px", "font-family": "Comic Sans MS"}],
      ["display-text",
-      function() {if(hasAchievement('A',74)) return '2.软上限后源点获取量×' + format(tmp.a.snEff2)},
+      function() {if(hasAchievement('A',74)) return '2.源点获取量×' + format(tmp.a.snEff2)},
      {"color": "#ffffff", "font-size": "18px", "font-family": "Comic Sans MS"}],
      ["display-text",
       function() {if(hasUpgrade('sp',13)) return '3.蛇每次点击获取量×' + format(tmp.a.snEff3)},
@@ -3072,8 +3111,8 @@ addLayer("c", {
     	if (hasMilestone('sp',3)&&layers.c.buyables[34].canAfford()&&layers.c.buyables[34].unlocked()) layers.c.buyables[34].buy();
     	if (hasMilestone('sp',3)&&layers.c.buyables[41].canAfford()&&layers.c.buyables[41].unlocked()) layers.c.buyables[41].buy();
     	if (hasMilestone('sp',3)&&layers.c.buyables[42].canAfford()&&layers.c.buyables[42].unlocked()) layers.c.buyables[42].buy();	
-    	if (hasMilestone('sp',3)&&layers.c.buyables[43].canAfford()&&layers.c.buyables[43].unlocked()) layers.c.buyables[43].buy();	
-    //	if (hasMilestone('sp',3)&&layers.c.buyables[44].canAfford()) layers.c.buyables[44].buy();
+    	if (hasMilestone('sp',3)&&layers.c.buyables[43].canAfford()&&layers.c.buyables[43].unlocked()) layers.c.buyables[43].buy();		
+    	if (hasMilestone('sp',3)&&layers.c.buyables[44].canAfford()&&layers.c.buyables[44].unlocked()) layers.c.buyables[44].buy();	
     	if (hasMilestone('r',5)&&layers.c.buyables[11].canAfford()) layers.c.buyables[11].buyMax();
     	if (hasMilestone('r',5)&&layers.c.buyables[12].canAfford()) layers.c.buyables[12].buyMax();
     	if (hasMilestone('r',5)&&layers.c.buyables[13].canAfford()) layers.c.buyables[13].buyMax();
@@ -4038,7 +4077,7 @@ unlocked(){return hasUpgrade('ch',21)}
       function() {if(hasUpgrade('ch',41)) return '你每秒获得' +format(tmp.ch.enp)+'课题力量(基于课题能量)<br>课题力量使Cytus力量变为原来的'+format(tmp.ch.enpEff)+'倍'},
      {"color": "#ffffff", "font-size": "16px", "font-family": "Comic Sans MS"}],
      "clickables",
-     ['row',[['upgrade',31],['upgrade',32],['upgrade',33],['upgrade',34],['upgrade',35],['upgrade',36],['upgrade',37]]],
+     ['row',[['upgrade',31],['upgrade',32],['upgrade',33],['upgrade',34],['upgrade',35],['upgrade',36],['upgrade',37],['upgrade',38]]],
      ['row',[['upgrade',41],['upgrade',42],['upgrade',43],['upgrade',44],['upgrade',45],['upgrade',46],['upgrade',47]]],
      ['row',[['upgrade',51],['upgrade',52],['upgrade',53],['upgrade',54],['upgrade',55],['upgrade',56],['upgrade',57]]],
 ],
@@ -4284,54 +4323,65 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(2.5e5)},
       },
   },
   51:{ 
-    fullDisplay() {return "Unorthodox Thoughts IN 13.9<br>源点软上限指数^0.50——^0.60<br>需要：5000000课题力量 && 195谱面"},
+    fullDisplay() {return "Unorthodox Thoughts IN 13.9<br>源点获取指数+0.001<br>需要：3000物量 && 200谱面"},
     unlocked(){return hasUpgrade('sp',13)},
-onPurchase() {player.ch.enp=player.ch.enp.sub(5e6)},
-  canAfford() {return player.ch.enp.gte(5e6)},
-    cost() {return new Decimal(195)},
-  },
-  52:{ 
-    fullDisplay() {return "Realms IN 14.1<br>课题模式中“运气分”的计算最后一次改变（最容易获得高分）<br>需要：5000000课题力量 && 197谱面"},
-    unlocked(){return hasUpgrade('ch',51)},
-onPurchase() {player.ch.enp=player.ch.enp.sub(5e6)},
-  canAfford() {return player.ch.enp.gte(5e6)},
-    cost() {return new Decimal(197)},
-  },
-  53:{ 
-    fullDisplay() {return "Bonus Time IN 14.2<br>解锁一个蛇可点击，可以提供双倍的蛇增加量<br>需要：1e8 课题力量 && 200谱面"},
-    unlocked(){return hasUpgrade('ch',52)},
-onPurchase() {player.ch.enp=player.ch.enp.sub(1e8)},
-  canAfford() {return player.ch.enp.gte(1e8)},
+  canAfford() {return player.ch.note.gte(3000)},
     cost() {return new Decimal(200)},
   },
+  52:{ 
+    fullDisplay() {return "Realms IN 14.1<br>课题模式中“运气分”的计算最后一次改变（最容易获得高分）<br>需要：1e18课题力量 && 230谱面"},
+    unlocked(){return hasUpgrade('ch',51)},
+onPurchase() {player.ch.enp=player.ch.enp.sub(1e18)},
+  canAfford() {return player.ch.enp.gte(1e18)},
+    cost() {return new Decimal(230)},
+  },
+  53:{ 
+    fullDisplay() {return "Bonus Time IN 14.2<br>解锁一个蛇可点击，可以提供双倍的蛇增加量<br>需要：1e20 课题力量 && 240谱面"},
+    unlocked(){return hasUpgrade('ch',52)},
+onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
+  canAfford() {return player.ch.enp.gte(1e20)},
+    cost() {return new Decimal(240)},
+  },
   54:{ 
-    fullDisplay() {return "Speed Up! IN 14.3<br>解锁第四个蛇的效果，课题力量对Cytus力量的增益变为^3<br>需要：1.5e8 课题力量 && 201谱面"},
+    fullDisplay() {return "Speed Up! IN 14.3<br>解锁第四个蛇的效果，课题力量对Cytus力量的增益变为^3<br>需要：3100物量 && 250谱面"},
     unlocked(){return hasUpgrade('ch',53)},
-onPurchase() {player.ch.enp=player.ch.enp.sub(1.5e8)},
-  canAfford() {return player.ch.enp.gte(1.5e8)},
-    cost() {return new Decimal(201)},
+  canAfford() {return player.ch.note.gte(3100)},
+    cost() {return new Decimal(250)},
   },
   55:{ 
-    fullDisplay() {return "Eltaw IN 14.4<br>解锁下一个可以提供双倍的蛇增加量的可点击，谱面升级不再消耗课题力量，蛇长度不再重置<br>需要：2e8 课题力量 && 215谱面"},
+    fullDisplay() {return "Eltaw IN 14.4<br>解锁下一个可以提供双倍的蛇增加量的可点击，谱面升级不再消耗课题力量，蛇长度不再重置<br>需要：3200物量 && 260谱面"},
     unlocked(){return hasUpgrade('ch',54)},
-  canAfford() {return player.ch.enp.gte(2e8)},
-    cost() {return new Decimal(215)},
+  canAfford() {return player.ch.note.gte(3200)},
+    cost() {return new Decimal(260)},
   },
   56:{ 
-    fullDisplay() {return "狂喜蘭舞 IN 14.5<br>基于课题力量增益课题力量<br>当前效果：×"+format(this.effect())+"<br>需要：2.5e8 课题力量 && 218谱面"},
+    fullDisplay() {return "狂喜蘭舞 IN 14.5<br>基于课题力量增益课题力量<br>当前效果：×"+format(this.effect())+"<br>需要：1e21 课题力量 && 270谱面"},
     unlocked(){return hasUpgrade('ch',55)},
-  canAfford() {return player.ch.enp.gte(2.5e8)},
-    cost() {return new Decimal(218)},
+  canAfford() {return player.ch.enp.gte(1e21)},
+    cost() {return new Decimal(270)},
     effect() {
       eff=player.ch.enp.add(10).log(10).pow(0.8)
       return eff
     },
   },
   57:{ 
-    fullDisplay() {return "Future Mind IN 14.6<br>在“蛇”页面解锁“龙”，解锁第一个龙的效果<br>需要：1e9 课题力量 && 220谱面" },
+    fullDisplay() {return "Future Mind IN 14.6<br>在“蛇”页面解锁“龙”，解锁第一个龙的效果<br>需要：3250物量 && 280谱面" },
     unlocked(){return hasUpgrade('ch',56)},
-  canAfford() {return player.ch.enp.gte(1e9) },
-    cost() {return new Decimal(220)},
+  canAfford() {return player.ch.note.gte(3250)},
+    cost() {return new Decimal(280)},
+  },
+  
+  
+  
+  
+  38:{ 
+    fullDisplay() {return "loader3229的认可<br>课题能量增加Loaded Notes获取<br>当前效果：×"+format(this.effect())+"<br>需要：6.01课题能量"},
+    unlocked(){return hasMilestone('sp',2)},
+  canAfford() {return player.ch.en.gte(6.01)},
+    cost() {return new Decimal(0)},
+    effect() { eff= player.ch.en
+        return eff.max(1)
+      },
   },
 },
    buyables:{
@@ -4535,13 +4585,15 @@ points: new Decimal(0),
     requires(){
 		req =new Decimal('1e160000')
 	
+	if (hasUpgrade('lo', 73)) req = req.pow(buyableEffect('lo',32))
+		
         if(buyableEffect('c',41).gt(1)) req = req.div(buyableEffect('c',41))
 			return req;
 	}, 
-    requires: new Decimal('1e160000'), 
 	base(){
 		mult = new Decimal('1e5000')
 		
+	if (hasUpgrade('lo', 73)) mult = mult.pow(buyableEffect('lo',32))
 		
 	
 		return mult;
@@ -4626,12 +4678,12 @@ doReset(resettingLayer) {
 milestones: {
     0: {
         requirementDescription: "获得1个曲包",
-        effectDescription: "永久保留歌曲、Arcaea、Lanota、Phigros、魔王曲升级，Arcaea、Phigros挑战，歌曲获得量软上限延后到1e16000，解锁一个魔王曲升级",
+        effectDescription: "永久保留歌曲、Arcaea、Lanota、Phigros、魔王曲升级，Arcaea、Phigros挑战，解锁一个魔王曲升级",
         done() { return player.sp.points.gte(1) }
     },
     1: {
         requirementDescription: "获得2个曲包",
-        effectDescription: "提升前两个Phigros挑战（EZ，HD）的效果和上限，Phidata获取指数*1.1，歌曲获得量软上限延后到1e17000",
+        effectDescription: "提升前两个Phigros挑战（EZ，HD）的效果和上限，Phidata获取指数*1.1，解锁更多升级",
         done() { return player.sp.points.gte(2) }
     },
     2: {
@@ -4641,12 +4693,12 @@ milestones: {
     },
     3: {
         requirementDescription: "获得4个曲包",
-        effectDescription: "自动购买所有Cytus可购买，歌曲获得量软上限延后到1e18000",
+        effectDescription: "自动购买所有Cytus可购买，解锁更多升级",
         done() { return player.sp.points.gte(4) }
     },
     4: {
         requirementDescription: "获得8个曲包",
-        effectDescription: "解锁曲包，解锁Arcaea曲包（基于源点获得），源点指数乘以1.03",
+        effectDescription: "解锁曲包，解锁Arcaea曲包（基于源点获得），源点指数乘以1.001",
         done() { return player.sp.points.gte(8) }
     },
 },
@@ -4655,8 +4707,8 @@ buyables:{
 				title: "获得一个Arcaea曲包",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = new Decimal('1e3000')
-     cost=cost.times(new Decimal(1e20).pow(x.pow(1.2)))
+     let cost = new Decimal('1e54500')
+     cost=cost.times(new Decimal(1e100).pow(x.pow(1.2)))
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4672,7 +4724,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.a.points.div("1e3000").log(1e20).root(1.2)
+					let tempBuy = player.a.points.div("1e54500").log(1e100).root(1.2)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4683,7 +4735,7 @@ buyables:{
 				title: "获得一个Lanota曲包",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = x.pow(1.5).mul(0.001).add(5).pow(6)
+     let cost = x.pow(1.5).mul(0.1).add(10).pow(3)
     return cost.floor()
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4699,7 +4751,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.l.points.max(1).root(6).sub(5).div(0.001).root(1.5)
+					let tempBuy = player.l.points.max(1).root(3).sub(10).div(0.1).root(1.5)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4746,21 +4798,21 @@ onPurchase() {setBuyableAmount('sp',11,getBuyableAmount('sp',11).sub(9))
       },
   },
 16:{ 
-    fullDisplay() {return "Adverse Prelude<br>基于RKS增益每次点击蛇的获取量<br>当前效果：×"+format(this.effect())+"<br>需要：15 Arcaea曲包，10000 蛇物量"},
+    fullDisplay() {return "Adverse Prelude<br>基于RKS增益每次点击蛇的获取量<br>当前效果：×"+format(this.effect())+"<br>需要：30 Arcaea曲包，10000 蛇物量"},
     unlocked(){return hasUpgrade('sp',16)||getBuyableAmount('sp',11).gte(14)},
-onPurchase() {setBuyableAmount('sp',11,getBuyableAmount('sp',11).sub(15))
+onPurchase() {setBuyableAmount('sp',11,getBuyableAmount('sp',11).sub(30))
   player.a.sn=player.a.sn.sub(10000)},
-  canAfford() {return getBuyableAmount('sp',11).gte(15)&&player.a.sn.gte(10000)},
+  canAfford() {return getBuyableAmount('sp',11).gte(30)&&player.a.sn.gte(10000)},
   effect() { eff= player.p.rks.max(5).div(10).add(0.5).pow(5)
         return eff.max(1)
       },
   },
 17:{ 
-    fullDisplay() {return "Black Fate<br>每秒获得100%的蛇增加量，解锁Lanota曲包<br>需要：24 Arcaea曲包，5 龙"},
+    fullDisplay() {return "Black Fate<br>每秒获得100%的蛇增加量，解锁Lanota曲包<br>需要：48 Arcaea曲包，5 龙"},
     unlocked(){return hasUpgrade('sp',17)||getBuyableAmount('sp',11).gte(22)},
-onPurchase() {setBuyableAmount('sp',11,getBuyableAmount('sp',11).sub(24))
+onPurchase() {setBuyableAmount('sp',11,getBuyableAmount('sp',11).sub(48))
   player.a.dr=player.a.dr.sub(5)},
-  canAfford() {return getBuyableAmount('sp',11).gte(24)&&player.a.dr.gte(5)},
+  canAfford() {return getBuyableAmount('sp',11).gte(48)&&player.a.dr.gte(5)},
   },
 21:{ 
     fullDisplay() {return "<br>解锁龙的第二个效果，基于诗篇增益Note获取量<br>当前效果：×"+format(this.effect())+"<br>需要：4 Lanota曲包，3 龙"},
