@@ -1271,7 +1271,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e10)},
         display() { return "基于购买次数减少谱面需求<br>价格："+format(this.cost())+" Loaded Notes<br>效果：^"+format(this.effect())},
         title: "制谱技巧",
-        effect() {return Decimal.pow(0.9,getBuyableAmount(this.layer,this.id))},
+        effect() {if(getBuyableAmount(this.layer,this.id).gte(24))return new Decimal(2).div(getBuyableAmount(this.layer,this.id));return Decimal.pow(0.9,getBuyableAmount(this.layer,this.id))},
         unlocked(){unlock=hasUpgrade('lo',61);
           return unlock
         },
@@ -1285,7 +1285,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e12)},
         display() { return "基于购买次数减少诗篇需求<br>价格："+format(this.cost())+" Loaded Notes<br>效果：^"+format(this.effect())},
         title: "Lanota自制谱",
-        effect() {return Decimal.pow(0.9,getBuyableAmount(this.layer,this.id))},
+        effect() {if(getBuyableAmount(this.layer,this.id).gte(24))return new Decimal(2).div(getBuyableAmount(this.layer,this.id));return Decimal.pow(0.9,getBuyableAmount(this.layer,this.id))},
         unlocked(){unlock=hasUpgrade('lo',16);
           return unlock
         },
@@ -1335,7 +1335,7 @@ clickables: {
 		}else{
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(5e16);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(3e17);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
