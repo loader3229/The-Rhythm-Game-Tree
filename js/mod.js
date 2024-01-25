@@ -2,7 +2,7 @@ let modInfo = {
 	name:"音乐游戏树",
 	id: "rhythmgametree_loader",
 	author: "QqQe308, loader3229",
-	pointsName: "notes",
+	pointsName: "Notes",
 	modFiles: ["layers.js", "tree.js"],
 	discordName: "B站一只新手Up",
 	discordLink: "https://b23.tv/Hlg9D5u",
@@ -11,39 +11,44 @@ let modInfo = {
 }
 // Set your version in num and name
 let VERSION = {
-	num: "0.211",
-	name: "Song Packed",
+	num: "0.28",
+	name: "Rotative Rotating Rotation",
 }
 
-let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：1e570000 Notes，下一个更新:Arcaea曲包！`
+let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：1e1400000 Notes，16 Rot点数，下一个更新:更多升级树内容！`
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e570000"))
+	return player.points.gte('1e1400000')&&player.r.rota.gte(16)
 }
 
 // Display extra things at the top of the page
 var displayThings = [
-  "v0.21 游戏结局: 1e570000 Notes！",
+  "v0.28 游戏结局: 1e1400000 Notes，16 Rot点数！",
 ]
 
 let changelog = `<h1>更新日志</h1><br>
-<h2>v0.211 Song Packed 2023/11/25~2023/12/06<br>
+<h2>v0.28 Rotative Rotating Rotation 2024/1/17-2024/1/22<br>
+<h3>- 添加1个层级：Rotaeno，添加Rot升级树<br>
+- 添加7个里程碑，2个可购买，9个“升级”，4个升级<br>
+- 修复了一堆bug以及修改了一些内容<br>
+- 游戏结局：1e1400000 Notes，16 Rot点数<br>
+- 是的我鸽了18天<br><br>
+<h2>v0.25 Song Packed 2023/11/27~2023/12/31<br>
 <h3>- 添加1个层级：曲包<br>
-- 添加3个可购买，0个挑战，5个里程碑，添加课题力量<br>
-- 添加7个升级<br>
-- 游戏结局：1e570000 Notes<br><br>
-<h2>v0.185 Chart Design 2023/11/11~2023/11/27<br>
+- 添加4+2=6个可购买，6个可点击，5个里程碑，10个蛇和龙的效果<br>
+- 添加课题力量，添加Arcaea中的蛇和龙<br>
+- 添加14+14=28个升级<br>
+- 游戏结局：1e955000 Notes<br><br>
+<h2>v0.2 Chart Design 2023/11/11~2023/11/27<br>
 <h3>- 添加1个层级：Chart<br>
 - 添加物量和定数，添加Phigros-Notes和特殊Notes，添加课题模式，添加课题能量<br>
 - 添加2个里程碑，4个挑战，8个可购买<br>
 - 添加2+21=23个升级<br>
 - 修复了一堆bug<br>
-- Phigros 3.3.0 Rotaeno精选集更新！ 祝贺Phigros常驻曲目达到200首！<br>
 - 游戏结局：1e376000 Notes<br><br>
 <h2>v0.15 Cytusser 2023/10/28~2023/11/5<br>
-<h3>- 添加1个层级：Cytus<br>
-- 添加Cytus力量<br>
+<h3>- 添加1个层级：Cytus，添加Cytus力量<br>
 - 添加9个里程碑，8个可购买，1个挑战<br>
 - 添加5+5+2+2+7=21个升级<br>
 - 重新平衡游戏，更改部分显示文本<br>
@@ -54,7 +59,7 @@ let changelog = `<h1>更新日志</h1><br>
 - 添加“RKS”，包括2个可点击<br>
 - 添加7+4+5+1=17个升级，3+1+2=6个里程碑<br>
 - 重新制作了游戏（修改很多升级，重新平衡，修复了一堆bug）<br>
-- 添加了“炸档修复”层级<br>
+- 添加了“炸档测试”层级<br>
 - 添加了剧情<br>
 - 游戏结局：1e33000 Notes（1e20 Phidata，1e240源点）<br><br>
 <h2>v0.06 Early Game 2023/10/06-2023/10/16<br>
@@ -73,8 +78,8 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-//return !player.points.gte('1e210000')
-return true
+return !player.points.gte('1e1400000')
+//return true
 }
 
 // Calculate points/sec!
@@ -116,6 +121,9 @@ if (hasMilestone('ch', 1)) gain = gain.times('1e1145')
 	if (hasUpgrade('ch', 36)) gain = gain.times(upgradeEffect('ch', 36))
 	if (hasUpgrade('ch', 37)) gain = gain.times(upgradeEffect('ch', 37))
 	if (hasUpgrade('ch', 43)) gain = gain.times(upgradeEffect('ch', 43))
+	if(tmp.a.snEff4.gte(1)) gain=gain.times(tmp.a.snEff4)
+if (hasUpgrade('sp', 21)) gain = gain.times(upgradeEffect('sp', 21))
+if (getClickableState("r",21)==1) gain = gain.times(clickableEffect("r", 21))
 
 if (hasUpgrade('a', 18)) gain = gain.times(upgradeEffect('a', 18))
 if (hasUpgrade('a', 38)) gain = gain.times(upgradeEffect('a', 38))
@@ -131,6 +139,7 @@ if (hasUpgrade('m', 18)) gain = gain.times(upgradeEffect('m', 18))
  if (hasUpgrade('ch', 26)) gain = gain.pow(1.02)
 if (hasUpgrade('ch', 27)) gain = gain.pow(1.05)
 if (hasAchievement('A', 65)) gain = gain.pow(1.0101)
+if(tmp.a.drEff4.gte(1)) gain=gain.pow(tmp.a.drEff4)
 
 if(inChallenge('p',12)){gain= gain.pow(0.1)}
 	if(hasChallenge('p',13)){gain = gain.pow(challengeEffect('p',13))}
@@ -140,11 +149,12 @@ if(inChallenge('p',12)){gain= gain.pow(0.1)}
 	if(inChallenge('c',12))gain= gain.div(5e7)
 	if(inChallenge('c',13))gain= gain.pow(new Decimal(0.9).pow(player.c.challengeTime))
 	
-	if(inChallenge('c',14))gain= gain.max(10).log(1.0001)
-	if(inChallenge('c',14))gain= gain.pow(0.05)
-//	gain=gain.pow(2)
 	
- //gain=gain.min('1e210000')
+	if(inChallenge('c',14))gain= gain.max(10).log(1.0001)
+if(inChallenge('c',14))gain= gain.pow(0.05)
+//gain=gain.pow(2)
+	
+ gain=gain.min('1e1400000')
 
 	return gain
 }
@@ -177,4 +187,5 @@ function fixOldSave(oldVersion){
 }
 
 function rksRandom() {return new Decimal(player.A.resetTime).sub(new Decimal(player.A.resetTime).floor())}
+
 
