@@ -78,7 +78,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-return !player.points.gte('1e1400000')
+return !player.points.gte('1e1600000')
 //return true
 }
 
@@ -154,7 +154,7 @@ if(inChallenge('p',12)){gain= gain.pow(0.1)}
 if(inChallenge('c',14))gain= gain.pow(0.05)
 //gain=gain.pow(2)
 	
- gain=gain.min('1e1400000')
+ gain=gain.min('1e1600000')
 
 	return gain
 }
