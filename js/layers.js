@@ -3186,6 +3186,8 @@ addLayer("c", {
     	if (hasMilestone('r',5)&&layers.c.buyables[43].canAfford()) layers.c.buyables[43].buyMax();
     	if (hasMilestone('r',5)&&layers.c.buyables[44].canAfford()) layers.c.buyables[44].buyMax();
 		},
+  softcap:new Decimal ("10^^1000"),
+  softcapPower:new Decimal(1),
 		upgrades: {
     11:{ title: "Cytus I",
     description:"解锁第三个RKS可点击，RKS可点击随时都可以点击",
@@ -4153,6 +4155,8 @@ unlocked(){return hasUpgrade('ch',27)}
         done() { return player.ch.points.gt(1) }
     },
 },
+  softcap:new Decimal ("10^^1000"),
+  softcapPower:new Decimal(1),
    upgrades:{
   11:{ 
     fullDisplay() {return "Introduction<br>基于物量的Cyten乘数<br>当前效果："+format(this.effect())+"×<br>需要：50物量 && 2谱面"},
@@ -4823,6 +4827,8 @@ buyables:{
      style: {'height':'150px'},
 			},
 },
+  softcap:new Decimal ("10^^1000"),
+  softcapPower:new Decimal(1),
 upgrades:{
 11:{ 
     fullDisplay() {return "Arcaea<br>在Arcaea层级解锁“蛇”，PTT永远处于最大值<br>需要：2 Arcaea曲包"},
@@ -5326,6 +5332,8 @@ addLayer("r", {
             branches(){return ["63"]},
         },
    },
+  softcap:new Decimal ("10^^1000"),
+  softcapPower:new Decimal(1),
        upgrades: {
     11:{ title: "Rot助推 I",
       description: "你可以同时购买升级31和32，并且升级42的效果提升",
