@@ -260,9 +260,23 @@ function NaNcheck(data) {
 function exportSave() {
 	//if (NaNalert) return
 	var t=player.subtabs;delete player.subtabs;
+	delete player.Loader;
+	delete player.yszqzls;
+	delete player.yyyxs;
+	delete player.Genshin;
+	delete player.Phigros;
+	delete player.long2024;
+	delete player.QqQe308;
 	let str = btoa(JSON.stringify(player));
 	player.subtabs=t;
 
+player.Loader="loader3229祝您龙年快乐！"
+player.yszqzls="催更PEIT，元素周期增量树，@Bana3864[]，@Liu e308"
+player.yyyxs="音乐游戏树，鱼鱼永相随，游泳一小时，原原原x神"
+player.Genshin="启动！"
+player.Phigros="2月2号，音乐游戏树和Phigros一起更新"
+player.long2024="龙年马上要到了！祝大家新年龙腾虎跃，龙飞凤舞，龙批一个，事业有成，学业顺利，身体健康，财源滚滚，音游全AP，考试全满分，工作全加薪，玩树全通关，再次献上音乐游戏树全体作者（共1人）的真挚祝福！！！！！！！！！！"
+player.QqQe308="我是QqQe308，v我50更新音乐游戏树"
 
 	const el = document.createElement("textarea");
 	el.value = str;

@@ -24,7 +24,7 @@ player.QqQ="QqQe308"
 player.banana="3.8642180e38642180"
 player.Liu="6.666666666666666666666666e308"
 player.fufu=['cutefu~','c','u','t','e','f','u','~']
-player.Loader="loader3229祝您龙年快乐！"
+//player.Loader="loader3229祝您龙年快乐！"
 player.yszqzls="催更PEIT，元素周期增量树，@Bana3864[]，@Liu e308"
 player.yyyxs="音乐游戏树，鱼鱼永相随，游泳一小时，原原原x神"
 player.Genshin="启动！"
@@ -69,11 +69,18 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             tooltip: "解锁Arcaea挑战！",
             textStyle: {'color': '#DDCCCC'},
         },
+        18: {
+            name: "共同进步",
+            done() {return player.lo.points.gte(1)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "解锁这个mod的开发者，loader3229，并且获取1个Loaded Point",
+            textStyle: {'color': '#FFFFFF'},
+        },
         21: {
-            name: "音游之盛",
+            name: "音游之盛<br>🏆",
             done() {return player.s.points.gte(1e15)},
             onComplete(){player.A.ach=player.A.ach.add(1)},
-            tooltip: "达到1e15歌曲！",
+            tooltip: "达到1e15歌曲！<br>奖励：源点获取*2",
             textStyle: {'color': '#ABBBBB'},
         },
         22: {
@@ -103,6 +110,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             onComplete(){player.A.ach=player.A.ach.add(1)},
             tooltip: "获得2.886499075PTT",
             textStyle: {'color': '#ff5eee'},
+        },
+        28: {
+            name: "音游萌新",
+            done() {return player.lo.points.gte(5)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "获取5个Loaded Points",
+            textStyle: {'color': '#FFFFFF'},
         },
         31: {
             name: "下一进展<br>🏆",
@@ -144,6 +158,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             textStyle: {'color': '#DABCAB'},
             
         },
+        38: {
+            name: "正在进步",
+            done() {return player.lo.points.gte(10)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "获取10个Loaded Points",
+            textStyle: {'color': '#FFFFFF'},
+        },
         41: {
             name: "困难魔王<br>🏆",
             done() {return hasUpgrade('p',27)},
@@ -181,6 +202,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             tooltip: "达到1e240源点！<br>你无不无聊……",
             textStyle: {'color': '#d47ac9d6'},
         },
+        48: {
+            name: "终于全连了",
+            done() {return player.lo.maxcombo.gte(44)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "使loader3229的最高连击数达到44。PS：Arcaea里面物量最低的谱面（dropdead PAST 1）的物量是44",
+            textStyle: {'color': '#FFFFFF'},
+        },
         51: {
             name: "创新纪元",
             onComplete(){player.A.ach=player.A.ach.add(1)},
@@ -217,6 +245,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             tooltip: "获得升级“Aegleseeker”",
             textStyle: {'color': '#ec38eee5'},
         },
+        58: {
+            name: "再次进步",
+            done() {return player.lo.points.gte(15)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "获取15个Loaded Points",
+            textStyle: {'color': '#FFFFFF'},
+        },
         61: {
             name: "Chart Designer",
             done() {return player.ch.points.gte(1)},
@@ -251,6 +286,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             onComplete(){player.A.ach=player.A.ach.add(1)},
             tooltip: "完成第四个Cytus挑战",
             textStyle: {'color': '#2d2d2d'},
+        },
+        68: {
+            name: "自制谱师",
+            done() {return hasUpgrade('lo',35)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "解锁loader3229的制谱功能",
+            textStyle: {'color': '#FFFFFF'},
         },
        71: {
             name: "异曲同工<br>🏆",
@@ -287,6 +329,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             tooltip: "让蛇的长度超过100000物量！",
             textStyle: {'color': '#e630dc'},
         },
+        78: {
+            name: "暂时不用担心断触了！",
+            done() {return buyableEffect('lo',13).lt(0.01)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "使loader3229的设备断触率小于1%",
+            textStyle: {'color': '#FFFFFF'},
+        },
        81: {
             name: "无尽之雨❌<br>无尽之树✅",
             done() {return player.r.points.gte(1)},
@@ -322,6 +371,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             tooltip: "获得Phigros曲包升级“支线一-忘忧宫”和“支线二-弭刻日”<br>奖励：恭喜通关，龙年快乐<br>Phigros支线三-盗乐行将于2024.02.23更新！",
             textStyle: {'color': '#ffaa1d'},
        },
+        88: {
+            name: "终于全连断手器EX了！",
+            done() {return player.lo.maxcombo.gte(933)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "使loader3229的最高连击数达到933。PS：“断手器”指BanG Dream!里面的ハッピーシンセサイザ EX，里面只有tap和flick，物量为933。loader3229真的全连过断手器EX！ ",
+            textStyle: {'color': '#FFFFFF'},
+        },
        1001: {
             name: "隐藏成就1",
             done() {return player.t.points.gte(100)},
@@ -347,7 +403,7 @@ style() { return { 'background-color': hasAchievement('A',1002)?"#308308":"#ff48
             done() {
   return player.QqQ!=="QqQe308"&&player.banana!=="3.8642180e38642180"&&player.Liu!=="6.666666666666666666666666e308"&&player.fufu!==['cutefu~','c','u','t','e','f','u','~']&&player.Loader!=="loader3229祝您龙年快乐！"&&player.yszqzls!=="催更PEIT，元素周期增量树，@Bana3864[]，@Liu e308"&&player.yyyxs!=="音乐游戏树，鱼鱼永相随，游泳一小时，原原原x神"&&player.Genshin!=="启动！"&&player.Phigros!=="2月2号，音乐游戏树和Phigros一起更新"&&player.long2024!=="龙年马上要到了！祝大家新年龙腾虎跃，龙飞凤舞，龙批一个，事业有成，学业顺利，身体健康，财源滚滚，音游全AP，考试全满分，工作全加薪，玩树全通关，再次献上音乐游戏树全体作者（共1人）的真挚祝福！！！！！！！！！！"&&player.QqQe308!=="我是QqQe308，v我50更新音乐游戏树"},
             tooltip() {
-             if(hasAchievement('A',1003)) return "你和作者一样闲得慌。。。<br>修改所有彩蛋变量的值<br>奖励：所有彩蛋变量不再能被修改"
+             if(hasAchievement('A',1003)) return "你和作者一样闲得慌。。。<br>修改所有彩蛋变量的值<br>奖励：所有彩蛋变量不再能被修改，除player.Loader"
              else return "你和作者一样闲得慌。。。（提示：上一个成就的超级加强版）"
             },
 style() { return { 'background-color': hasAchievement('A',1003)?"#308308":"#ff4848"}},
@@ -369,6 +425,15 @@ style() { return { 'background-color': hasAchievement('A',1004)?"#308308":"#ff48
              else return "铁人三项（提示：Phigros）"
             },
 style() { return { 'background-color': hasAchievement('A',1005)?"#308308":"#ff4848"}},
+        },
+       1008: {
+            name: "隐藏成就L1",
+            done() {return (player.Loader+"")==('Kasumi Toyama')||(player.Loader+"")==('Toyama Kasumi')||(player.Loader+"")==('户山香澄')||(player.Loader+"")==('戸山香澄')||(player.Loader+"")==('戸山　香澄');},
+            tooltip() {
+             if(hasAchievement('A',1008)) return "loader3229最喜欢户山香澄了！看一下 https://qq1010903229<br>.github.io/ksm 吧"
+			else return "将loader3229最喜欢的音游角色的名字赋值给变量player.Loader"
+            },
+style() { return { 'background-color': hasAchievement('A',1008)?"#308308":"#ff4848"}},
         },
        1011: {
             name: "隐藏成就6",
@@ -392,7 +457,7 @@ style() { return { 'background-color': hasAchievement('A',1011)?"#308308":"#ff48
   unlocked(){return true},
 },
 },
-  update(diff){player.A.ach=new Decimal(player.A.achievements.length);}
+  update(diff){player.A.ach=new Decimal(player.A.achievements.filter(function(a){return a<666;}).length);}
 },
 )//Achievements
 addLayer("t", {
@@ -549,20 +614,12 @@ addLayer("S", {
       function() {if(player.s.unlocked)
         {return '你有 ' + format(player.s.points) + ' 歌曲<br>歌曲基本获得量：' + format(tmp.s.gainMult) + '<br>歌曲获得指数：' + format(tmp.s.gainExp.mul(tmp.s.exponent)) + '<br>歌曲额外增益：' + format(tmp.s.directMult) }},
      {"color": "#ffffff", "font-size": "22px", "font-family": "Comic Sans MS"},],//s
-      ["display-text",
-      function() {return '';if(player.sp.unlocked())
-        {return '歌曲软上限开始于开始于 ' + format(new Decimal(10).pow(player.s.sc)) + ' 歌曲<br>歌曲软上限效果：指数^' + format(player.s.sce) }},
-     {"color": "#ffffff", "font-size": "16px", "font-family": "Comic Sans MS"},],//s-sc
      "blank",
      "blank",
      ["display-text",
       function() {if(player.a.unlocked)
-        {return '你有 ' + format(player.a.points) + ' 源点<br>源点基本获得量：' + format(tmp.a.gainMult) + '<br>源点获得指数：' + format(tmp.a.gainExp) }},
+        {return '你有 ' + format(player.a.points) + ' 源点<br>源点基本获得量：' + format(tmp.a.gainMult) + '<br>源点获得指数：' + format(tmp.a.gainExp.mul(tmp.a.exponent)) }},
      {"color": "#ffffff", "font-size": "22px", "font-family": "Comic Sans MS"},],//a
-     ["display-text",
-      function() {if(player.sp.unlocked())
-        {return '源点软上限开始于 ' + format(new Decimal(10).pow(player.a.sc)) + ' 源点获得量<br>源点软上限效果：指数^' + format(player.a.sce) }},
-     {"color": "#ffffff", "font-size": "16px", "font-family": "Comic Sans MS"},],//a-sc
      ["display-text",
       function() {if(player.a.ptt.gt(0))
         {return '你有 ' + format(player.a.ptt) + ' PTT<br>PTT上限1：' + format(player.a.pttMax.mul(player.a.pttMax2)) + '<br>PTT上限2：' + format(player.a.pttMax) }},
@@ -577,13 +634,13 @@ addLayer("S", {
      "blank",
      ["display-text",
       function() {if(player.l.unlocked)
-        {return '你有 ' + format(player.l.points) + ' 诗篇<br>诗篇基本获得量：' + format(tmp.l.gainMult) + '<br>诗篇获得指数：' + format(tmp.l.gainExp) }},
+        {return '你有 ' + format(player.l.points) + ' 诗篇<br>诗篇基本获得量：' + format(tmp.l.gainMult) + '<br>诗篇获得指数：' + format(tmp.l.gainExp.mul(tmp.l.exponent)) }},
      {"color": "#ffffff", "font-size": "22px", "font-family": "Comic Sans MS"},],//l
      "blank",
      "blank",
      ["display-text",
       function() { if(player.p.unlocked)
-        {return '你有 ' + format(player.p.points) + ' Phidata<br>Phidata基本获得量：' + format(tmp.p.gainMult) + '<br>Phidata获得指数：' + format(tmp.p.gainExp) } },
+        {return '你有 ' + format(player.p.points) + ' Phidata<br>Phidata基本获得量：' + format(tmp.p.gainMult) + '<br>Phidata获得指数：' + format(tmp.p.gainExp.mul(tmp.p.exponent)) } },
      {"color": "#ffffff", "font-size": "22px", "font-family": "Comic Sans MS"},],//p
       ["display-text",
       function() {if(player.p.rks.gt(0))
@@ -593,7 +650,7 @@ addLayer("S", {
      "blank",
      ["display-text",
       function() {if(player.m.unlocked)
-        {return '你有 ' + format(player.m.points) + ' 魔王曲<br>魔王曲基本获得量：' + format(tmp.m.gainMult) + '<br>魔王曲获得指数：' + format(tmp.m.gainExp) }},
+        {return '你有 ' + format(player.m.points) + ' 魔王曲<br>魔王曲基本获得量：' + format(tmp.m.gainMult) + '<br>魔王曲获得指数：' + format(tmp.m.gainExp.mul(tmp.m.exponent)) }},
      {"color": "#ffffff", "font-size": "22px", "font-family": "Comic Sans MS"},],//m
      "blank",
      "blank",
@@ -1241,7 +1298,7 @@ addLayer("lo", {
     unlocked() { return player.a.unlocked},
 			},
     23:{ 
-                description: "诗篇需求/1e57",
+                description: "诗篇需求/1e60",
                 cost: new Decimal(8),
     unlocked() { return player.l.unlocked},
 			},
@@ -1474,7 +1531,7 @@ addLayer("lo", {
 			},
     83:{ 
                 description: "Loaded Notes效果1变为原来的2.5次方",
-                cost: new Decimal(75),
+                cost: new Decimal(74),
     unlocked() { return (hasMilestone('r', 0))},
 			},
     84:{ 
@@ -1648,13 +1705,13 @@ clickables: {
 			player.lo.maxcombo_warn=new Decimal(0);
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(3e19);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(1e20);
 			}
 			if(hasUpgrade('lo',74)){
-				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(1e11);
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));//.min(1e11);
 			}
 			if(hasUpgrade('lo',81)){
-				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(333333);
+				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));//.min(333333);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -1723,6 +1780,7 @@ addLayer("a", {
     gainMult() { //againmult
         mult = new Decimal(1)
 	if (hasAchievement('A', 43)) mult = mult.times(player.A.ach)
+        if (hasAchievement('A', 21)) mult = mult.times(2)
         if (hasUpgrade('s', 16)) mult = mult.times(2)
         if (hasChallenge('a', 12)) mult = mult.times(15)
         if (hasUpgrade('s', 22)) mult = mult.times(10)
@@ -2386,7 +2444,7 @@ addLayer("l", {
     requires() {req=new Decimal(1e85)
     if(hasUpgrade('a',43))req=req.pow(upgradeEffect('a',43))
 	if (hasUpgrade('lo', 16)) req=req.pow(buyableEffect('lo',23))
-        if(hasUpgrade('lo',23)){req=req.times(1e-57)}
+        if(hasUpgrade('lo',23)){req=req.times(1e-60)}
         if(buyableEffect('c',24).gt(1)) req = req.div(buyableEffect('c',24))
     return req},
     resource: "诗篇",
@@ -4143,7 +4201,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
     },
     dif() {
       dif = player.ch.note.div(50).pow(0.8).max(1)
-	if(dif.gte(10))dif = dif.mul(1000).pow(0.25)
+	if(dif.gte(10))dif = dif.pow(2).mul(1000).pow(1/5)
       return dif
     },
     pnote() {
@@ -4420,9 +4478,9 @@ unlocked(){return hasUpgrade('ch',27)}
     cost() {return new Decimal(8)},
   },
   21:{ 
-    fullDisplay() {return "GOODRAGE HD 7.5<br>解锁Phigros页面，Note^1.01<br>需要：377.2物量 && 8谱面"},
+    fullDisplay() {return "GOODRAGE HD 7.5<br>解锁Phigros页面，Note^1.01<br>需要：375物量 && 8谱面"},
     unlocked(){return hasChallenge('c',12)},
-    canAfford() {return player.ch.note.gte(377.2)},
+    canAfford() {return player.ch.note.gte(375)},
     cost() {return new Decimal(8)},
   },
   22:{ 
@@ -4456,7 +4514,7 @@ unlocked(){return hasUpgrade('ch',27)}
     cost() {return new Decimal(17)},
   },
   27:{ 
-    fullDisplay() {return "Fractured Angel HD 10.9<br>Note获取量^1.05，解锁特殊note中的长条，解锁课题模式，诗篇基本指数为0.075<br>需要：750物量 && 27谱面"},
+    fullDisplay() {return "Fractured Angel HD 10.9<br>Note获取量^1.05，解锁特殊note中的长条，解锁课题模式<br>需要：750物量 && 27谱面"},
     unlocked(){return hasUpgrade('ch',26)},
   canAfford() {return player.ch.note.gte(750)},
     cost() {return new Decimal(27)},
@@ -5348,7 +5406,7 @@ chalBox: {
     layerShown(){ return hasUpgrade('sp',27)||player.r.total.gte(1)},
     rotCal() {
      let rot=player.r.rota
-     if(inChallenge('r',11)) rot=rot.div(2.4)
+     if(inChallenge('r',11)) rot=new Decimal(0)
      rot=rot.sub(player.r.upgCost)
      return rot
     },
@@ -5957,8 +6015,8 @@ return mult
       11: {
         name: "RC1 Note消逝",
         challengeDescription(){
-          return "Note获取量^0.1，Rot点数数量÷2.4<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/5"},
-        goalDescription(){return "1e"+new Decimal(500).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(50))+" Cytus力量"},
+          return "Note获取量^0.1，Rot点数数量×0<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/5"},
+        goalDescription(){return "1e"+new Decimal(1200).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(50))+" Cytus力量"},
         rewardDescription(){return "降低曲包的价格<br>效果：^"+format(challengeEffect(this.layer,this.id))},
         rewardEffect() {eff=new Decimal(1).div(new Decimal(challengeCompletions(this.layer,this.id)).add(1).pow(0.15))
           return eff
@@ -5968,7 +6026,7 @@ return mult
         completionLimit(){
           return new Decimal(5)},
         canComplete: function() {
-          return player.c.power.gte(new Decimal("1e500").mul(new Decimal(1e50).pow(new Decimal(challengeCompletions(this.layer,this.id)))))},
+          return player.c.power.gte(new Decimal("1e1200").mul(new Decimal(1e50).pow(new Decimal(challengeCompletions(this.layer,this.id)))))},
         },
       12: {
         name: "RC2 力量减弱",
