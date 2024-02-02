@@ -1128,6 +1128,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
 		if(hasUpgrade('lo',16))mult = mult.mul(upgradeEffect('lo',16));
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
+		mult = mult.mul(challengeEffect('r',11));
 		return mult
     },
     gainMult3() {
@@ -1159,12 +1160,14 @@ addLayer("lo", {
 		if(hasUpgrade('lo',51))mult = mult.pow(2)
 		if(hasUpgrade('lo',54))mult = mult.pow(2)
 		if(hasUpgrade('lo',83))mult = mult.pow(2.5)
+		if(hasUpgrade('lo',85))mult = mult.pow(4.5)
 		return mult
     },
     noteEffect2() {
         mult = player.lo.note.add(1).pow(400);
 		if(hasUpgrade('lo',52))mult = mult.pow(2)
 		if(hasUpgrade('lo',55))mult = mult.pow(2)
+		if(hasUpgrade('lo',84))mult = mult.pow(6.25)
 		return mult
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -1219,6 +1222,9 @@ addLayer("lo", {
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
 	 function() {if(player.lo.maxcombo_warn.gte(800))return formatWhole(player.lo.maxcombo_warn)+'以上的最高连击数被软上限！提升物量可以延迟软上限的出现';return '';},
+     {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
+    ["display-text",
+	 function() {if(player.lo.maxcombo.gte(1234))return formatWhole(1234)+'以上的最高连击数被硬上限！';return '';},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
      "blank",
     "clickables","buyables",
@@ -1535,8 +1541,18 @@ addLayer("lo", {
     unlocked() { return (hasMilestone('r', 0))},
 			},
     84:{ 
-                description: "等待QqQe308更新下一个版本...",
-                cost: new Decimal(80),
+                description: "Loaded Notes效果2变为原来的6.25次方",
+                cost: new Decimal(86),
+    unlocked() { return (hasMilestone('r', 0))},
+			},
+    85:{ 
+                description: "Loaded Notes效果1变为原来的4.5次方",
+                cost: new Decimal(88),
+    unlocked() { return (hasMilestone('r', 0))},
+			},
+    86:{ 
+                description: "下个版本正在更新！",
+                cost: new Decimal(90),
     unlocked() { return (hasMilestone('r', 0))},
 			},
 	},
@@ -1696,6 +1712,8 @@ clickables: {
 					c = c.mul(d).mul(d).cbrt();
 					c = c.div(c.add(d.mul(3))).mul(4).mul(d);
 				}
+				
+				c = c.min(1234);
 				player.lo.maxcombo=player.lo.maxcombo.max(c);
 				if(player.lo.maxcombo.gte(d)){
 					player.lo.maxcombo_warn=d;
@@ -1708,10 +1726,10 @@ clickables: {
 				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(1e20);
 			}
 			if(hasUpgrade('lo',74)){
-				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));//.min(1e11);
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(1e12);
 			}
 			if(hasUpgrade('lo',81)){
-				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));//.min(333333);
+				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(3333333);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -3349,8 +3367,6 @@ addLayer("c", {
     directMult() { //cdirectmult
         mult = new Decimal(1)
         if(getClickableState("r",73)==1) mult = mult.times(clickableEffect("r", 73))
-        if(hasUpgrade('r',22)) {if (getClickableState("r",31)==1) mult = mult.times(clickableEffect("r", 31))
-        if (getClickableState("r",32)==1) mult = mult.times(clickableEffect("r", 32))}
         return mult
     },
     powerCal(){
@@ -5104,8 +5120,8 @@ buyables:{
  13: {
 				title: "获得一个Phigros曲包",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-     if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = new Decimal(1e5).pow(x.pow(1.2)).mul("1e320")
+     if (x.gte(5)) x = x.pow(2).div(5)
+     let cost = new Decimal(1e50).pow(x.pow(1.2)).mul("1e18000")
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -5121,8 +5137,8 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.p.points.max(1).div("1e320").root(1.2).log(1e5)
-					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
+					let tempBuy = player.p.points.max(1).div("1e18000").root(1.2).log(1e50)
+					if (tempBuy.gte(5)) tempBuy = tempBuy.times(5).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
 				},
@@ -5304,7 +5320,7 @@ onPurchase() {setBuyableAmount('sp',13,getBuyableAmount('sp',13).sub(8))},
 34:{ 
     fullDisplay() {return "第七章-时钟链接<br>基于Phigros曲包增益旋律获取量<br>当前效果：×"+format(this.effect())+"<br>需要：10 Phigros曲包"},
     unlocked(){return hasUpgrade('sp',34)||getBuyableAmount('sp',13).gte(9)},
-onPurchase() {setBuyableAmount('sp',13,getBuyableAmount('sp',14).sub(10))},
+onPurchase() {setBuyableAmount('sp',13,getBuyableAmount('sp',13).sub(10))},
  canAfford() {return getBuyableAmount('sp',13).gte(10)},
   effect() { eff= getBuyableAmount('sp',13).max(1).pow(3).max(1).log(3).div(3)
         return eff.max(1)
@@ -5621,7 +5637,7 @@ return mult
            display() {return "Note数量增益Cyten获取量<br>价格: 1 Rot点数<br>效果: ×"+format(this.effect())},
            effect() {
            eff=player.points.max(1).log(10).pow(0.6)
-            if(eff.gte(10000)) eff = eff.sub(10000).pow(0.8).add(10000)//sc
+            if(eff.gte(10000) && !hasUpgrade('r',22)) eff = eff.sub(10000).pow(0.8).add(10000)//sc
             return eff.max(1)
            },
            tooltip() {
@@ -5644,7 +5660,7 @@ return mult
            display() {return "Cytus力量增益Cyten获取量<br>价格: 1 Rot点数<br>效果: ×"+format(this.effect())},
            effect() {
            eff=player.c.power.max(1).log(2).pow(1.05)
-            if(eff.gte(10000)) eff = eff.sub(10000).pow(0.8).add(10000)//sc
+            if(eff.gte(10000) && !hasUpgrade('r',22)) eff = eff.sub(10000).pow(0.8).add(10000)//sc
             return eff.max(1)
            },
            tooltip() {
@@ -5882,7 +5898,7 @@ return mult
         title(){return "81 源神" },
        display() {return "累计Rot点数指数提升源点获取量<br>价格: 5 Rot点数<br>效果: ^"+format(this.effect())},
         effect() {
-        eff=player.r.rota.max(1).log(10).pow(0.25)
+        eff=player.r.rota.max(1).log(10).pow(0.05)
         return eff.max(1)
            },
            tooltip() {
@@ -5981,7 +5997,7 @@ return mult
        unlocked() {return hasChallenge('r',11)},
     },
     22:{ title: "Rot助推 VIII",
-      description: "Rot升级31和32对Cyten的额外增益也生效",
+		description: "去除Rot升级31和32的软上限",
        cost: new Decimal(20000),
        unlocked() {return hasUpgrade('r',21)},
     },
@@ -6017,8 +6033,8 @@ return mult
         challengeDescription(){
           return "Note获取量^0.1，Rot点数数量×0<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/5"},
         goalDescription(){return "1e"+new Decimal(1200).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(50))+" Cytus力量"},
-        rewardDescription(){return "降低曲包的价格<br>效果：^"+format(challengeEffect(this.layer,this.id))},
-        rewardEffect() {eff=new Decimal(1).div(new Decimal(challengeCompletions(this.layer,this.id)).add(1).pow(0.15))
+        rewardDescription(){return "增加loader3229的判定获取<br>效果：×"+format(challengeEffect(this.layer,this.id))},
+        rewardEffect() {eff=new Decimal(challengeCompletions(this.layer,this.id)).add(1).pow(2)
           return eff
         },
         unlocked(){return hasUpgrade('r',17)},
