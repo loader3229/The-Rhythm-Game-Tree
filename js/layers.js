@@ -1223,9 +1223,6 @@ addLayer("lo", {
     ["display-text",
 	 function() {if(player.lo.maxcombo_warn.gte(800))return formatWhole(player.lo.maxcombo_warn)+'以上的最高连击数被软上限！提升物量可以延迟软上限的出现';return '';},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
-    ["display-text",
-	 function() {if(player.lo.maxcombo.gte(1234))return formatWhole(1234)+'以上的最高连击数被硬上限！';return '';},
-     {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
      "blank",
     "clickables","buyables",
 ],
@@ -1713,7 +1710,7 @@ clickables: {
 					c = c.div(c.add(d.mul(3))).mul(4).mul(d);
 				}
 				
-				c = c.min(1234);
+				//c = c.min(1234);
 				player.lo.maxcombo=player.lo.maxcombo.max(c);
 				if(player.lo.maxcombo.gte(d)){
 					player.lo.maxcombo_warn=d;
