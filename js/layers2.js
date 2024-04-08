@@ -1484,10 +1484,10 @@ unlocked(){return hasMilestone('mi',2)}
 },
     upgrades: {
     11:{ title: "介绍—天气预报",
-    description:"全局速率以降低的倍率增益Milthm维度",
+    description:"Loaded Notes增益Milthm维度",
     cost: n(1e15),
     tooltip:"说真的，我和你们一样讨厌时间墙",
-    effect() {return n(2).pow(player._devSpeed.max(1).log(10).pow(0.5)).max(1)},
+    effect() {return n(2).pow(player.lo.note.add(1e20).div(1e20).max(1).log(10).pow(0.5)).max(1)},
     effectDisplay() { return "×"+format(upgradeEffect(this.layer, this.id))},
     unlocked() {return hasMilestone('mi',2)}, },
     12:{ title: "序章—雨的声音",
@@ -1660,6 +1660,7 @@ unlocked(){return hasMilestone('mi',2)}
 				effect(x=player[this.layer].buyables[this.id]) {
 				let a = player.mi.buyBoost
 				eff = a.pow(x.sub(1))
+				if(hasUpgrade('lo',91)) eff=eff.mul(upgradeEffect('lo',91))
 				eff=eff.mul(layers.mi.dimBoost())
 				if(hasUpgrade('mi',16)) eff=eff.pow(1.01)
 				return eff.max(0)

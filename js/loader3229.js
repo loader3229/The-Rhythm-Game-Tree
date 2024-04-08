@@ -476,6 +476,15 @@ addLayer("lo", {
                 cost: new Decimal(90),
     unlocked() { return (hasMilestone('r', 0))},
 			},
+    91:{ 
+		description: "Loaded Points提升Milthm获取",
+                cost: new Decimal(93),
+    unlocked() { return (hasUpgrade('r',37))},
+                effect() {
+             return player.lo.points.add(1);
+                },
+     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
+			},
 	},
   softcap:new Decimal ("10^^1000"),
   softcapPower:new Decimal(1),
