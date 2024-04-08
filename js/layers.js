@@ -2995,6 +2995,7 @@ addLayer("p", {
         rewardDescription(){return "根据挑战完成次数增益Phidata<br>效果：×"+challengeEffect(this.layer,this.id).floor()},
 		rewardEffect() {eff= new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?3:2)
           if(hasMilestone('sp',1)) eff=eff.pow(2)
+          if(gcs("r",82)==1) eff = eff.pow(clickableEffect("r", 82))
           return eff
         },
         unlocked(){unlock= false
