@@ -11,31 +11,31 @@ let modInfo = {
 }
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
+	num: "0.32",
 	name: "Rotative Rotating Rotation",
 }
 
-let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：1e2175000 Notes，39 Rot点数，下一个更新:更多升级，挑战，曲包！`
+let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：1e2600000 Notes，68 Rot点数，1e16旋律（硬上限），下一个更新:一个新层级！`
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte('1e2175000')&&player.r.rota.gte(39)
+	return player.points.gte('1e2600000')&&player.r.rota.gte(68)&&player.r.points.gte(1e16)
 }
 
 // Display extra things at the top of the page
 var displayThings = [
-  "v0.3 游戏结局: 1e2175000 Notes，39 Rot点数！",
+  "v0.32 游戏结局: 1e2600000 Notes，68 Rot点数，1e16旋律（硬上限）！",
 ]
 
 let changelog = `<h1>更新日志</h1><br>
-<h2>v0.3 Rotative Rotating Rotation 2024/1/17-2024/1/30<br>
+<h2>v0.32 Rotative Rotating Rotation 2024/1/17-2024/2/2<br>
 <h3>- 添加1个层级：Rotaeno<br>
-- 添加Rot升级树，包括16个“升级”<br>
-- 添加7个里程碑，1+2=3个可购买，7+14=21个升级，1个挑战<br>
+- 添加Rot升级树，包括24个“升级”<br>
+- 添加7个里程碑，2+2=4个可购买，14+21=35个升级，2个挑战<br>
 - 修复了一堆bug以及修改了游戏一些内容<br>
 - 降低了谱面、曲包、Rotaeno层级的一些时间墙的时间<br>
 - 添加了6个隐藏成就和一些彩蛋<br>
-- 游戏结局：1e2175000 Notes，39 Rot点数<br><br>
+- 游戏结局：1e2600000 Notes，68 Rot点数，1e16旋律（硬上限）<br><br>
 <h2>v0.25 Song Packed 2023/11/27~2023/12/31<br>
 <h3>- 添加1个层级：曲包<br>
 - 添加4+2=6个可购买，6个可点击，5个里程碑，添加课题力量<br>
@@ -80,8 +80,8 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-//return !player.points.gte('1e2175000')
-return true
+ return !player.points.gte('1e2600000')
+//return true
 }
 
 // Calculate points/sec!
@@ -157,7 +157,7 @@ if(inChallenge('c',14)&&!hasMilestone('r',0))gain= gain.pow(0.05)
 if(inChallenge('r',11))gain= gain.pow(0.1)
 //gain=gain.pow(2)
 	
-// gain=gain.min('1e2175000')
+ gain=gain.min('1e2600000')
 
 	return gain
 }
@@ -173,7 +173,8 @@ function addedPlayerData() { return {
   Genshin:"启动！",
   Phigros:"2月2号，音乐游戏树和Phigros一起更新",
   long2024:"龙年马上要到了！祝大家新年龙腾虎跃，龙飞凤舞，龙批一个，事业有成，学业顺利，身体健康，财源滚滚，音游全AP，考试全满分，工作全加薪，玩树全通关，再次献上音乐游戏树全体作者（共1人）的真挚祝福！！！！！！！！！！",
-  QqQe308:"我是QqQe308，v我50更新音乐游戏树"
+  QqQe308:"我是QqQe308，v我50更新音乐游戏树",
+	_devSpeed: new Decimal(0),
 }}
 //彩蛋区
 
