@@ -1228,7 +1228,7 @@ eff=player.ch.enp.pow(0.1).max(1).log(2).pow(0.5).max(1)
        unlocked() {return hasUpgrade('r',35)},
     },
     37:{ title: "层级助推 I",
-      description: "解锁下一个层级，Milthm，全局速率×3",
+      description: "解锁下一个层级，Milthm",
        cost: n(5e14),
        unlocked() {return hasUpgrade('r',36)},
     },

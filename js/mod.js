@@ -3,7 +3,7 @@ let modInfo = {
 	id: "rhythmgametree_loader",
 	author: "QqQe308, loader3229",
 	pointsName: "Notes",
-	modFiles: ["layers.js", "layers2.js", "tree.js"],
+	modFiles: ["loader3229.js", "layers.js", "layers2.js", "tree.js"],
 	discordName: "B站一只新手Up",
 	discordLink: "https://b23.tv/Hlg9D5u",
 	initialStartPoints: new Decimal(10), // Used for hard resets and new players
