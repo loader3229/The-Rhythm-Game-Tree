@@ -1139,7 +1139,7 @@ if(hasAchievement('A',71)) exp=exp.add(0.01)
     },
     36:{title:"Songs.songs",
     description() {return "基于超过1e200000的歌曲指数提升Rot升级83的效果"},
-    cost: n('1e12345689'),
+    cost: n('1e1725000'),
     effect() {
      let a=player.s.points.max(10).log(10).div(10000).sub(19).max(0).pow(0.5).max(1)
         return a.min(10)},
@@ -2757,7 +2757,7 @@ addLayer("m", {
     15:{ 
      title: "Rotaeno: Galactic Warzone",
     description:"基于魔王曲增益旋律和Milthm维度",
-    cost: n(736),
+    cost: n(77),
     effect() {
         return player.m.points.max(1).log(2).pow(0.5).max(1)},
  effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
@@ -2851,9 +2851,11 @@ addLayer("c", {
         if(hasUpgrade('ch',11)) mult = mult.times(upgradeEffect('ch',11))
         if (getClickableState("r",31)==1) mult = mult.times(clickableEffect("r", 31))
         if (getClickableState("r",32)==1) mult = mult.times(clickableEffect("r", 32))
-        
+        if(hasUpgrade('mi',12)) mult = mult.times(upgradeEffect('mi',12))
+			
       if(hasUpgrade('lo',34)) mult = mult.times(upgradeEffect('lo',34))
       if(hasUpgrade('lo',86)) mult = mult.times(buyableEffect('lo',33))
+	if (hasUpgrade('lo', 92)) mult = mult.times(buyableEffect('lo',11))
         return mult
     },
     gainExp() { //cgainexp

@@ -1333,7 +1333,7 @@ eff=player.ch.enp.pow(0.1).max(1).log(2).pow(0.5).max(1)
         name: "RC3 无尽之雨",
         challengeDescription(){
           return "Rot升级树被禁用，Notes获取量上限为Milthm数量<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/5"},
-        goalDescription(){return "1e"+n(1000).add(n(challengeCompletions(this.layer,this.id)).mul(100))+" Cytus力量"},
+        goalDescription(){return "1e"+n(5400).add(n(challengeCompletions(this.layer,this.id)).mul(100))+" Cytus力量"},
         rewardDescription(){return "基于Cytus力量增益Milthm维度的倍率，随着挑战完成次数加强<br>效果：×"+format(challengeEffect(this.layer,this.id))+"<br>每次完成都会解锁一个Rotaeno升级！"},
         rewardEffect() {eff=player.c.power.max(10).log(n(10).div(n(challengeCompletions(this.layer,this.id)).max(1))).mul(n(challengeCompletions(this.layer,this.id)).pow(3))
           return eff.max(1)
@@ -1344,7 +1344,7 @@ eff=player.ch.enp.pow(0.1).max(1).log(2).pow(0.5).max(1)
         completionLimit(){
           return n(5)},
         canComplete: function() {
-          return player.c.power.gte(n("1e1000").mul(n(1e100).pow(n(challengeCompletions(this.layer,this.id)))))},
+          return player.c.power.gte(n("1e5400").mul(n(1e100).pow(n(challengeCompletions(this.layer,this.id)))))},
       },
       },
 })//Rotaeno

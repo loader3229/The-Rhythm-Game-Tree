@@ -39,6 +39,7 @@ addLayer("lo", {
     // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+		if(player.lo.points.gte(100))mult = mult.div(10);
 		return mult
     },
     gainMult2() {
@@ -426,6 +427,7 @@ addLayer("lo", {
                 cost: new Decimal(56),
     unlocked() { return (hasMilestone('sp',4))},
                 effect() {
+					if(hasUpgrade('lo',93))return tmp.a.snaCal;
 					if(hasUpgrade('lo',75))return tmp.a.snaCal.div(500);
              return tmp.a.snaCal.pow(0.9).div(1000);
                 },
@@ -446,6 +448,7 @@ addLayer("lo", {
                 cost: new Decimal(67),
     unlocked() { return (hasUpgrade('sp',17))},
                 effect() {
+					if(hasUpgrade('lo',93))return tmp.a.draCal;
 					if(hasUpgrade('lo',75))return tmp.a.draCal.div(500);
 					return tmp.a.draCal.pow(0.5).div(1000);
                 },
@@ -484,6 +487,21 @@ addLayer("lo", {
              return player.lo.points.add(1);
                 },
      effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
+			},
+    92:{ 
+		description: "第一个loader3229可购买项对Cyten也有效",
+                cost: new Decimal(95),
+    unlocked() { return (hasUpgrade('r',37))},
+			},
+    93:{ 
+		description: "本层级自动增加蛇/龙长度的升级的效果变为500倍",
+                cost: new Decimal(99),
+    unlocked() { return (hasUpgrade('r',37))},
+			},
+    94:{ 
+		description: "等待下个版本更新...",
+                cost: new Decimal(101),
+    unlocked() { return (hasUpgrade('r',37))},
 			},
 	},
   softcap:new Decimal ("10^^1000"),
@@ -667,13 +685,13 @@ clickables: {
 			player.lo.maxcombo_warn=new Decimal(0);
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(2e22);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(1e23);
 			}
 			if(hasUpgrade('lo',74)){
-				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(6.66e12);
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(1e15);
 			}
 			if(hasUpgrade('lo',81)){
-				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(13333333);
+				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(2e9);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);

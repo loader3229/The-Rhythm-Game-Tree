@@ -15,17 +15,17 @@ let VERSION = {
 	name: "Rhythm Milthm",
 }
 
-let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：1e3075000 Notes，120 Rot点数，下一个更新:新层级！`
+let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：1e3000000 Notes，120 Rot点数，下一个更新:新层级！`
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte('1e3075000')&&player.r.rota.gte(120)
+	return player.points.gte('1e3000000')&&player.r.rota.gte(120)
 }
 
 // Display extra things at the top of the page
 var displayThings = [
-  function() {if(inChallenge('r',12)&&player._devSpeed.eq(0)) return "v0.35 游戏结局: 1e3075000 Notes，120 Rot点数！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
-   else return "v0.35 游戏结局: 1e3075000 Notes，120 Rot点数！"
+  function() {if(inChallenge('r',12)&&player._devSpeed.eq(0)) return "v0.35 游戏结局: 1e3000000 Notes，120 Rot点数！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+   else return "v0.35 游戏结局: 1e3000000 Notes，120 Rot点数！"
   }
 ]
 
@@ -35,7 +35,7 @@ let changelog = `<h1>更新日志</h1><br>
 - 添加Rot升级树中的11个“升级”<br>
 - 添加9个Milthm维度，添加计数频率<br>
 - 添加7个里程碑，2+2+7+14=25个升级，1个挑战<br>
-- 游戏结局：1e3075000 Notes，120 Rot点数<br><br>
+- 游戏结局：1e3000000 Notes，120 Rot点数<br><br>
 <h2>v0.3 Rotative Rotating Rotation 2024/1/17-2024/2/2<br>
 <h3>- 添加1个层级：Rotaeno<br>
 - 添加Rot升级树，包括24个“升级”<br>
@@ -90,8 +90,8 @@ function getStartPoints(){
 // Determines if it should show points/sec
 function canGenPoints(){
 	if(inChallenge('r',12)&&getClickableState('r',12)!==1)return false;
- return !player.points.gte('1e3075000')
-//return true
+ //return !player.points.gte('1e3000000')
+return true
 }
 
 // Calculate points/sec!
@@ -165,7 +165,7 @@ if(inChallenge('p',12)){gain= gain.pow(0.1)}
 if(inChallenge('c',14)&&!hasMilestone('r',0))gain= gain.pow(0.05)
 if(inChallenge('r',11))gain= gain.pow(0.1)
 //gain=gain.pow(2)
-	if(player._devSpeed.neq(0)) gain=gain.min(n('1e3075000').div(player._devSpeed))
+	//if(player._devSpeed.neq(0)) gain=gain.min(n('1e3000000').div(player._devSpeed))
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
 
 	return gain
