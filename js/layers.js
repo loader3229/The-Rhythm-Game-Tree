@@ -851,7 +851,7 @@ if(hasAchievement('A',71)) exp=exp.add(0.01)
         mult = new Decimal(1)
         return mult
     },
-    canReset() {return player.devSpeed.gt(0)},
+    canReset() {return player._devSpeed.gt(0)},
     scCal() {
       sc=new Decimal(15000)
       if(hasMilestone('sp',0)) sc=new Decimal(16000)
