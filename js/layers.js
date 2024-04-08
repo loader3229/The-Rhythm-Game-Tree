@@ -4551,6 +4551,7 @@ unlocked(){return hasUpgrade('ch',27)}
     cost() {return new Decimal(8)},
       effect() { eff= player.c.points.add(1).log(10).pow(0.2).max(1)
         if(eff.gte(2.3)) eff= eff.mul(27.9841).pow(0.2)
+        if(eff.gte(2.6)) eff= eff.mul(45.6976).pow(0.2)
         return eff
       },
   },
