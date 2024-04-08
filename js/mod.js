@@ -80,6 +80,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
+	if(inChallenge('r',12)&&getClickableState('r',12)!==1)return false;
  return !player.points.gte('1e2600000')
 //return true
 }

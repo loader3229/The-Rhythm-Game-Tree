@@ -41,7 +41,7 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
 	    dev=new Decimal(1)
 	    if(inChallenge('r',12)&&getClickableState('r',12)!==1) return new Decimal(0)
 	    if(getClickableState('t',21)==1) return new Decimal(0)
-	    dev=dev.mul(challengeEffect('r',12))
+	    //dev=dev.mul(challengeEffect('r',12))
 	    if(hasUpgrade('sp',41)) dev=dev.mul(upgradeEffect('sp',41))
 	    if(hasUpgrade('sp',42)) dev=dev.mul(upgradeEffect('sp',42))
 	    if(hasUpgrade('sp',43)) dev=dev.mul(upgradeEffect('sp',43))
@@ -1196,6 +1196,7 @@ addLayer("lo", {
 		if(hasUpgrade('m',19))mult = mult.mul(upgradeEffect('m',19));
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
 		if(hasUpgrade('ch',38))mult = mult.mul(upgradeEffect('ch',38));
+		mult = mult.mul(challengeEffect('r',12))
 		return mult
     },
     gainExp() { 
@@ -1216,7 +1217,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',51))mult = mult.pow(2)
 		if(hasUpgrade('lo',54))mult = mult.pow(2)
 		if(hasUpgrade('lo',83))mult = mult.pow(2.5)
-		if(hasUpgrade('lo',85))mult = mult.pow(4.5)
+		if(hasUpgrade('lo',85))mult = mult.pow(2.5)
 		return mult
     },
     noteEffect2() {
@@ -1291,7 +1292,7 @@ addLayer("lo", {
 	   function() {return '当loader3229不在打歌时，loader3229将会制作自制谱，并且为你产生Loaded Notes。Loaded Notes对notes有加成。'},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
-      function() {return '你有' + formatWhole(player.lo.note.floor()) + '个Loaded Notes。'},
+      function() {return '你有' + formatWhole(player.lo.note.floor()) + '个Loaded Notes。(+' + format(tmp.lo.gainMult3.mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1)) + '/s)'},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
 	 function() {return '你的Loaded Notes使note获取变为原来的' + format(tmp.lo.noteEffect) + '倍，并且使谱面需求除以' + format(tmp.lo.noteEffect2) + '。'},
@@ -1599,12 +1600,12 @@ addLayer("lo", {
     unlocked() { return (hasMilestone('r', 0))},
 			},
     85:{ 
-                description: "Loaded Notes效果1变为原来的4.5次方",
+                description: "Loaded Notes效果1变为原来的2.5次方",
                 cost: new Decimal(88),
     unlocked() { return (hasMilestone('r', 0))},
 			},
     86:{ 
-                description: "下个版本正在更新！",
+                description: "解锁一个新的loader3229可购买项。",
                 cost: new Decimal(90),
     unlocked() { return (hasMilestone('r', 0))},
 			},
@@ -1738,6 +1739,20 @@ clickables: {
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
         },
     },
+    33: {
+        cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e20)},
+        display() { return "基于购买次数增加Cyten获取<br>价格："+format(this.cost())+" Loaded Notes<br>效果：×"+format(this.effect())},
+        title: "Cytus自制谱",
+        effect() {return Decimal.pow(1e10,getBuyableAmount(this.layer,this.id))},
+        unlocked(){unlock=hasUpgrade('lo',86);
+          return unlock
+        },
+        canAfford() { return player[this.layer].note.gte(this.cost()) },
+        buy() {
+            player[this.layer].note = player[this.layer].note.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+    },
 },
 
 
@@ -1776,13 +1791,13 @@ clickables: {
 			player.lo.maxcombo_warn=new Decimal(0);
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(1e20);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff));//.min(1e21);
 			}
 			if(hasUpgrade('lo',74)){
-				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(1e12);
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));//.min(1e12);
 			}
 			if(hasUpgrade('lo',81)){
-				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(3333333);
+				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));//.min(3333333);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -1900,7 +1915,7 @@ addLayer("a", {
       
      
      if(tmp.a.snEff5.gte(1)) exp=exp.times(tmp.a.snEff5)
-     if(!hasChallenge('c',12)) exp=exp.min(4.5)
+     //if(!hasChallenge('c',12)) exp=exp.min(4.5)
       return exp
     },
     directMult() { //adirectmult
@@ -3404,6 +3419,7 @@ addLayer("c", {
         if (getClickableState("r",32)==1) mult = mult.times(clickableEffect("r", 32))
         
       if(hasUpgrade('lo',34)) mult = mult.times(upgradeEffect('lo',34))
+      if(hasUpgrade('lo',86)) mult = mult.times(buyableEffect('lo',33))
         return mult
     },
     gainExp() { //cgainexp
@@ -4516,6 +4532,7 @@ unlocked(){return hasUpgrade('ch',27)}
     cost() {return new Decimal(6)},
       effect() { eff= player.lo.note.add(10).log(10).root(3)
         if(eff.gte(2.2)) eff= eff.mul(23.4256).pow(0.2)
+        if(eff.gte(2.3)) eff= eff.mul(27.9841).pow(0.2)
         return eff
       },
   },
@@ -6389,7 +6406,7 @@ if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',
     32:{ title: "Rot助推 XIII",
       description: "解锁第10行Rot升级，你可以最大化购买曲包",
        cost: new Decimal(1e10),
-       unlocked() {return challengeCompletions('r',12)>4},
+       unlocked() {return challengeCompletions('r',12)>1},
     },
     33:{ title: "曲包助推 III",
       description: "R层重置不再重置曲包数量",
@@ -6439,9 +6456,9 @@ if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',
         challengeDescription(){
           return "Cytus力量基于累计消耗的Rot点数的减益，Rot点数数量÷2<br>你需要在进入挑战前选定Rot升级树，并且在挑战中不能修改！<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/5"},
         goalDescription(){
-         let a="850"
+         let a="1e2200"
          let b="1"
-         if(challengeCompletions('r',12)==1) {a="1e400"
+         if(challengeCompletions('r',12)==1) {a="1e1000"
          b="0.4"}
          if(challengeCompletions('r',12)==2) {a="1e235"
          b="0.25"}
@@ -6453,7 +6470,7 @@ if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',
          b="114514"}
          return a+" Cytus力量，削弱指数至多为^"+b
         },
-        rewardDescription(){return "全局时间速率×"+format(challengeEffect(this.layer,this.id))},
+        rewardDescription(){return "增加Loaded Notes获取<br>效果：×"+format(challengeEffect(this.layer,this.id))},
         rewardEffect() {
         eff=new Decimal(challengeCompletions(this.layer,this.id)).add(1).pow(2).sub(3).max(0).add(1).pow(0.6)
           return eff
@@ -6468,8 +6485,8 @@ if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',
         completionLimit(){
           return new Decimal(5)},
         canComplete: function() {
-          if(challengeCompletions('r',12)==0) return player.c.power.gte("1e850")
-         if(challengeCompletions('r',12)==1) return player.c.power.gte("1e400")&&tmp.r.chal2Cal.lte(0.4)
+          if(challengeCompletions('r',12)==0) return player.c.power.gte("1e2200")
+         if(challengeCompletions('r',12)==1) return player.c.power.gte("1e1000")&&tmp.r.chal2Cal.lte(0.4)
          if(challengeCompletions('r',12)==2) return player.c.power.gte("1e235")&&tmp.r.chal2Cal.lte(0.25)
          if(challengeCompletions('r',12)==3) return player.c.power.gte("1e165")&&tmp.r.chal2Cal.lte(0.16)
          if(challengeCompletions('r',12)==4) return player.c.power.gte("1e105")&&tmp.r.chal2Cal.lte(0.1)
