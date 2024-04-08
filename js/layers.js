@@ -49,7 +49,6 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
 	    if(hasUpgrade('sp',45)) dev=dev.mul(upgradeEffect('sp',45))
 	    if(hasUpgrade('sp',46)) dev=dev.mul(upgradeEffect('sp',46))
 	    if(hasUpgrade('sp',47)) dev=dev.mul(upgradeEffect('sp',47))
-	    if(getClickableState("r",112)==1) dev = dev.mul(clickableEffect("r", 112))
 	    if(hasUpgrade('r',37)) dev=dev.mul(3)
 	    return dev
 	   },
@@ -851,7 +850,6 @@ if(hasAchievement('A',71)) exp=exp.add(0.01)
         mult = new Decimal(1)
         return mult
     },
-    canReset() {return player._devSpeed.gt(0)},
     scCal() {
       sc=new Decimal(15000)
       if(hasMilestone('sp',0)) sc=new Decimal(16000)
@@ -1197,6 +1195,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
 		if(hasUpgrade('ch',38))mult = mult.mul(upgradeEffect('ch',38));
 		mult = mult.mul(challengeEffect('r',12))
+	    if(getClickableState("r",112)==1) mult = mult.mul(clickableEffect("r", 112))
 		return mult
     },
     gainExp() { 
@@ -1791,13 +1790,13 @@ clickables: {
 			player.lo.maxcombo_warn=new Decimal(0);
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff));//.min(1e21);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(2e22);
 			}
 			if(hasUpgrade('lo',74)){
-				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));//.min(1e12);
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(6.66e12);
 			}
 			if(hasUpgrade('lo',81)){
-				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));//.min(3333333);
+				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(13333333);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -6282,9 +6281,9 @@ eff=player.c.points.max(1).log(3.6).pow(9.6)
     },
     111: {//Rot111
         title(){return "111" },
-       display() {return "基于全局速率增益旋律<br>价格: 6 Rot点数<br>效果: ×"+format(this.effect())},
+       display() {return "基于Loaded Notes增益旋律<br>价格: 6 Rot点数<br>效果: ×"+format(this.effect())},
         effect() { 
-eff=player._devSpeed.max(1).log(1.5).pow(0.5)
+eff=player.lo.note.add(1e20).div(1e20).max(1).log(1.5).pow(0.5)
 if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',35)) eff=eff.pow(1.25)
         return eff.max(1)
            },
@@ -6303,7 +6302,7 @@ if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',
     },
     112: {//Rot112
         title(){return "112" },
-       display() {return "基于旋律增益全局速率<br>价格: 6 Rot点数<br>效果: ×"+format(this.effect())},
+       display() {return "基于旋律增益Loaded Notes<br>价格: 6 Rot点数<br>效果: ×"+format(this.effect())},
         effect() { 
          let a=player.r.points
          if(hasUpgrade('r',36)) a=player.r.total
@@ -6460,12 +6459,12 @@ if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',
          let b="1"
          if(challengeCompletions('r',12)==1) {a="1e1000"
          b="0.4"}
-         if(challengeCompletions('r',12)==2) {a="1e235"
+         if(challengeCompletions('r',12)==2) {a="1e640"
          b="0.25"}
-         if(challengeCompletions('r',12)==3) {a="1e165"
-         b="0.16"}
-         if(challengeCompletions('r',12)==4) {a="1e105"
+         if(challengeCompletions('r',12)==3) {a="1e285"
          b="0.1"}
+         if(challengeCompletions('r',12)==4) {a="1e125"
+         b="0.04"}
          if(challengeCompletions('r',12)==5) {a="NaNeInfinity"
          b="114514"}
          return a+" Cytus力量，削弱指数至多为^"+b
@@ -6487,9 +6486,9 @@ if(getClickableState('r',111)==1&&getClickableState('r',112)==1&&hasUpgrade('r',
         canComplete: function() {
           if(challengeCompletions('r',12)==0) return player.c.power.gte("1e2200")
          if(challengeCompletions('r',12)==1) return player.c.power.gte("1e1000")&&tmp.r.chal2Cal.lte(0.4)
-         if(challengeCompletions('r',12)==2) return player.c.power.gte("1e235")&&tmp.r.chal2Cal.lte(0.25)
-         if(challengeCompletions('r',12)==3) return player.c.power.gte("1e165")&&tmp.r.chal2Cal.lte(0.16)
-         if(challengeCompletions('r',12)==4) return player.c.power.gte("1e105")&&tmp.r.chal2Cal.lte(0.1)
+         if(challengeCompletions('r',12)==2) return player.c.power.gte("1e640")&&tmp.r.chal2Cal.lte(0.25)
+         if(challengeCompletions('r',12)==3) return player.c.power.gte("1e285")&&tmp.r.chal2Cal.lte(0.1)
+         if(challengeCompletions('r',12)==4) return player.c.power.gte("1e125")&&tmp.r.chal2Cal.lte(0.04)
          if(challengeCompletions('r',12)==5) return true
         },
        },
