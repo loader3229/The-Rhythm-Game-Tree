@@ -386,10 +386,10 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             textStyle: {'color': '#4cc4cc'},
         },
        85: {
-            name: "支线三呢<br>🏆",
+            name: "支线三呢",
             done() {return hasUpgrade('sp',36)&&hasUpgrade('sp',37)},
             onComplete(){player.A.ach=player.A.ach.add(1).max(40)},
-            tooltip: "获得Phigros曲包升级“支线一-忘忧宫”和“支线二-弭刻日”<br>奖励：恭喜通关，龙年快乐<br>Phigros支线三-盗乐行将于2024.02.23更新！",
+            tooltip: "获得Phigros曲包升级“支线一-忘忧宫”和“支线二-弭刻日”",
             textStyle: {'color': '#ffaa1d'},
        },
         88: {
@@ -401,11 +401,10 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
 		},
        91: {
             name: "？？？？",
-            done() {return false},// player.mi.points.gte(1)},
+            done() {return false},
             onComplete(){player.A.ach=player.A.ach.add(1)},
-            tooltip:"获得？？？（等待下一个更新）", //"获得一个Milthm（第10层Milthm重置资源）",
+            tooltip:"获得？？？（等待下一个更新）",
             textStyle: {'color': '#bcf2ff'},
-            //唉唉。看源码的没办法了。
         },
        1001: {
             name: "隐藏成就1",
@@ -852,6 +851,7 @@ if(hasAchievement('A',71)) exp=exp.add(0.01)
         mult = new Decimal(1)
         return mult
     },
+    canReset() {return player.devSpeed.gt(0)},
     scCal() {
       sc=new Decimal(15000)
       if(hasMilestone('sp',0)) sc=new Decimal(16000)
