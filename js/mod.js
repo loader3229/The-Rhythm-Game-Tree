@@ -24,7 +24,7 @@ function isEndgame() {
 
 // Display extra things at the top of the page
 var displayThings = [
-  function() {if(inChallenge('r',12)&&player.devSpeed.eq(0)) return "v0.35 游戏结局: 1e3075000 Notes，120 Rot点数！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+  function() {if(inChallenge('r',12)&&player._devSpeed.eq(0)) return "v0.35 游戏结局: 1e3075000 Notes，120 Rot点数！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
    else return "v0.35 游戏结局: 1e3075000 Notes，120 Rot点数！"
   }
 ]
@@ -165,7 +165,7 @@ if(inChallenge('p',12)){gain= gain.pow(0.1)}
 if(inChallenge('c',14)&&!hasMilestone('r',0))gain= gain.pow(0.05)
 if(inChallenge('r',11))gain= gain.pow(0.1)
 //gain=gain.pow(2)
-	if(player.devSpeed.neq(0)) gain=gain.min(n('1e3075000').div(player.devSpeed))
+	if(player._devSpeed.neq(0)) gain=gain.min(n('1e3075000').div(player._devSpeed))
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
 
 	return gain
@@ -186,7 +186,7 @@ function addedPlayerData() { return {
   Phigros:"2月2号，音乐游戏树和Phigros一起更新",
   long2024:"龙年马上要到了！祝大家新年龙腾虎跃，龙飞凤舞，龙批一个，事业有成，学业顺利，身体健康，财源滚滚，音游全AP，考试全满分，工作全加薪，玩树全通关，再次献上音乐游戏树全体作者（共1人）的真挚祝福！！！！！！！！！！",
   QqQe308:"我是QqQe308，v我50更新音乐游戏树",
-	_devSpeed: new Decimal(0),
+	_devSpeed: new Decimal(1),
 }}
 //彩蛋区
 
