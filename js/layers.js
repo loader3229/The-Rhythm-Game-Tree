@@ -2887,6 +2887,8 @@ addLayer("p", {
         if(hasUpgrade('ch',15)){mult = mult.times(upgradeEffect('ch',15))}
 	if (hasUpgrade('lo', 72)) mult = mult.times(buyableEffect('lo',31))
         
+         if(gcs("r",92)==1) mult = mult.times(clickableEffect("r", 92))
+			 
         if(hasUpgrade('p',36)){mult = mult.pow(upgradeEffect('p',36))}
         if(inChallenge('c',11))mult=mult.pow(0.5)
         if(inChallenge('c',13))mult = mult.pow(new Decimal(0.9).pow(player.c.challengeTime))
