@@ -19,6 +19,7 @@ addLayer("A", {
         return ("成就")
     },
     update(diff) {
+		player.A.ach=new Decimal(player.A.achievements.filter(function(a){return a<666;}).length);
      player._devSpeed=layers.A.devSpeedCal()
      if(player._devSpeed.neq(0)) {
      if(player.r.rot.lt(0)) {
@@ -51,7 +52,6 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
 	    if(hasUpgrade('sp',45)) dev=dev.mul(upgradeEffect('sp',45))
 	    if(hasUpgrade('sp',46)) dev=dev.mul(upgradeEffect('sp',46))
 	    if(hasUpgrade('sp',47)) dev=dev.mul(upgradeEffect('sp',47))
-	    if(gcs("r",112)==1) dev = dev.mul(clickableEffect("r", 112))
 	    //if(hasUpgrade('r',37)) dev=dev.mul(3)
 	    return dev
 	   },
@@ -515,7 +515,6 @@ style() { return { 'background-color': hasAchievement('A',1011)?"#308308":"#ff48
   unlocked(){return true},
 },
 },
-  update(diff){player.A.ach=new Decimal(player.A.achievements.filter(function(a){return a<666;}).length);}
 },
 )//Achievements
 addLayer("t", {
@@ -1700,7 +1699,7 @@ return eff
     42:{ 
       fullDisplay() {return "Abstruse Dilemma<br>基于RKS增益Notes<br>当前效果:"+format(this.effect())+"×<br>需要：12.45 PTT"},
     canAfford() {return player.a.ptt.gte(12.45)},
-      effect() {return new Decimal(10).pow(player.p.rks.mul(20).pow(1.5).min(2000))},
+      effect() {return new Decimal(10).pow(player.p.rks.mul(20).pow(1.5).min(hasUpgrade('lo',96)?1e10:2000))},
     unlocked() { return hasChallenge('c',11)&&hasUpgrade('s',32)},},
     43:{ 
       fullDisplay() {return "Aegleseeker<br>基于源点降低诗篇的基本需求<br>当前效果:^"+format(this.effect())+"<br>需要：12.46 PTT"},
@@ -2305,7 +2304,7 @@ addLayer("p", {
         if(hasUpgrade('p',13)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0);
+          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0).add(hasUpgrade('lo',101)?15000:0);
 		  },
         canComplete: function() {
           return player.a.points.gte(n(10).pow(8).mul(n(10).pow(n(challengeCompletions(this.layer,this.id)).mul(4))))},
@@ -2327,7 +2326,7 @@ addLayer("p", {
         if(hasUpgrade('p',14)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0);
+          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0).add(hasUpgrade('lo',101)?15000:0);
 		},
         canComplete: function() { return player.points.gte(new Decimal(10).pow(10).mul(new Decimal(10).pow(20).pow(challengeCompletions(this.layer,this.id))))}
         },

@@ -1205,7 +1205,7 @@ eff=player.ch.enp.pow(0.1).max(1).log(2).pow(0.5).max(1)
     32:{ title: "Rot助推 XIII",
       description: "解锁第10行升级树，你可以最大化购买曲包",
        cost: n(1e10),
-       unlocked() {return challengeCompletions('r',12)>4},
+       unlocked() {return challengeCompletions('r',12)>(player.lo.evolution.gte(1)?3:4)},
     },
     33:{ title: "曲包助推 III",
       description: "R层重置不再重置曲包数量",
@@ -1274,7 +1274,7 @@ eff=player.ch.enp.pow(0.1).max(1).log(2).pow(0.5).max(1)
       11: {
         name: "RC1 Note消逝",
         challengeDescription(){
-          return "Note获取量^0.1，Rot点数数量×0<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/5"},
+          return "Note获取量^0.1，Rot点数数量×0<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/"+formatWhole(this.completionLimit());},
         goalDescription(){return "1e"+new Decimal(1200).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(50))+" Cytus力量"},
         rewardDescription(){return "增加loader3229的判定获取<br>效果：×"+format(challengeEffect(this.layer,this.id))},
         rewardEffect() {eff=new Decimal(challengeCompletions(this.layer,this.id)).add(1).pow(2)
@@ -1283,7 +1283,7 @@ eff=player.ch.enp.pow(0.1).max(1).log(2).pow(0.5).max(1)
         unlocked(){return hasUpgrade('r',17)},
         onEnter() {layers.r.clickables[11].onClick()},
         completionLimit(){
-          return new Decimal(5)},
+          return new Decimal(5).add(hasUpgrade('lo',101)?15:0)},
         canComplete: function() {
           return player.c.power.gte(new Decimal("1e1200").mul(new Decimal(1e50).pow(new Decimal(challengeCompletions(this.layer,this.id)))))},
         },
@@ -1661,6 +1661,7 @@ unlocked(){return hasMilestone('mi',2)}
 				let a = player.mi.buyBoost
 				eff = a.pow(x.sub(1))
 				if(hasUpgrade('lo',91)) eff=eff.mul(upgradeEffect('lo',91))
+				if(player.lo.evolution.gte(1)) eff=eff.mul(player.lo.perfect.add(1))
 				eff=eff.mul(layers.mi.dimBoost())
 				if(hasUpgrade('mi',16)) eff=eff.pow(1.01)
 				return eff.max(0)

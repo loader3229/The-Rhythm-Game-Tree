@@ -6,7 +6,7 @@ let modInfo = {
 	modFiles: ["loader3229.js", "layers.js", "layers2.js", "tree.js"],
 	discordName: "B站一只新手Up",
 	discordLink: "https://b23.tv/Hlg9D5u",
-	initialStartPoints: new Decimal(10), // Used for hard resets and new players
+	initialStartPoints: new Decimal(0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 // Set your version in num and name
