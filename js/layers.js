@@ -440,8 +440,15 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             name: "宽判与严判",
             done() {return player.j.unlocked()},
             onComplete(){player.A.ach=player.A.ach.add(1)},
-            tooltip:"解锁第11层，判定",
+            tooltip:"解锁第11层，判定<br>Judgment和Judgement有什么区别啊…",
             textStyle: {'color': '#e786f0'},
+        },
+       102: {
+            name: "又是时间墙",
+            done() {return player.j.pdqja.lte(470)},
+            onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip:"通过470ms判定区间挑战",
+            textStyle: {'color': '#e948c3'},
         },
        
        1001: {
@@ -1985,6 +1992,7 @@ addLayer("l", {
 	},
 	directMult() { //ldirectmult
 		mult = n(1)
+        //mult=mult.mul(tmp.j.pdqja2)
 		return mult
 	},
     row: 1, 
@@ -2695,6 +2703,7 @@ addLayer("m", {
 	},
 	directMult() { //mdirectmult
 		mult = n(1)
+        //mult=mult.mul(tmp.j.pdqja3)
 		return mult
 	},
     row: 2, 
@@ -3803,7 +3812,8 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
      if(gcs("r",151)==1) enp = enp.times(clickableEffect("r", 151))
      if(gcs("r",152)==1) enp = enp.times(clickableEffect("r", 152))
      if(hasMilestone('r',0)) enp=enp.times(10)
-     
+      enp=enp.times(tmp.j.pdqja4)
+      
      if(tmp.a.drEff3.gte(1)) enp=enp.pow(tmp.a.drEff3)
      if(gcs('j',11)==1) enp=enp.pow(tmp.j.pdqj2)
       return enp
@@ -3812,6 +3822,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
       enp=player.ch.enp
       eff=enp.pow(2)
       if(hasUpgrade('ch',54)) eff=enp.pow(3)
+      if(hasUpgrade('j',16)) eff=eff.pow(1.5)
       return eff.max(1)
 },
     row: 3, 
@@ -4492,6 +4503,7 @@ points: n(0),
 	},
 	directMult() { //spdirectmult
 		mult = n(1)
+        //mult=mult.mul(tmp.j.pdqja5)
 		return mult
 	},
     row: 3,

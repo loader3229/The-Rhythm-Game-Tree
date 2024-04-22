@@ -12,28 +12,28 @@ let modInfo = {
 // Set your version in num and name
 let VERSION = {
 	num: "0.36",
-	name: "Rhythm Milthm",
+	name: "Judgmental",
 }
 
-let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：1e3115000 Notes，下一个更新:新层级！`
+let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：3e3333333 Notes，下一个更新:新层级！`
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte('1e3115000')
+	return player.points.gte('3e3333333')
 }
 
 // Display extra things at the top of the page
 var displayThings = [
-  function() {if(inChallenge('r',12)&&player.devSpeed.eq(0)) return "v0.35游戏结局: 1e3115000 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
-   else return "v0.36游戏结局: 1e3115000 Notes！*需要新层级内容，目前暂未更新*"
+  function() {if(inChallenge('r',12)&&player.devSpeed.eq(0)) return "v0.36游戏结局: 3e3333333 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+   else return "v0.36游戏结局: 3e3333333 Notes！"
   }
 ]
 
 let changelog = `<h1>更新日志</h1><br>
-<h2>v0.36 Untitled 2024/4/1-2024/4/6<br>
-<h3>- 添加1个层级：判定，添加判定区间<br>
-- 添加2个里程碑，2个升级<br>
-- 游戏结局：1e3115000 Notes<br><br>
+<h2>v0.36 Judgement 2024/4/1-2024/4/22<br>
+<h3>- 添加1个层级：判定，添加判定区间挑战<br>
+- 添加5个里程碑，7个升级，Rot升级树中的1个“升级”<br>
+- 游戏结局：3e3333333 Notes<br><br>
 <h2>v⓪.⑶❺ Milk Rhythm 2024愚人节版本 2024/4/1<br>
 <h3>-<br>
 <h2>v0.35 Rhythm Milthm 2024/2/3-2024/3/9<br>
@@ -96,8 +96,8 @@ function getStartPoints(){
 // Determines if it should show points/sec
 function canGenPoints(){
 	if(inChallenge('r',12)&&getClickableState('r',12)!==1)return false;
-// return !player.points.gte('1e3075000')
-return true
+ return !player.points.gte('3e3333333')
+//return true
 }
 
 // Calculate points/sec!
@@ -173,7 +173,7 @@ if(inChallenge('c',14)&&!hasMilestone('r',0))gain= gain.pow(0.05)
 if(inChallenge('r',11))gain= gain.pow(0.1)
 if(gcs('j',11)==1) gain=gain.pow(tmp.j.pdqj1)
 
-//	if(player.devSpeed.neq(0)) gain=gain.min(n('1e3075000').div(player.devSpeed))
+	if(player.devSpeed.neq(0)) gain=gain.min(n('3e3333333').div(player.devSpeed))
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
 
 	return gain
