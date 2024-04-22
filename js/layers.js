@@ -12,7 +12,7 @@ addLayer("A", {
         unlocked: true,
         ach: n(0),
     }},
-    color: "#ffe125",
+     color: "#ffe125",
     resource: "成就", 
     row: "side",
     tooltip() { // Optional, tooltip displays when the layer is locked
@@ -436,6 +436,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
         tooltip:"同时获得Rot升级101、102、103",
         textStyle: {'color': '#a9c3e7c4'},
        },
+       101: {
+            name: "宽判与严判",
+            done() {return player.j.unlocked()},
+            onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip:"解锁第11层，判定",
+            textStyle: {'color': '#e786f0'},
+        },
        
        1001: {
             name: "隐藏成就1",
@@ -502,6 +509,12 @@ style() { return { 'background-color': hasAchievement('A',1008)?"#308308":"#ff48
             },
 style() { return { 'background-color': hasAchievement('A',1011)?"#308308":"#ff4848"}},
         },
+       1012: {
+            name: "2024愚人节成就",
+            done() {return false},
+            tooltip:"嘘…这可是个秘密哦，只有玩过2024愚人节版本（⓪.⑶❺版本）才能获得这个成就哦！",
+            style() { return { 'background-color': hasAchievement('A',1012)?"#308308":"#ff4848"}},
+        },
     },
     tabFormat: {
    "Achievements": {
@@ -531,7 +544,7 @@ addLayer("t", {
         unlocked() { return true},
 		points: n(0),
     }},
-    color: "#ffffff",
+     color: "#ffffff",
     requires: n(0), 
     resource: "测试",
     baseResource: "Notes", 
@@ -686,7 +699,7 @@ addLayer("S", {
 },
     name: "Statistics",
     symbol: "St",
-    color: "#ffffff",
+     color: "#ffffff",
     resource: "-", 
     row: "side",
     tooltip() { // Optional, tooltip displays when the layer is locked
@@ -817,7 +830,14 @@ addLayer("S", {
      {"color": "#ffffff", "font-size": "12px", "font-family": "Comic Sans MS"}],//md8
     ["display-text",
       function() {if(hasMilestone('mi',6)) return 'Milthm维度9: ' +format(player.mi.dim9)},
-     {"color": "#ffffff", "font-size": "12px", "font-family": "Comic Sans MS"}],//md9
+     {"color": "#ffffff", "font-size": "12px", "font-family": "Comic Sans MS"}],"blank","blank",//md9
+       ["display-text",
+      function() {if(layers.j.layerShown())
+        {return '你有 ' + format(player.j.points) + ' 判定线' }},
+     {"color": "#ffffff", "font-size": "22px", "font-family": "Comic Sans MS"},],//j
+    ["display-text",
+      function() {if(hasMilestone('j',0)) return '你的最佳判定区间是' +format(player.j.pdqja) +'ms！'},
+     {"color": "#ffffff", "font-size": "12px", "font-family": "Comic Sans MS"}],//pdqj
 
      "blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank","blank",//绷不住了吧
       ["display-text","恭喜发现彩蛋！你可以在控制台输入“player.QqQ”，“player.banana”，“player.Liu”，“player.fufu”，“player.Loader”，“player.yszqzls”，“player.yyyxs”，“player.Genshin”，“player.Phigros”获取隐藏彩蛋哦！同时，也可以输入“player.long2024”获取音乐游戏树全体作者（共1人）的真挚祝福！！！！！！！！！！，"],//???
@@ -842,7 +862,7 @@ addLayer("s", {
 		sc: n(15000),
 		sce:n(0.5),
     }},
-    color: "#abcdef",
+     color: "#abcdef",
     requires: new Decimal(1), // Can be a function that takes requirement increases into account
     resource: "歌曲", // Name of prestige currency
     baseResource: "Notes", // Name of resource prestige is based on
@@ -1054,7 +1074,7 @@ if(hasAchievement('A',71)) exp=exp.add(0.01)
         },
  effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" }, },
     15:{ title: "这游戏就这点内容吗？",
-                description:"解锁下一个层级，韵律",
+                description:"解锁下一个层级，Arcaea。",
                 cost: new Decimal(1500),
                 unlocked() { return (hasUpgrade('s', 14))},
               },
@@ -1256,7 +1276,7 @@ addLayer("a", {
 		dr:n(0),//龙
 		dra:n(0)//龙增加
     }},
-    color: "#DDBBDD",
+     color: "#DDBBDD",
     requires: n(2000), 
     resource: "源点",
     baseResource: "歌曲", 
@@ -2184,11 +2204,7 @@ addLayer("p", {
       if(hasUpgrade('p',31)){return layers.p.getEffective().add(1).pow(1.8).pow(player.m.points.add(1).pow(0.5))}
     },
     effectDescription() { 
-      if(!hasUpgrade('p',11)){
-		  return "歌曲和源点增益乘以"+format(layers.p.getEffective().add(1).pow(player.m.points.add(1).pow(0.5)))+"（软上限1e100Phidata开始）"}
-      if(hasUpgrade('p',11)&&!hasUpgrade('p',31)){return "歌曲和源点增益乘以"+format(layers.p.getEffective().add(1).pow(1.5).pow(player.m.points.add(1).pow(0.5)))+"（软上限1e100Phidata开始）"}
-      if(hasUpgrade('p',31)){return "歌曲和源点增益乘以"+format(layers.p.getEffective().add(1).pow(1.8).pow(player.m.points.add(1).pow(0.5)))+"（软上限1e100Phidata开始）"}
-    },
+   return "歌曲和源点增益乘以"+format(tmp.p.effect)+"（软上限1e100Phidata开始）"},
     gainMult() { //pgainmult
         mult = new Decimal(1)
 	if (hasAchievement('A', 43)) mult = mult.times(player.A.ach)
@@ -2214,6 +2230,7 @@ addLayer("p", {
         if(hasUpgrade('p',36)){mult = mult.pow(upgradeEffect('p',36))}
         if(inChallenge('c',11))mult=mult.pow(0.5)
         if(inChallenge('c',13))mult = mult.pow(new Decimal(0.9).pow(player.c.challengeTime))
+        if(gcs('j',11)==1) mult=mult.pow(tmp.j.pdqj3)
         
        //if(!hasUpgrade('ch',15)) mult=mult.min(1e100)
         return mult
@@ -3666,6 +3683,7 @@ addLayer("ch", {
 		dif1: n(1),//课题模式定数1
 		dif2: n(1),//课题模式定数2
 		dif3: n(1),//课题模式定数3
+		difmax:n(16),//最大谱面难度
 		sco: n(0),//课题模式总分
 		difa: n(0),//课题模式总定数
 		en: n(0),//课题能量
@@ -3787,6 +3805,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
      if(hasMilestone('r',0)) enp=enp.times(10)
      
      if(tmp.a.drEff3.gte(1)) enp=enp.pow(tmp.a.drEff3)
+     if(gcs('j',11)==1) enp=enp.pow(tmp.j.pdqj2)
       return enp
     },
     enpEff() {//课题力量效果
@@ -3812,6 +3831,9 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
 	player.ch.drag =gba('ch',12)
 		player.ch.flick =gba('ch',21)
 	player.ch.hold =gba('ch',22)
+	if(hasUpgrade('j',11)) player.ch.difmax=n(20)
+	else player.ch.difmax=n(16)
+	if(hasUpgrade('ch',48)) player.ch.difmax = player.ch.difmax.add(4)
 	if (hasUpgrade('ch',41)) player.ch.enp = player.ch.enp.add(tmp.ch.enp.mul(diff));
 			if (hasUpgrade('ch',41)&&layers.ch.buyables[11].canAfford()) layers.ch.buyables[11].buy()
 			if (hasUpgrade('ch',41)&&layers.ch.buyables[12].canAfford()) layers.ch.buyables[12].buy()
@@ -3830,6 +3852,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
             if(hasMilestone('r',3)) kept.push("upgrades")
             if(hasMilestone('r',4)) kept.push("buyables","tap","drag","flick","hold","dif1","dif2","dif3","sco","difa")
             if(hasMilestone('r',5)) kept.push("milestones")
+            if(hasUpgrade('j',12)) kept.push("en")
             layerDataReset(this.layer, kept)
         }
     },
@@ -4357,22 +4380,22 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
     11: {
       title() {return "+1"},
       display() {return "将谱面1定数+1"},
-      onClick() {player.ch.dif1=player.ch.dif1.add(1).min(hasUpgrade('ch',48)?20:16)},
-      onHold() {player.ch.dif1=player.ch.dif1.add(1).min(hasUpgrade('ch',48)?20:16)},
+      onClick() {player.ch.dif1=player.ch.dif1.add(1).min(player.ch.difmax)},
+      onHold() {player.ch.dif1=player.ch.dif1.add(1).min(player.ch.difmax)},
       canClick() {return true},
     },
     12: {
       title() {return "+1"},
       display() {return "将谱面2定数+1"},
-      onClick() {player.ch.dif2=player.ch.dif2.add(1).min(hasUpgrade('ch',48)?20:16)},
-      onHold() {player.ch.dif2=player.ch.dif2.add(1).min(hasUpgrade('ch',48)?20:16)},
+      onClick() {player.ch.dif2=player.ch.dif2.add(1).min(player.ch.difmax)},
+      onHold() {player.ch.dif2=player.ch.dif2.add(1).min(player.ch.difmax)},
       canClick() {return true},
     },
     13: {
       title() {return "+1"},
       display() {return "将谱面3定数+1"},
-      onClick() {player.ch.dif3=player.ch.dif3.add(1).min(hasUpgrade('ch',48)?20:16)},
-      onHold() {player.ch.dif3=player.ch.dif3.add(1).min(hasUpgrade('ch',48)?20:16)},
+      onClick() {player.ch.dif3=player.ch.dif3.add(1).min(player.ch.difmax)},
+      onHold() {player.ch.dif3=player.ch.dif3.add(1).min(player.ch.difmax)},
       canClick() {return true},
     },
     21: {
