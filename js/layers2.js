@@ -1693,6 +1693,7 @@ unlocked(){return hasMilestone('mi',2)}
 				effect(x=player[this.layer].buyables[this.id]) {
 				let a = player.mi.buyBoost
 				eff = a.pow(x.sub(1))
+				eff=eff.mul(player.lo.jdim1.add(1))
 				eff=eff.mul(layers.mi.dimBoost())
 				if(hasUpgrade('mi',16)) eff=eff.pow(1.02)
 				return eff.max(0)
@@ -2005,7 +2006,7 @@ theme:"default",
 clickables: {[11]: 0},
     }},
      color: "#e786f0",
-    requires: n(1250), 
+    requires: n(1125), 
     resource: "判定线",
     baseResource: "谱面", 
     baseAmount() {return player.ch.points}, 
@@ -2017,23 +2018,23 @@ clickables: {[11]: 0},
         return mult
     },
     gainExp() { 
-      exp= n(0.99)
+      exp= n(1)
        return exp
     },
     directMult() { 
-        mult = n(25)
+        mult = n(1)
         return mult
     },
     row: 4, 
     hotkeys: [
         {key: "j", description: "J： Reset for Judgment",onPress(){if(canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){ return false},
-    //hasUpgrade('r',47)},
+    layerShown(){ return false;hasUpgrade('r',47)},
     tabFormat: {
     "Milestones": {
         content: [ ["infobox","introBox"],
     "main-display",
+    "prestige-button",
     "milestones",
      ],},
     "Judgment": {
@@ -2161,12 +2162,17 @@ player.j.theme=options.theme
     fullDisplay() {return "沉默-_-微笑<br>课题模式中的谱面上限可以超过16级（最高20级），可用的Rot点数数量×1.1<br>需求：通过490ms判定区间挑战"},
     unlocked() {return hasMilestone('j',1)},
     tooltip:"升级名字不分先后",
-    canAfford() {return player.j.pdqja.lte(490)},
+    canAfford() {return false},
   },
     12:{ 
     fullDisplay() {return "Rinfall<br>课题能量不再重置，最佳判定区间增益旋律<br>需求：通过485ms判定区间挑战"},//摆了
     unlocked() {return hasUpgrade('j',11)},
-    canAfford() {return player.j.pdqja.lte(485)},
+    canAfford() {return false},
+  },
+    18:{ 
+    fullDisplay() {return "loader3229<br>当前生效判定区间和最佳判定区间的最大值增加loader3229的 Perfect+ 及以下判定获取和Loaded Notes获取<br>需求：???"},
+    unlocked() {return hasMilestone('j',1)},
+    canAfford() {return false},
   },
    }
 })//judgment

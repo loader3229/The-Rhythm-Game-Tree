@@ -12,6 +12,10 @@ addLayer("lo", {
   title: "制谱",
 	 body(){return "loader3229制作了非常多的BanG Dream! 自制谱，所以他有一定的制作音游谱面的经验。你可以学习loader3229的制谱技巧，得到更多的note。"},
         },
+ introBox5: {
+  title: "判定维度",
+	 body(){return "有了“判定区间”的概念，loader3229可以开始进一步提高自己的准度并且打出更高级的判定。每一个更高级的判定都会加成低级判定获取，就像反物质维度一样；更高级判定还会增加更高级Milthm维度获取！"},
+        },
 },
     name: "loader3229", // This is optional, only used in a few places, If absent it just uses the layer id
     symbol: "Lo", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -27,6 +31,7 @@ addLayer("lo", {
 		stamina: new Decimal(2000),
 		note: new Decimal(0),
 		evolution: new Decimal(0),
+		jdim1: new Decimal(0),
 		play: false,
     }},
     color: "#ffffff",
@@ -61,6 +66,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',16))mult = mult.mul(upgradeEffect('lo',16));
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
 		mult = mult.mul(challengeEffect('r',11));
+		mult = mult.mul(player.lo.jdim1.add(1));
 		return mult
     },
     gainMult3() {
@@ -75,6 +81,10 @@ addLayer("lo", {
 		mult = mult.mul(challengeEffect('r',12))
 	    if(getClickableState("r",112)==1) mult = mult.mul(clickableEffect("r", 112))
 		if(player.lo.evolution.gte(1)) mult = mult.mul(10)
+		return mult
+    },
+    jdimMult(n) {
+        mult = new Decimal(1)
 		return mult
     },
     gainExp() { 
@@ -191,6 +201,69 @@ addLayer("lo", {
      "blank",["clickable",12],"milestones",
 ],
   unlocked(){return hasUpgrade('lo',35) || player.lo.evolution.gte(1)}
+},
+   "判定维度": {
+        content: [ ["infobox","introBox5"],
+          "main-display",
+    ["display-text",
+	   function() {
+		   if(player.j.pdqja.gt(479))return '完成J层级的479ms判定区间挑战以解锁下一个判定类型：Perfect+';
+		   return '完成J层级的???判定区间挑战以解锁下一个判定类型：S-Perfect';
+	}],"blank",
+	["display-text",
+      function() {return 'loader3229的精力：' + formatWhole(player.lo.stamina) + '/2,000'}],
+    ["display-text",
+	   function() {return 'loader3229现在' + (player.lo.play?'正':'不') + '在打歌。'
+	}],"blank",
+	["row",
+	[["column",[
+	["display-text","判定类型"],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return 'S-Perfect+';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return 'S-Perfect';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(479))return 'Perfect+';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(501))return 'Perfect';return '';}],
+	]],
+	["column",[
+	["display-text","|"],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(479))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(501))return '|';return '';}],
+	]],
+	["column",[
+	["display-text","打出次数"],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(479))return formatWhole(player.lo.jdim1.floor())+'(+'+format(layers.lo.jdimMult(1).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(501))return formatWhole(player.lo.perfect.floor())+'(+'+format(n(1).sub(buyableEffect('lo',12)).mul(tmp.lo.gainMult2).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
+	]],["blank"],
+	["column",[
+	["display-text","|"],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(479))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(501))return '|';return '';}],
+	]],
+	["column",[
+	["display-text","加成"],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(479))return '为Perfect及以下判定和Milthm维度2提供×' + formatWhole(player.lo.jdim1.floor().add(1)) + '加成';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(501))return '为Milthm维度1提供×' + formatWhole(player.lo.perfect.floor().add(1)) + '加成';return '';}],
+	]]],
+	],/*
+    ["display-text",
+	   function() {
+		   if(player.j.pdqja.lte(479))return 'loader3229打出了' + formatWhole(player.lo.jdim1.floor()) + '次Perfect+判定，为Perfect及以下判定和Milthm维度2提供×' + formatWhole(player.lo.jdim1.floor().add(1)) + '加成';
+		   return '';
+	}],
+    ["display-text",
+	   function() {
+		   if(player.j.pdqja.lte(501))return 'loader3229打出了' + formatWhole(player.lo.perfect.floor()) + '次Perfect判定，为Milthm维度1提供×' + formatWhole(player.lo.perfect.floor().add(1)) + '加成';
+		   return '';
+	}],*/
+    ["clickable",11]],
+  unlocked(){return hasUpgrade('lo',102)}
 },
 	
 	},
@@ -644,7 +717,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id))},
         display() { return "基于购买次数增加loader3229的基础Perfect率<br>价格："+format(this.cost())+" "+((player[this.layer].evolution.gte(1))?"Perfect":"Great")+"<br>loader3229的基础Perfect率："+format(new Decimal(1).sub(this.effect()).mul(100))+"%"},
         title: "提高准度",
-        effect() {return Decimal.pow(player[this.layer].evolution.gte(1)?0.997:0.996,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.2)},
+        effect() {return Decimal.pow(0.996,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.2)},
         unlocked(){unlock=true
           return unlock
         },
@@ -658,7 +731,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id))},
         display() { return "基于购买次数减少loader3229的设备断触率<br>价格："+format(this.cost())+" "+((player[this.layer].evolution.gte(1))?"Perfect":"Miss")+"<br>loader3229的设备基础断触率："+format(this.effect().mul(100))+"%"},
         title: "升级设备",
-        effect() {return Decimal.pow(player[this.layer].evolution.gte(1)?0.985:0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
+        effect() {return Decimal.pow(player[this.layer].evolution.gte(1)?0.984:0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
         unlocked(){unlock=true
           return unlock
         },
@@ -760,6 +833,13 @@ clickables: {
 		if(hasUpgrade('lo',26))diff*=15;
 		if(player.lo.play){
 			var f=player.lo.stamina.min(diff);
+			
+			if(hasUpgrade('lo',102)){
+				if(player.j.pdqja.lte(479)){
+					player.lo.jdim1=player.lo.jdim1.add(f.mul(this.jdimMult(1)));
+				}
+			}
+			
 			var m=f.mul(Decimal.pow(0.1,new Decimal(1).sub(player.lo.stamina.div(2000))).mul(Decimal.pow(this.buyables[13].effect(),player.lo.stamina.div(2000))));
 			player.lo.miss=player.lo.miss.add(m.mul(this.gainMult2()));
 			f=f.sub(m);
@@ -786,6 +866,7 @@ clickables: {
 					player.lo.maxcombo_warn=d;
 				}else player.lo.maxcombo_warn=new Decimal(0);
 			}
+			
 		}else{
 			player.lo.maxcombo_warn=new Decimal(0);
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
