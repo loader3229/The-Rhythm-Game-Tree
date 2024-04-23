@@ -24,7 +24,7 @@ function isEndgame() {
 
 // Display extra things at the top of the page
 var displayThings = [
-  function() {if(inChallenge('r',12)&&player.devSpeed.eq(0)) return "v0.36游戏结局: 3e3333333 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+  function() {if(inChallenge('r',12)&&player._devSpeed.eq(0)) return "v0.36游戏结局: 3e3333333 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
    else return "v0.36游戏结局: 3e3333333 Notes！"
   }
 ]
@@ -96,8 +96,8 @@ function getStartPoints(){
 // Determines if it should show points/sec
 function canGenPoints(){
 	if(inChallenge('r',12)&&getClickableState('r',12)!==1)return false;
- return !player.points.gte('3e3333333')
-//return true
+ //return !player.points.gte('3e3333333')
+return true
 }
 
 // Calculate points/sec!
@@ -173,14 +173,13 @@ if(inChallenge('c',14)&&!hasMilestone('r',0))gain= gain.pow(0.05)
 if(inChallenge('r',11))gain= gain.pow(0.1)
 if(gcs('j',11)==1) gain=gain.pow(tmp.j.pdqj1)
 
-	if(player.devSpeed.neq(0)) gain=gain.min(n('3e3333333').div(player.devSpeed))
+	//if(player._devSpeed.neq(0)) gain=gain.min(n('3e3333333').div(player._devSpeed))
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
 
 	return gain
 }
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
- devSpeed:new Decimal(1),
  timePlayed:new Decimal(0),
  
   QqQ:"QqQe308",

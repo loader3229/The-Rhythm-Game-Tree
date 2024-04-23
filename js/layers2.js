@@ -83,7 +83,6 @@ chalBox: {
     },
     rotaCal() {
      let rot=gba('r',11).add(gba('r',12)).add(gba('r',13))
-     if(hasUpgrade('j',11)) rot=rot.mul(1.1)
      return rot
     },
     branches(){return ['c','ch','sp']},
@@ -1307,7 +1306,7 @@ eff=player.ch.enp.pow(0.1).max(1).log(2).pow(0.5).max(1)
         unlocked(){return hasUpgrade('r',17)},
         onEnter() {layers.r.clickables[11].onClick()},
         completionLimit(){
-          return new Decimal(5).add(hasUpgrade('lo',101)?15:0)},
+          return new Decimal(5).add(hasUpgrade('lo',101)?15:0).add(hasUpgrade('lo',103)?20:0)},
         canComplete: function() {
           return player.c.power.gte(new Decimal("1e1200").mul(new Decimal(1e50).pow(new Decimal(challengeCompletions(this.layer,this.id)))))},
         },
@@ -2054,7 +2053,11 @@ clickables: {[11]: 0},
     baseAmount() {return player.ch.points}, 
     type: "static", 
     branches(){return ['c','ch','sp']},
-    exponent: 1, 
+	base(){
+		mult = n(1.02)
+		return mult;
+	}, 
+    exponent: 1.2, 
     gainMult() { 
         mult = n(1)
         return mult
@@ -2097,16 +2100,16 @@ clickables: {[11]: 0},
          function() {if(hasUpgrade('j',12)) return '最佳判定区间增益：<br>1. 旋律×' + format(tmp.j.pdqja1)},
      {"color": "#ffffff", "font-size": "20px", "font-family": "Comic Sans MS"}],
          ["display-text",
-         function() {if(hasMilestone('j',2)) return '2.诗篇×' + format(tmp.j.pdqja2)},
+         function() {if(hasMilestone('j',2)) return '2.诗篇需求^' + format(tmp.j.pdqja2)},
      {"color": "#ffffff", "font-size": "20px", "font-family": "Comic Sans MS"}],
          ["display-text",
-         function() {if(hasUpgrade('j',14)) return '3.魔王曲×' + format(tmp.j.pdqja3)},
+         function() {if(hasUpgrade('j',14)) return '3.魔王曲需求^' + format(tmp.j.pdqja3)},
      {"color": "#ffffff", "font-size": "20px", "font-family": "Comic Sans MS"}],
          ["display-text",
          function() {if(hasMilestone('j',3)) return '4.课题力量×' + format(tmp.j.pdqja4)},
      {"color": "#ffffff", "font-size": "20px", "font-family": "Comic Sans MS"}],
          ["display-text",
-         function() {if(hasUpgrade('j',15)) return '5.曲包×' + format(tmp.j.pdqja5)},
+         function() {if(hasUpgrade('j',15)) return '5.曲包需求^' + format(tmp.j.pdqja5)},
      {"color": "#ffffff", "font-size": "20px", "font-family": "Comic Sans MS"}],
      "upgrades",
      ],
@@ -2156,13 +2159,13 @@ pdqja1() {
 },
 pdqja2() {
  let a=player.j.pdqja
- let b=n(1.6).pow((n(500).sub(a)).pow(0.2))
+ let b=n(0.99).pow((n(500).sub(a)).pow(0.2))
  if(!hasMilestone('j',2)) b=n(1)
  return b
 },
 pdqja3() {
  let a=player.j.pdqja
- let b=n(1.2).pow((n(500).sub(a)).pow(0.4))
+ let b=n(0.99).pow((n(500).sub(a)).pow(0.4))
  if(!hasUpgrade('j',14)) b=n(1)
  return b
 },
@@ -2176,7 +2179,7 @@ pdqja4() {
 },
 pdqja5() {
  let a=player.j.pdqja
- let b=n(1.2).pow((n(500).sub(a)).pow(0.5))
+ let b=n(0.99).pow((n(500).sub(a)).pow(0.5))
  if(!hasUpgrade('j',15)) b=n(1)
  return b
 },
@@ -2296,45 +2299,45 @@ doReset(resettingLayer) {
    },
    upgrades: {
     11:{ 
-    fullDisplay() {return "沉默-_-微笑<br>课题模式中的谱面上限可以超过16级（最高20级），可用的Rot点数数量×1.1<br>需求：通过490ms判定区间挑战"},
+    fullDisplay() {return "沉默-_-微笑<br>课题模式中的谱面上限可以超过16级（最高"+formatWhole(player.ch.difmax.add(hasUpgrade('j',11)?0:4))+"级）<br>需求：通过490ms判定区间挑战"},
     unlocked() {return hasMilestone('j',1)},
     tooltip:"升级名字不分先后",
-    canAfford() {return false},
+    canAfford() {return player.j.pdqja.lte(490)},
   },
     12:{ 
-    fullDisplay() {return "RinFall<br>课题能量不再重置，最佳判定区间增益旋律<br>需求：通过485ms判定区间挑战"},
+    fullDisplay() {return "RinFall<br>课题能量不再重置，最佳判定区间增益旋律<br>需求：通过468ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',11)},
-    canAfford() {return false},
-  },
-    18:{ 
-    fullDisplay() {return "loader3229<br>当前生效判定区间和最佳判定区间的最大值增加loader3229的 Perfect+ 及以下判定获取和Loaded Notes获取<br>需求：???"},
-    unlocked() {return hasMilestone('j',1)},
-    canAfford() {return false},
+    canAfford() {return player.j.pdqja.lte(468)},
   },
     13:{ 
-    fullDisplay() {return "EK鲁比<br>Rot升级树133的效果不会低于5×，解锁第17行Rot升级树<br>需求：通过480ms判定区间挑战"},
+    fullDisplay() {return "EK鲁比<br>Rot升级树133的效果不会低于5×，解锁第17行Rot升级树<br>需求：通过465ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',12)},
-    canAfford() {return player.j.pdqja.lte(480)},
-  },
-    14:{ 
-    fullDisplay() {return "零-零_五-<br>最佳判定区间可以增益魔王曲获取量<br>需求：通过470ms判定区间挑战"},
-    unlocked() {return hasUpgrade('j',13)},
-    canAfford() {return player.j.pdqja.lte(470)},
-  },
-    15:{ 
-    fullDisplay() {return "xinのhun<br>最佳判定区间可以增益曲包获取量<br>需求：通过465ms判定区间挑战"},
-    unlocked() {return hasUpgrade('j',14)},
     canAfford() {return player.j.pdqja.lte(465)},
   },
+    14:{ 
+    fullDisplay() {return "零-零_五-<br>最佳判定区间可以增益魔王曲获取量<br>需求：通过462ms判定区间挑战"},
+    unlocked() {return hasUpgrade('j',13)},
+    canAfford() {return player.j.pdqja.lte(462)},
+  },
+    15:{ 
+    fullDisplay() {return "xinのhun<br>最佳判定区间可以增益曲包获取量<br>需求：通过457ms判定区间挑战"},
+    unlocked() {return hasUpgrade('j',14)},
+    canAfford() {return player.j.pdqja.lte(457)},
+  },
     16:{ 
-    fullDisplay() {return "SkisK刺球<br>课题力量对Cytus力量的增益^1.5<br>需求：通过460ms判定区间挑战"},
+    fullDisplay() {return "SkisK刺球<br>课题力量对Cytus力量的增益^1.5<br>需求：通过456ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',15)},
-    canAfford() {return player.j.pdqja.lte(460)},
+    canAfford() {return player.j.pdqja.lte(456)},
   },
     17:{ 
     fullDisplay() {return "一只新手Up<br>解锁%$#@!&*()+=[]{}|;:<br>需求：通过455ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',16)},
     canAfford() {return player.j.pdqja.lte(455)},
+  },
+    18:{ 
+    fullDisplay() {return "loader3229<br>当前生效判定区间和最佳判定区间的最大值增加loader3229的 Perfect+ 及以下判定获取和Loaded Notes获取<br>需求：???"},
+    unlocked() {return hasMilestone('j',1)},
+    canAfford() {return false},
   },
    }
 })//judgment

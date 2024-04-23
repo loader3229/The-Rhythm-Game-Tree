@@ -85,6 +85,7 @@ addLayer("lo", {
     },
     jdimMult(n) {
         mult = new Decimal(1)
+		if(hasUpgrade('lo',103)&&n==1)mult = mult.mul(challengeEffect('r',11));
 		return mult
     },
     gainExp() { 
@@ -648,6 +649,11 @@ addLayer("lo", {
                 cost: new Decimal(88),
     unlocked() { return (player.lo.evolution.gte(1))},
 			},
+    103:{ 
+		description: "增加Rotaeno挑战RC1的上限，Rotaeno挑战RC1的效果也对Perfect+判定的获取生效",
+                cost: new Decimal(89),
+    unlocked() { return (player.j.pdqja.lte(479))},
+			},
 	},
   softcap:new Decimal ("10^^1000"),
   softcapPower:new Decimal(1),
@@ -871,13 +877,13 @@ clickables: {
 			player.lo.maxcombo_warn=new Decimal(0);
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff))//.min(1e23);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(5e23);
 			}
 			if(hasUpgrade('lo',74)){
-				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff))//.min(1e15);
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(3e15);
 			}
 			if(hasUpgrade('lo',81)){
-				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff))//.min(2e9);
+				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(6e9);
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
