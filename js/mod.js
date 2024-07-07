@@ -23,13 +23,13 @@ function isEndgame() {
 }
 
 // Display extra things at the top of the page
-var displayThings = [=
+var displayThings = [
   function() {
 	  if(player.lo.evolution.lte(0)){
 		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)));
 	  }
 	  
-  function() {if(inChallenge('r',12)&&player._devSpeed.eq(0)) return "v0.36游戏结局: 3e3333333 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+if(inChallenge('r',12)&&player._devSpeed.eq(0)) return "v0.36游戏结局: 3e3333333 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
    else return "v0.36游戏结局: 3e3333333 Notes！"
   }
 ]
