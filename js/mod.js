@@ -24,7 +24,12 @@ function isEndgame() {
 
 // Display extra things at the top of the page
 var displayThings = [
-  function() {if(inChallenge('r',12)&&player.devSpeed.eq(0)) return "v0.35游戏结局: 1e3115000 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+  function() {
+	  if(player.lo.evolution.lte(0)){
+		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)));
+	  }
+	  
+	if(inChallenge('r',12)&&player.devSpeed.eq(0)) return "v0.35游戏结局: 1e3115000 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
    else return "v0.36游戏结局: 1e3115000 Notes！*需要新层级内容，目前暂未更新*"
   }
 ]
@@ -175,6 +180,8 @@ if(gcs('j',11)==1) gain=gain.pow(tmp.j.pdqj1)
 
 //	if(player.devSpeed.neq(0)) gain=gain.min(n('1e3075000').div(player.devSpeed))
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
+	
+	gain=gain.min(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)))
 
 	return gain
 }

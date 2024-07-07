@@ -38,7 +38,9 @@ chalBox: {
     baseResource: "Cyten", 
     baseAmount() {return player.c.points}, 
     type: "normal", 
-    exponent: 0.01,
+    exponent(){
+		return new Decimal(0.01).mul(Decimal.pow(0.95,player.lo.evolution));
+	},
     gainMult() { //rgainmult
         mult = n(1)
         if (gcs("r",42)==1) mult = mult.times(clickableEffect("r", 42))

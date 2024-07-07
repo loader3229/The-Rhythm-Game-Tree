@@ -436,6 +436,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
         tooltip:"同时获得Rot升级101、102、103",
         textStyle: {'color': '#a9c3e7c4'},
        },
+        98: {
+            name: "我进化了！",
+            done() {return player.lo.evolution.gte(1)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "让loader3229开始进化！",
+            textStyle: {'color': '#FFFFFF'},
+		},
        101: {
             name: "宽判与严判",
             done() {return player.j.unlocked()},
@@ -868,7 +875,9 @@ addLayer("s", {
     baseResource: "Notes", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.2,
+    exponent(){
+		return new Decimal(0.2).sub(player.lo.evolution.mul(0.005)).mul(Decimal.pow(0.95,player.lo.evolution));
+	},
     // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
     //sgainmult
@@ -1282,7 +1291,9 @@ addLayer("a", {
     baseResource: "歌曲", 
     baseAmount() {return player['s'].points}, 
     type: "normal", 
-    exponent: 0.1, 
+    exponent(){
+		return new Decimal(0.1).mul(Decimal.pow(0.95,player.lo.evolution));
+	},
     effect(){
       return {Notes: player['a'].points.add(1)}
     },
@@ -2185,7 +2196,9 @@ addLayer("p", {
     baseResource: "源点", 
     baseAmount() {return player['a'].points}, 
     type: "normal", 
-    exponent: 0.05, 
+    exponent(){
+		return new Decimal(0.05).mul(Decimal.pow(0.95,player.lo.evolution));
+	},
 	getEffective(){
 		if(player.p.points.gte(1e100))return Decimal.pow(10,player.p.points.log10().sqrt().mul(10));
 		return player.p.points;
@@ -2854,7 +2867,9 @@ addLayer("c", {
     baseResource: "Phidata", 
     baseAmount() {return player.p.points}, 
     type: "normal", 
-    exponent: 0.01, 
+    exponent(){
+		return new Decimal(0.01).mul(Decimal.pow(0.95,player.lo.evolution));
+	},
     effect(){
       eff=player.c.points.add(1).pow(2).sub(1)
       return eff
@@ -4608,7 +4623,7 @@ buyables:{
 				title: "获得一个Arcaea曲包",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = new Decimal('1e54500')
+     let cost = new Decimal(player.lo.evolution.gte(1)?'1e50000':'1e54500')
      cost=cost.times(new Decimal(1e100).pow(x.pow(1.2)))
     return cost
                 },
@@ -4625,7 +4640,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.a.points.div("1e54500").log(1e100).root(1.2)
+					let tempBuy = player.a.points.div(player.lo.evolution.gte(1)?'1e50000':"1e54500").log(1e100).root(1.2)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);

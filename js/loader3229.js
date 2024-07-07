@@ -44,7 +44,7 @@ addLayer("lo", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 	base(){
-		if(player.lo.evolution.gte(1))return Decimal.pow(10,5000000/(101**3.1));
+		if(player.lo.evolution.gte(1))return Decimal.pow(10,4000000/(101**3.1));
 		return new Decimal(1000)
 	},
     exponent(){
@@ -325,7 +325,7 @@ addLayer("lo", {
 			},
     24:{ 
                 description: "最高连击数增加Phidata获取",
-                cost: new Decimal(8),
+                cost(){return new Decimal(player[this.layer].evolution.gte(1)?9:8)},
     unlocked() { return player.p.unlocked},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -358,7 +358,7 @@ addLayer("lo", {
 			},
     34:{ 
                 description: "最高连击数增加Cyten获取",
-                cost: new Decimal(23),
+                cost(){return new Decimal(player[this.layer].evolution.gte(1)?14:22)},
     unlocked() { return player.c.unlocked()},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -367,7 +367,7 @@ addLayer("lo", {
 			},
     35:{ 
                 description: "解锁loader3229的制谱功能",
-                cost: new Decimal(22),
+                cost(){return new Decimal(player[this.layer].evolution.gte(1)?20:22)},
     unlocked() { return player.ch.unlocked()},
 			},
     41:{ 
@@ -387,7 +387,7 @@ addLayer("lo", {
 			},
     44:{ 
 		description: "物量加成判定的获取速度",
-                cost: new Decimal(21),
+                cost(){return new Decimal(player[this.layer].evolution.gte(1)?19:21)},
     unlocked() { return player.ch.unlocked()},
                 effect() {
              return layers.ch.note().add(1)
@@ -396,12 +396,16 @@ addLayer("lo", {
 			},
     45:{ 
 		description: "增加Phigros挑战“IN”和“AT”的上限",
-                cost: new Decimal(22),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?21:22);
+				},
     unlocked() { return player.ch.unlocked()},
 			},
     51:{ 
                 description: "最高连击数增加判定和Loaded Notes获取，Loaded Notes效果1变为原来的平方",
-                cost: new Decimal(24),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?23:24);
+				},
     unlocked() { return (hasUpgrade('lo', 35))},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -410,13 +414,17 @@ addLayer("lo", {
 			},
     52:{ 
                 description: "Loaded Points对Loaded Notes的获取速度加成变得更好，Loaded Notes效果2变为原来的平方",
-                cost: new Decimal(25),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?22:25);
+				},
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
 			
     53:{ 
                 description: "Cytus可购买项7的效果变得更好",
-                cost: new Decimal(25),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?24:25);
+				},
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
     54:{ 
@@ -431,12 +439,16 @@ addLayer("lo", {
 			},
     61:{ 
                 description: "解锁Loaded Notes可购买项",
-                cost: new Decimal(30),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?25:30);
+				},
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
     62:{ 
 		description: "如果你的RKS小于loader3229的RKS，loader3229可以让你的RKS变为他的RKS。",
-                cost: new Decimal(31),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?30:31);
+				},
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
     63:{ 
@@ -447,7 +459,7 @@ addLayer("lo", {
     64:{ 
 		description: "Loaded Points增加loader3229层级的速度",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?29:32);
+					return new Decimal(player[this.layer].evolution.gte(1)?27:32);
 				},
     unlocked() { return (hasUpgrade('lo', 35))},
                 effect() {
@@ -457,7 +469,9 @@ addLayer("lo", {
 			},
     65:{ 
 		description: "让loader3229帮你打课题模式。loader3229将会使你的最高课题能量不再低于6。",
-                cost: new Decimal(36),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?34:36);
+				},
     unlocked() { return (hasUpgrade('ch', 27))},
 			},
     16:{ 
@@ -516,20 +530,22 @@ addLayer("lo", {
     72:{ 
 		description: "解锁一个新的loader3229可购买项。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?46:53);
+					return new Decimal(player[this.layer].evolution.gte(1)?50:53);
 				},
     unlocked() { return (hasMilestone('sp',3))},
 			},
     73:{ 
 		description: "解锁一个新的loader3229可购买项。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?48:55);
+					return new Decimal(player[this.layer].evolution.gte(1)?52:55);
 				},
     unlocked() { return (hasMilestone('sp',3))},
 			},
     74:{ 
 		description: "loader3229会为你自动增加蛇的长度。",
-                cost: new Decimal(56),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?53:56);
+				},
     unlocked() { return (hasMilestone('sp',4))},
                 effect() {
 					if(hasUpgrade('lo',93))return tmp.a.snaCal;
@@ -540,7 +556,9 @@ addLayer("lo", {
 			},
     75:{ 
 		description: "提升上一个升级的效果。",
-                cost: new Decimal(61),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?57:61);
+				},
     unlocked() { return (hasUpgrade('sp',17))},
 			},
     76:{ 
@@ -553,7 +571,7 @@ addLayer("lo", {
     81:{ 
 		description: "loader3229会为你自动增加龙的长度。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?57:67);
+					return new Decimal(player[this.layer].evolution.gte(1)?59:67);
 				},
     unlocked() { return (hasUpgrade('sp',17))},
                 effect() {
@@ -568,38 +586,40 @@ addLayer("lo", {
                 cost(){
 					return new Decimal(player[this.layer].evolution.gte(1)?62:70);
 				},
-    unlocked() { return (hasUpgrade('sp',25))},
+    unlocked() { return (player[this.layer].evolution.gte(1)?hasUpgrade('sp',17):hasUpgrade('sp',25))},
 			},
     83:{ 
                 description: "Loaded Notes效果1变为原来的2.5次方",
-                cost: new Decimal(74),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(1)?65:74);
+				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     84:{ 
                 description: "Loaded Notes效果2变为原来的6.25次方",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?78:86);
+					return new Decimal(player[this.layer].evolution.gte(1)?67:86);
 				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     85:{ 
                 description: "Loaded Notes效果1变为原来的2.5次方",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?79:88);
+					return new Decimal(player[this.layer].evolution.gte(1)?69:88);
 				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     86:{ 
                 description: "解锁一个新的loader3229可购买项。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?63:90);
+					return new Decimal(player[this.layer].evolution.gte(1)?70:90);
 				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     91:{ 
 		description: "Loaded Points提升Milthm获取",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?83:93);
+					return new Decimal(player[this.layer].evolution.gte(1)?93:93);
 				},
     unlocked() { return (hasUpgrade('r',37))},
                 effect() {
@@ -610,14 +630,14 @@ addLayer("lo", {
     92:{ 
 		description: "第一个loader3229可购买项对Cyten也有效",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?84:95);
+					return new Decimal(player[this.layer].evolution.gte(1)?95:95);
 				},
     unlocked() { return (hasUpgrade('r',37))},
 			},
     93:{ 
 		description: "本层级自动增加蛇/龙长度的升级的效果变为500倍",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?87:99);
+					return new Decimal(player[this.layer].evolution.gte(1)?99:99);
 				},
     unlocked() { return (hasUpgrade('r',37))},
 			},
@@ -630,17 +650,17 @@ addLayer("lo", {
 			},
     95:{ 
                 description: "Loaded Notes效果1变为原来的平方",
-                cost: new Decimal(27),
+                cost: new Decimal(35),
     unlocked() { return (player.lo.evolution.gte(1))},
 			},
     96:{ 
 		description: "loader3229不仅想去除软上限，还想去除硬上限！去除Arcaea升级“Abstruse Dilemma”的硬上限。",
-                cost: new Decimal(77),
+                cost: new Decimal(60),
     unlocked() { return (player.lo.evolution.gte(1))},
 			},
     101:{ 
 		description: "增加Rotaeno挑战RC1的上限，并再次增加Phigros挑战“EZ”、“HD”的上限",
-                cost: new Decimal(83),
+                cost: new Decimal(75),
     unlocked() { return (player.lo.evolution.gte(1))},
 			},
     102:{ 
@@ -680,8 +700,11 @@ clickables: {
 				layerDataReset('c',['milestones']);
 				layerDataReset('ch',['milestones']);
 				layerDataReset('sp',['milestones']);
-				layerDataReset('r',['milestones']);
-				layerDataReset('mi',['milestones']);
+				if(player.lo.evolution.eq(0)){
+					layerDataReset('r',[]);
+					layerDataReset('mi',[]);
+					layerDataReset('j',[]);
+				}
 				player.points=new Decimal(0);
 				player.lo.evolution = player.lo.evolution.add(1);
 			}
@@ -694,7 +717,7 @@ clickables: {
             unlocked() {return player[this.layer].evolution.gte(1)},
             done() {return player[this.layer].evolution.gte(1)}, // Used to determine when to give the milestone
             effectDescription: function(){
-				return "自动购买第一行loader3229可购买项且不消耗判定，第一行loader3229可购买基于Perfect判定而不是Great/Miss判定，Loaded Notes获取变为10倍，Perfect判定数量加成Milthm维度1";
+				return "保留前4行里程碑，自动购买第一行loader3229可购买项且不消耗判定，第一行loader3229可购买基于Perfect判定而不是Great/Miss判定，Loaded Notes获取变为10倍，Perfect判定数量加成Milthm维度1";
 			},
         },
 	],
@@ -731,7 +754,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id))},
         display() { return "基于购买次数减少loader3229的设备断触率<br>价格："+format(this.cost())+" "+((player[this.layer].evolution.gte(1))?"Perfect":"Miss")+"<br>loader3229的设备基础断触率："+format(this.effect().mul(100))+"%"},
         title: "升级设备",
-        effect() {return Decimal.pow(player[this.layer].evolution.gte(1)?0.984:0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
+        effect() {return Decimal.pow(0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
         unlocked(){unlock=true
           return unlock
         },
@@ -853,7 +876,7 @@ clickables: {
 			if(hasUpgrade('lo',12)){
 				var c=player.points.add(1e10).log10().log10().pow(0.5).mul(player.lo.points.add(10).log10().pow(0.5)).div(Decimal.pow(0.1,new Decimal(1).sub(player.lo.stamina.div(2000))).mul(Decimal.pow(this.buyables[13].effect(),player.lo.stamina.div(2000))));
 				
-				var d=new Decimal(tmp.ch.note || 1).div(4).max(player.lo.evolution.gte(1)?80:800);
+				var d=new Decimal(tmp.ch.note || 1).div(4).max(800);
 
 				if(c.gte(d)){
 					c = c.mul(d).mul(d).cbrt();
