@@ -11,36 +11,38 @@ let modInfo = {
 }
 // Set your version in num and name
 let VERSION = {
-	num: "0.36",
+	num: "0.4",
 	name: "Judgmental",
 }
 
-let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：3e3333333 Notes，下一个更新:新层级！`
+let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：e4194304 Notes，下一个更新:新层级！`
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte('3e3333333')
+	return player.points.gte('e4194304')
 }
 
 // Display extra things at the top of the page
 var displayThings = [
   function() {
-	  if(player.lo.evolution.lte(0)){
+	  if(player.lo.evolution.lte(1)){
 		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)));
 	  }
 	  
-if(inChallenge('r',12)&&player._devSpeed.eq(0)) return "v0.36游戏结局: 3e3333333 Notes！<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
-   else return "v0.36游戏结局: 3e3333333 Notes！"
+   let a= "v0.4游戏结局: e4194304（10^2^22）Notes！"
+   if(inChallenge('r',12)&&player._devSpeed.eq(0)) return a+"<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+  if(isEndgame()) return a+"<br>已达到该版本结局！"
+   else return a
   }
 ]
 
 let changelog = `<h1>更新日志</h1><br>
-<h2>v0.36 Judgement 2024/4/1-2024/4/22<br>
+<h2>v0.4 Judgement 2024/4/1-2024/6/27<br>
 <h3>- 添加1个层级：判定，添加判定区间挑战<br>
-- 添加5个里程碑，7个升级，Rot升级树中的1个“升级”<br>
-- 游戏结局：3e3333333 Notes<br><br>
+- 添加7个里程碑，8+15=21个升级，1个挑战，6个可购买，Rot升级树中的2个“升级”<br>
+- 游戏结局：e4194304 Notes<br><br>
 <h2>v⓪.⑶❺ Milk Rhythm 2024愚人节版本 2024/4/1<br>
-<h3>-<br>
+<h3>-临时更改了游戏界面<br><br>
 <h2>v0.35 Rhythm Milthm 2024/2/3-2024/3/9<br>
 <h3>- 添加1个层级：Milthm<br>
 - 添加Rot升级树中的11个“升级”<br>
@@ -100,9 +102,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	if(inChallenge('r',12)&&getClickableState('r',12)!==1)return false;
- //return !player.points.gte('3e3333333')
-return true
+	return true
 }
 
 // Calculate points/sec!
@@ -145,6 +145,7 @@ if (hasMilestone('ch', 1)) gain = gain.times('1e1145')
 	if (hasUpgrade('ch', 43)) gain = gain.times(upgradeEffect('ch', 43))
 	if(tmp.a.snEff4.gte(1)) gain=gain.times(tmp.a.snEff4)
 if (hasUpgrade('sp', 21)) gain = gain.times(upgradeEffect('sp', 21))
+if (hasUpgrade('j', 21)) gain = gain.times(upgradeEffect('j', 21))
 if (gcs("r",21)==1) gain = gain.times(clickableEffect("r", 21))
 
 if (hasUpgrade('a', 18)) gain = gain.times(upgradeEffect('a', 18))
@@ -160,6 +161,7 @@ if (hasUpgrade('m', 18)) gain = gain.times(upgradeEffect('m', 18))
  if(tmp.ch.dragEff>1) gain = gain.pow(tmp.ch.dragEff)
  if (hasUpgrade('ch', 26)) gain = gain.pow(1.02)
 if (hasUpgrade('ch', 27)) gain = gain.pow(1.05)
+if (hasUpgrade('sp', 27)) gain = gain.pow(1.001)
 if (hasAchievement('A', 65)) gain = gain.pow(1.0101)
 if(tmp.a.drEff4.gte(1)) gain=gain.pow(tmp.a.drEff4)
 
@@ -173,12 +175,13 @@ if(inChallenge('p',12)){gain= gain.pow(0.1)}
 
 	
 	
+	if(inChallenge('r',14)) gain=gain.max(10).log10()
 	if(inChallenge('c',14))gain= gain.max(10).log(1.0001)
 if(inChallenge('c',14)&&!hasMilestone('r',0))gain= gain.pow(0.05)
 if(inChallenge('r',11))gain= gain.pow(0.1)
 if(gcs('j',11)==1) gain=gain.pow(tmp.j.pdqj1)
 
-	//if(player._devSpeed.neq(0)) gain=gain.min(n('3e3333333').div(player._devSpeed))
+	//if(player.devSpeed.neq(0)) gain=gain.min(n('e4194304').div(player.devSpeed))
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
 	
 	gain=gain.min(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)))
@@ -297,40 +300,3 @@ function quickColor(str,color){
 }
 
 
-
-function convertToB16(n){
-          let codes = {
-            0: "0",
-            1: "1",
-            2: "2",
-            3: "3",
-            4: "4",
-            5: "5",
-            6: "6",
-            7: "7",
-            8: "8",
-            9: "9",
-            10: "A",
-            11: "B",
-            12: "C",
-            13: "D",
-            14: "E",
-            15: "F",
-              }
-            let x = n % 16
-            return codes[(n-x)/16] + codes[x]
-          }
-          
-    function getUndulatingColor(period = Math.sqrt(760)){
-	let t = new Date().getTime()
-	let a = Math.sin(t / 1e3 / period * 2 * Math.PI + 0) 
-	let b = Math.sin(t / 1e3 / period * 2 * Math.PI + 2)
-	let c = Math.sin(t / 1e3 / period * 2 * Math.PI + 4)
-	a = convertToB16(Math.floor(a*128) + 128)
-	b = convertToB16(Math.floor(b*128) + 128)
-	c = convertToB16(Math.floor(c*128) + 128)
-	return "#"+String(a) + String(b) + String(c)
-}
-        function colorText(elem, color, text) {
-	return "<" + elem + " style='color:" + color + ";text-shadow:0px 0px 10px;'>" + text + "</" + elem + ">"
-}//你不认为这是愚人节彩蛋吗？感谢@010000000000000000a7 大神提供代码！ 
