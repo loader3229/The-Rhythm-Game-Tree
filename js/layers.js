@@ -43,7 +43,7 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
 	   devSpeedCal() {//我也不知道为什么放这里
 	    dev=new Decimal(1)
 	    if(inChallenge('r',12)&&getClickableState('r',12)!==1) return new Decimal(0)
-	    if(getClickableState('t',21)==1) return new Decimal(0)
+	    //if(getClickableState('t',21)==1) return new Decimal(0)
 	    //dev=dev.mul(challengeEffect('r',12))
 	    if(hasUpgrade('sp',41)) dev=dev.mul(upgradeEffect('sp',41))
 	    if(hasUpgrade('sp',42)) dev=dev.mul(upgradeEffect('sp',42))
@@ -447,8 +447,15 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
             name: "宽判与严判",
             done() {return player.j.unlocked()},
             onComplete(){player.A.ach=player.A.ach.add(1)},
-            tooltip:"解锁第11层，判定",
+            tooltip:"解锁第11层，判定<br>Judgment和Judgement有什么区别啊…",
             textStyle: {'color': '#e786f0'},
+        },
+       102: {
+            name: "又是时间墙",
+            done() {return player.j.pdqja.lte(470)},
+            onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip:"通过470ms判定区间挑战",
+            textStyle: {'color': '#e948c3'},
         },
        
        1001: {
@@ -692,8 +699,8 @@ player.QqQe308="k"
            if(gcs('t',21)==1) setClickableState('t',21,0)
            else setClickableState('t',21,1)
            },
-           canClick() {return true},
-           unlocked() {return true},
+           canClick() {return false},
+           unlocked() {return false},
         },
    },
 })//test
@@ -1970,6 +1977,7 @@ addLayer("l", {
     requires() {req=new Decimal(1e85)
     if(hasUpgrade('a',43))req=req.pow(upgradeEffect('a',43))
 	if (hasUpgrade('lo', 16)) req=req.pow(buyableEffect('lo',23))
+	req=req.pow(tmp.j.pdqja2)
         if(hasUpgrade('lo',23)){req=req.times(1e-60)}
         if(buyableEffect('c',24).gt(1)) req = req.div(buyableEffect('c',24))
     return req},
@@ -1981,6 +1989,7 @@ addLayer("l", {
 		mult = new Decimal('1000')
 		
 	if (hasUpgrade('lo', 16)) mult = mult.pow(buyableEffect('lo',23))
+	mult = mult.pow(tmp.j.pdqja2)
 		
 	
 		return mult;
@@ -2683,13 +2692,16 @@ addLayer("m", {
     color: "#55BB11",
     requires() {req=new Decimal(1e166)
     if(hasUpgrade('a',44))req=req.pow(upgradeEffect('a',44))
+		req=req.pow(tmp.j.pdqja3)
         if(buyableEffect('c',23).gt(1)) req = req.div(buyableEffect('c',23))
     return req}, 
     resource: "魔王曲",
     baseResource: "源点", 
     baseAmount() {return player['a'].points}, 
     type: "static", 
-	base: 1e60,
+	base(){
+		return n(1e60).pow(tmp.j.pdqja3);
+	},
     exponent: 2, 
     effect(){
       return {Notes: player.m.points.add(1).pow(0.5)}
@@ -3818,7 +3830,8 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
      if(gcs("r",151)==1) enp = enp.times(clickableEffect("r", 151))
      if(gcs("r",152)==1) enp = enp.times(clickableEffect("r", 152))
      if(hasMilestone('r',0)) enp=enp.times(10)
-     
+      enp=enp.times(tmp.j.pdqja4)
+      
      if(tmp.a.drEff3.gte(1)) enp=enp.pow(tmp.a.drEff3)
      if(gcs('j',11)==1) enp=enp.pow(tmp.j.pdqj2)
       return enp
@@ -3827,6 +3840,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
       enp=player.ch.enp
       eff=enp.pow(2)
       if(hasUpgrade('ch',54)) eff=enp.pow(3)
+      if(hasUpgrade('j',16)) eff=eff.pow(1.5)
       return eff.max(1)
 },
     row: 3, 
@@ -4475,6 +4489,7 @@ points: n(0),
 		req =new Decimal('1e160000')
 	
 	if (hasUpgrade('lo', 73)) req = req.pow(buyableEffect('lo',32))
+	req = req.pow(tmp.j.pdqja5)
 		
         if(buyableEffect('c',41).gt(1)) req = req.div(buyableEffect('c',41))
 			return req;
@@ -4483,6 +4498,7 @@ points: n(0),
 		mult = new Decimal('1e5000')
 		
 	if (hasUpgrade('lo', 73)) mult = mult.pow(buyableEffect('lo',32))
+	mult = mult.pow(tmp.j.pdqja5)
 		
 	
 		return mult;
