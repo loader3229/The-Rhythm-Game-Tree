@@ -1200,7 +1200,7 @@ if(hasAchievement('A',71)) exp=exp.add(0.01)
     },
     37:{title:"Songs.sgnoS",
     description() {return "基于歌曲指数提升Cytus力量"},
-    cost: n("1e12345689"),
+    cost: n("1e1960000"),
     tooltip:"在RC3中加强",
     effect() {
      let a=player.s.points.max(10).log(10).div(100000).add(1).pow(0.4)
@@ -1208,6 +1208,7 @@ if(hasAchievement('A',71)) exp=exp.add(0.01)
      if(inChallenge('r',13)) eff=eff.pow(1.08)
      return eff.div(2).min(2)
     },
+    unlocked() { return player.lo.evolution.gte(1)},
 }
 },
     buyables: {
@@ -1701,7 +1702,7 @@ return eff
     unlocked() { return (hasUpgrade('p', 23))},
     effect() {
    a= n(2).pow(player.a.ptt.div(3))
-   if(hasUpgrade('j',24)) a=a.pow(25)
+   if(hasUpgrade('j',24)) a=a.pow(100)
    return a
     },
     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" }, },
@@ -1711,7 +1712,7 @@ return eff
     unlocked() { return (hasUpgrade('a', 31))},
     effect() {
    a=player.s.points.add(10).log(3).pow(0.25)
-     if(hasUpgrade('j',24)) a=a.pow(25)
+     if(hasUpgrade('j',24)) a=a.pow(100)
    return a
     },
     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" }, },
@@ -1721,7 +1722,7 @@ return eff
     unlocked() { return (hasUpgrade('a', 32))},
     effect() {
     a=player.a.points.add(10).log(2).pow(0.4)
-     if(hasUpgrade('j',24)) a=a.pow(25)
+     if(hasUpgrade('j',24)) a=a.pow(100)
    return a
     },
     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" }, },
@@ -2405,7 +2406,7 @@ addLayer("p", {
         if(hasMilestone('p',6)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?5:2).add(hasUpgrade('lo',45)?5:0).add(hasUpgrade('lo',63)?2:0);
+          return new Decimal(hasUpgrade('p',21)?5:2).add(hasUpgrade('lo',45)?5:0).add(hasUpgrade('lo',63)?2:0).add(hasUpgrade('lo',104)?3:0);
 		},
         canComplete: function() {return player.points.gte(new Decimal(10).pow(200).mul(new Decimal(10).pow(100).pow(challengeCompletions(this.layer,this.id))))}
         },
@@ -2420,7 +2421,7 @@ addLayer("p", {
         if(hasUpgrade('p',32)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?5:2).add(hasUpgrade('lo',45)?5:0).add(hasUpgrade('lo',63)?2:0);
+          return new Decimal(hasUpgrade('p',21)?5:2).add(hasUpgrade('lo',45)?5:0).add(hasUpgrade('lo',63)?2:0).add(hasUpgrade('lo',104)?3:0);
 		},
         canComplete: function() {return player.points.gte(new Decimal(10).pow(180).mul(new Decimal(10).pow(50).pow(challengeCompletions(this.layer,this.id))))}
         },
@@ -2435,7 +2436,7 @@ addLayer("p", {
         if(hasUpgrade('p',32)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(10).add(hasUpgrade('lo',63)?2:0)},
+          return new Decimal(10).add(hasUpgrade('lo',63)?2:0).add(hasUpgrade('lo',104)?3:0)},
         canComplete: function() {return player.points.gte(new Decimal(10).pow(90).mul(new Decimal(10).pow(15).pow(challengeCompletions(this.layer,this.id))))}
         },
     },
@@ -2836,7 +2837,7 @@ addLayer("m", {
     16:{ 
      title: "Milthm: 命日",
     description:"基于超过1e500的Milthm增益Cytus力量",
-    cost: n(742),
+    cost: n(80),
     tooltip:"在RC3中削弱",
     effect() {
         let eff =player.mi.points.pow(0.5).div('1e250').max(1).pow(2)
@@ -3758,6 +3759,7 @@ addLayer("ch", {
 		mult = new Decimal('1e20000')
 		
 	if (hasUpgrade('lo', 61)) mult = mult.pow(buyableEffect('lo',22))
+	if (hasUpgrade('j', 23)) mult = mult.pow(0.95)
 		
 if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
         if(buyableEffect('c',32).gt(1))mult =mult.div(buyableEffect('c',32))
@@ -3772,6 +3774,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
 		mult = new Decimal('1e2000')
 		
 	if (hasUpgrade('lo', 61)) mult = mult.pow(buyableEffect('lo',22))
+	if (hasUpgrade('j', 23)) mult = mult.pow(0.95)
 		
 	
 		return mult;
@@ -4771,7 +4774,7 @@ buyables:{
 				title: "获得一个Cytus曲包",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = new Decimal(1e5).pow(x.pow(1.2)).mul(1e320)
+     let cost = new Decimal(1e5).pow(x.pow(1.2)).mul(player.lo.evolution.gte(1)?'1e600':"1e750")
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4787,7 +4790,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.c.points.max(1).div(1e320).root(1.2).log(1e5)
+					let tempBuy = player.c.points.max(1).div(player.lo.evolution.gte(1)?'1e600':"1e750").root(1.2).log(1e5)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4798,7 +4801,7 @@ buyables:{
 				title: "获得一个Rotaeno曲包",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = n(2).pow(x.pow(0.8)).mul(1e31)
+     let cost = n(2).pow(x.pow(0.8)).mul(1e41)
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4814,7 +4817,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.r.points.max(10).div(1e31).log(2).root(0.8)
+					let tempBuy = player.r.points.max(10).div(1e41).log(2).root(0.8)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -5143,7 +5146,7 @@ onPurchase() {setBuyableAmount('sp',13,gba('sp',13).sub(18))},
       },
 },
 41:{ 
-    fullDisplay() {return "41<br>基于累计Rot点数增益全局速率<br>当前效果：×"+format(this.effect())+"<br>需要：1 Cytus曲包"},
+    fullDisplay() {return "41<br>基于累计Rot点数增益Loaded Notes<br>当前效果：×"+format(this.effect())+"<br>需要：1 Cytus曲包"},
     unlocked(){return hasUpgrade('sp',41)||gba('sp',14).gte(1)},
 onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(1))},
  canAfford() {return gba('sp',14).gte(1)},
@@ -5152,7 +5155,7 @@ onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(1))},
       },
 },
 42:{ 
-    fullDisplay() {return "42<br>基于Cytus力量增益全局速率<br>当前效果：×"+format(this.effect())+"<br>需要：3 Cytus曲包"},
+    fullDisplay() {return "42<br>基于Cytus力量增益Loaded Notes<br>当前效果：×"+format(this.effect())+"<br>需要：3 Cytus曲包"},
     unlocked(){return hasUpgrade('sp',42)||gba('sp',14).gte(2)},
 onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(3))},
  canAfford() {return gba('sp',14).gte(3)},
@@ -5161,7 +5164,7 @@ onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(3))},
       },
 },
 43:{ 
-    fullDisplay() {return "43<br>基于Notes增益全局速率<br>当前效果：×"+format(this.effect())+"<br>需要：4 Cytus曲包"},
+    fullDisplay() {return "43<br>基于Notes增益Loaded Notes<br>当前效果：×"+format(this.effect())+"<br>需要：4 Cytus曲包"},
     unlocked(){return hasUpgrade('sp',43)||gba('sp',14).gte(3)},
 onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(4))},
  canAfford() {return gba('sp',14).gte(4)},
@@ -5170,16 +5173,16 @@ onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(4))},
       },
 },
 44:{ 
-    fullDisplay() {return "44<br>基于全局速率增益全局速率<br>当前效果：×"+format(this.effect())+"<br>需要：9 Cytus曲包"},
+    fullDisplay() {return "44<br>基于Loaded Notes增益Loaded Notes<br>当前效果：×"+format(this.effect())+"<br>需要：9 Cytus曲包"},
     unlocked(){return hasUpgrade('sp',44)||gba('sp',14).gte(8)},
 onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(9))},
  canAfford() {return gba('sp',14).gte(9)},
-  effect() { eff= player._devSpeed.max(1).log(10)
+  effect() { eff= player.lo.note.max(1).log(10).pow(0.5)
         return eff.max(1)
       },
 },
 45:{ 
-    fullDisplay() {return "45<br>基于Arcaea曲包增益全局速率<br>当前效果：×"+format(this.effect())+"<br>需要：10 Cytus曲包"},
+    fullDisplay() {return "45<br>基于Arcaea曲包增益Loaded Notes<br>当前效果：×"+format(this.effect())+"<br>需要：10 Cytus曲包"},
     unlocked(){return hasUpgrade('sp',45)||gba('sp',14).gte(9)},
 onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(10))},
  canAfford() {return gba('sp',14).gte(10)},
@@ -5188,7 +5191,7 @@ onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(10))},
       },
 },
 46:{ 
-    fullDisplay() {return "46<br>基于Lanota曲包增益全局速率<br>当前效果：×"+format(this.effect())+"<br>需要：11 Cytus曲包"},
+    fullDisplay() {return "46<br>基于Lanota曲包增益Loaded Notes<br>当前效果：×"+format(this.effect())+"<br>需要：11 Cytus曲包"},
     unlocked(){return hasUpgrade('sp',46)||gba('sp',14).gte(10)},
 onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(11))},
  canAfford() {return gba('sp',14).gte(11)},
@@ -5197,7 +5200,7 @@ onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(11))},
       },
 },
 47:{ 
-    fullDisplay() {return "47<br>基于Phigros曲包和Cytus曲包增益全局速率<br>当前效果：×"+format(this.effect())+"<br>需要：12 Cytus曲包"},
+    fullDisplay() {return "47<br>基于Phigros曲包和Cytus曲包增益Loaded Notes<br>当前效果：×"+format(this.effect())+"<br>需要：12 Cytus曲包"},
     unlocked(){return hasUpgrade('sp',47)||gba('sp',14).gte(11)},
 onPurchase() {setBuyableAmount('sp',14,gba('sp',14).sub(12))},
  canAfford() {return gba('sp',14).gte(12)},

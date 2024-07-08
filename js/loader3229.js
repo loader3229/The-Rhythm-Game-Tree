@@ -44,10 +44,12 @@ addLayer("lo", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 	base(){
+		if(player.lo.evolution.gte(2))return Decimal.pow(10,5000000/(101**3.2));
 		if(player.lo.evolution.gte(1))return Decimal.pow(10,4000000/(101**3.1));
 		return new Decimal(1000)
 	},
     exponent(){
+		if(player.lo.evolution.gte(2))return new Decimal(3.2);
 		if(player.lo.evolution.gte(1))return new Decimal(3.1);
 		return new Decimal(3)
 	},
@@ -67,6 +69,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
 		mult = mult.mul(challengeEffect('r',11));
 		mult = mult.mul(player.lo.jdim1.add(1));
+		if(hasUpgrade('j',18))mult = mult.mul(upgradeEffect('j',18));
 		return mult
     },
     gainMult3() {
@@ -78,14 +81,23 @@ addLayer("lo", {
 		if(hasUpgrade('m',19))mult = mult.mul(upgradeEffect('m',19));
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
 		if(hasUpgrade('ch',38))mult = mult.mul(upgradeEffect('ch',38));
+		if(hasUpgrade('sp',41))mult = mult.mul(upgradeEffect('sp',41));
+		if(hasUpgrade('sp',42))mult = mult.mul(upgradeEffect('sp',42));
+		if(hasUpgrade('sp',43))mult = mult.mul(upgradeEffect('sp',43));
+		if(hasUpgrade('sp',44))mult = mult.mul(upgradeEffect('sp',44));
+		if(hasUpgrade('sp',45))mult = mult.mul(upgradeEffect('sp',45));
+		if(hasUpgrade('sp',46))mult = mult.mul(upgradeEffect('sp',46));
+		if(hasUpgrade('sp',47))mult = mult.mul(upgradeEffect('sp',47));
 		mult = mult.mul(challengeEffect('r',12))
 	    if(getClickableState("r",112)==1) mult = mult.mul(clickableEffect("r", 112))
 		if(player.lo.evolution.gte(1)) mult = mult.mul(10)
+		if(hasUpgrade('j',18))mult = mult.mul(upgradeEffect('j',18));
 		return mult
     },
     jdimMult(n) {
         mult = new Decimal(1)
 		if(hasUpgrade('lo',103)&&n==1)mult = mult.mul(challengeEffect('r',11));
+		if(hasUpgrade('j',18)&&n==1)mult = mult.mul(upgradeEffect('j',18));
 		return mult
     },
     gainExp() { 
@@ -108,6 +120,7 @@ addLayer("lo", {
 		if(hasUpgrade('lo',83))mult = mult.pow(2.5)
 		if(hasUpgrade('lo',85))mult = mult.pow(2.5)
 		if(hasUpgrade('lo',95))mult = mult.pow(2)
+		if(hasUpgrade('lo',111))mult = mult.pow(2)
 		return mult
     },
     noteEffect2() {
@@ -159,16 +172,17 @@ addLayer("lo", {
     ["display-text",
       function() {if(!hasUpgrade('lo',12))return ''; 
 		  let ret = 'loader3229打出过的最高连击数为：' + formatWhole(player.lo.maxcombo);
-		  if(player.lo.maxcombo_warn.gte(player.lo.evolution.gte(1)?80:800)){
+		  if(player.lo.maxcombo_warn.gte(1)){
 			  let b=new Decimal(3).div(player.lo.maxcombo_warn.div(player.lo.maxcombo).mul(4).sub(1));
 			  b=b.pow(3);
-			  ret = ret + '(' + formatWhole(b.mul(player.lo.maxcombo_warn)) + ')';
+			  if(player.lo.maxcombo_warn.div(player.lo.maxcombo).gte(1/4))ret = ret + '(' + formatWhole(b.mul(player.lo.maxcombo_warn)) + ')';
+			  else ret = ret + '(---)';
 		  }
 		  return ret;
 		  },
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
-	 function() {if(player.lo.maxcombo_warn.gte(player.lo.evolution.gte(1)?80:800))return formatWhole(player.lo.maxcombo_warn)+'以上的最高连击数被软上限！提升物量可以延迟软上限的出现';return '';},
+	 function() {if(player.lo.maxcombo_warn.gte(1))return formatWhole(player.lo.maxcombo_warn)+'以上的最高连击数被软上限！提升物量可以延迟软上限的出现';return '';},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
      "blank",
     ["clickable",11],"buyables",
@@ -201,7 +215,7 @@ addLayer("lo", {
 	   function() {return '让loader3229进行进化将会重置Notes和所有的层级（除成就和里程碑），并且使loader3229的进化次数+1。每次进化都会对这个游戏产生一定的影响！'}],
      "blank",["clickable",12],"milestones",
 ],
-  unlocked(){return hasUpgrade('lo',35) || player.lo.evolution.gte(1)}
+  unlocked(){return hasUpgrade('lo',94) || player.lo.evolution.gte(1)}
 },
    "判定维度": {
         content: [ ["infobox","introBox5"],
@@ -252,17 +266,7 @@ addLayer("lo", {
 	["display-text",function(){if(player.j.pdqja.lte(479))return '为Perfect及以下判定和Milthm维度2提供×' + formatWhole(player.lo.jdim1.floor().add(1)) + '加成';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return '为Milthm维度1提供×' + formatWhole(player.lo.perfect.floor().add(1)) + '加成';return '';}],
 	]]],
-	],/*
-    ["display-text",
-	   function() {
-		   if(player.j.pdqja.lte(479))return 'loader3229打出了' + formatWhole(player.lo.jdim1.floor()) + '次Perfect+判定，为Perfect及以下判定和Milthm维度2提供×' + formatWhole(player.lo.jdim1.floor().add(1)) + '加成';
-		   return '';
-	}],
-    ["display-text",
-	   function() {
-		   if(player.j.pdqja.lte(501))return 'loader3229打出了' + formatWhole(player.lo.perfect.floor()) + '次Perfect判定，为Milthm维度1提供×' + formatWhole(player.lo.perfect.floor().add(1)) + '加成';
-		   return '';
-	}],*/
+	],
     ["clickable",11]],
   unlocked(){return hasUpgrade('lo',102)}
 },
@@ -335,7 +339,7 @@ addLayer("lo", {
 			},
     25:{ 
 		description: "如果你的PTT小于loader3229的PTT，loader3229可以让你的PTT变为他的PTT。",
-                cost: new Decimal(11),
+                cost(){return new Decimal(player[this.layer].evolution.gte(2)?10:11)},
     unlocked() { return player.p.unlocked},
 			},
     31:{ 
@@ -359,7 +363,7 @@ addLayer("lo", {
 			},
     34:{ 
                 description: "最高连击数增加Cyten获取",
-                cost(){return new Decimal(player[this.layer].evolution.gte(1)?14:22)},
+                cost(){return new Decimal(player[this.layer].evolution.gte(1)?21:22)},
     unlocked() { return player.c.unlocked()},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -397,16 +401,12 @@ addLayer("lo", {
 			},
     45:{ 
 		description: "增加Phigros挑战“IN”和“AT”的上限",
-                cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?21:22);
-				},
+                cost: new Decimal(22),
     unlocked() { return player.ch.unlocked()},
 			},
     51:{ 
                 description: "最高连击数增加判定和Loaded Notes获取，Loaded Notes效果1变为原来的平方",
-                cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?23:24);
-				},
+                cost: new Decimal(24),
     unlocked() { return (hasUpgrade('lo', 35))},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -416,16 +416,14 @@ addLayer("lo", {
     52:{ 
                 description: "Loaded Points对Loaded Notes的获取速度加成变得更好，Loaded Notes效果2变为原来的平方",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?22:25);
+					return new Decimal(player[this.layer].evolution.gte(1)?23:25);
 				},
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
 			
     53:{ 
                 description: "Cytus可购买项7的效果变得更好",
-                cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?24:25);
-				},
+                cost: new Decimal(25),
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
     54:{ 
@@ -441,7 +439,7 @@ addLayer("lo", {
     61:{ 
                 description: "解锁Loaded Notes可购买项",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?25:30);
+					return new Decimal(player[this.layer].evolution.gte(1)?29:30);
 				},
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
@@ -460,7 +458,7 @@ addLayer("lo", {
     64:{ 
 		description: "Loaded Points增加loader3229层级的速度",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?27:32);
+					return new Decimal(player[this.layer].evolution.gte(1)?31:32);
 				},
     unlocked() { return (hasUpgrade('lo', 35))},
                 effect() {
@@ -506,7 +504,7 @@ addLayer("lo", {
     56:{ 
 		description: "Note对Loaded Notes的获取速度加成变得更好",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?44:46);
+					return new Decimal(player[this.layer].evolution.gte(1)?45:46);
 				},
     unlocked() { return (hasChallenge('c', 14))},
 			},
@@ -524,21 +522,21 @@ addLayer("lo", {
     71:{ 
 		description: "loader3229的增量游戏会尽量减少软上限。去除谱面升级 今年も「雪降り、メリクリ」目指して頑張り “IN Ⅰ2” 的软上限。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?45:54);
+					return new Decimal(player[this.layer].evolution.gte(1)?46:54);
 				},
     unlocked() { return (hasMilestone('sp',3))},
 			},
     72:{ 
 		description: "解锁一个新的loader3229可购买项。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?50:53);
+					return new Decimal(player[this.layer].evolution.gte(1)?48:53);
 				},
     unlocked() { return (hasMilestone('sp',3))},
 			},
     73:{ 
 		description: "解锁一个新的loader3229可购买项。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?52:55);
+					return new Decimal(player[this.layer].evolution.gte(1)?50:55);
 				},
     unlocked() { return (hasMilestone('sp',3))},
 			},
@@ -592,35 +590,35 @@ addLayer("lo", {
     83:{ 
                 description: "Loaded Notes效果1变为原来的2.5次方",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?65:74);
+					return new Decimal(player[this.layer].evolution.gte(1)?64:74);
 				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     84:{ 
                 description: "Loaded Notes效果2变为原来的6.25次方",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?67:86);
+					return new Decimal(player[this.layer].evolution.gte(1)?66:86);
 				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     85:{ 
                 description: "Loaded Notes效果1变为原来的2.5次方",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?69:88);
+					return new Decimal(player[this.layer].evolution.gte(1)?68:88);
 				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     86:{ 
                 description: "解锁一个新的loader3229可购买项。",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?70:90);
+					return new Decimal(player[this.layer].evolution.gte(1)?65:90);
 				},
     unlocked() { return (hasMilestone('r', 0))},
 			},
     91:{ 
 		description: "Loaded Points提升Milthm获取",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?93:93);
+					return new Decimal(player[this.layer].evolution.gte(1)?85:93);
 				},
     unlocked() { return (hasUpgrade('r',37))},
                 effect() {
@@ -631,14 +629,14 @@ addLayer("lo", {
     92:{ 
 		description: "第一个loader3229可购买项对Cyten也有效",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?95:95);
+					return new Decimal(player[this.layer].evolution.gte(1)?88:95);
 				},
     unlocked() { return (hasUpgrade('r',37))},
 			},
     93:{ 
 		description: "本层级自动增加蛇/龙长度的升级的效果变为500倍",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?99:99);
+					return new Decimal(player[this.layer].evolution.gte(1)?89:99);
 				},
     unlocked() { return (hasUpgrade('r',37))},
 			},
@@ -666,13 +664,33 @@ addLayer("lo", {
 			},
     102:{ 
 		description: "解锁判定维度",
-                cost: new Decimal(88),
-    unlocked() { return (player.lo.evolution.gte(1))},
+                cost: new Decimal(90),
+    unlocked() { return (player.lo.evolution.gte(1) && hasUpgrade('r',47))},
 			},
     103:{ 
 		description: "增加Rotaeno挑战RC1的上限，Rotaeno挑战RC1的效果也对Perfect+判定的获取生效",
-                cost: new Decimal(89),
-    unlocked() { return (player.j.pdqja.lte(479))},
+                cost: new Decimal(95),
+    unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479))},
+			},
+    104:{ 
+		description: "增加Phigros挑战“IN”、“AT”和“SP”的上限",
+                cost: new Decimal(90),
+    unlocked() { return (player.lo.evolution.gte(1) && hasUpgrade('r',47))},
+			},
+    105:{ 
+		description: "让loader3229再次帮你打课题模式。loader3229会帮你选择课题模式的谱面难度。",
+                cost: new Decimal(96),
+    unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479))},
+			},
+    106:{ 
+		description: "第一个loader3229可购买项对Milthm也有效",
+                cost: new Decimal(97),
+    unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479))},
+			},
+    111:{ 
+                description: "Loaded Notes效果1变为原来的平方",
+                cost: new Decimal(101),
+    unlocked() { return (player.lo.evolution.gte(1))},
 			},
 	},
   softcap:new Decimal ("10^^1000"),
@@ -695,6 +713,7 @@ clickables: {
       display() {return "需要"+formatWhole(player[this.layer].evolution.add(101))+" Loaded Points"},
       canClick() {return player.lo.points.gte(player[this.layer].evolution.add(101))},
       onClick() {
+		  if(player.lo.evolution.gte(1))return alert('loader3229暂时不能进行第2次进化。');
 		if(player.lo.points.gte(player[this.layer].evolution.add(101))){
 			if(confirm("确实要让loader3229开始进化吗？")){
 				layerDataReset('s',['milestones']);
@@ -706,13 +725,14 @@ clickables: {
 				layerDataReset('c',['milestones']);
 				layerDataReset('ch',['milestones']);
 				layerDataReset('sp',['milestones']);
-				if(player.lo.evolution.eq(0)){
-					layerDataReset('r',[]);
-					layerDataReset('mi',[]);
-					layerDataReset('j',[]);
-				}
+				layerDataReset('r',[]);
+				layerDataReset('mi',[]);
+				layerDataReset('j',[]);
 				player.points=new Decimal(0);
 				player.lo.evolution = player.lo.evolution.add(1);
+				if(player.lo.evolution.gte(2)){
+					player.lo.upgrades=[11,12,13,14,15,16,21,22,23,24,25,42,61,62,65,105];
+				}
 			}
 		}
 	  },
@@ -723,7 +743,15 @@ clickables: {
             unlocked() {return player[this.layer].evolution.gte(1)},
             done() {return player[this.layer].evolution.gte(1)}, // Used to determine when to give the milestone
             effectDescription: function(){
-				return "保留前4行里程碑，自动购买第一行loader3229可购买项且不消耗判定，第一行loader3229可购买基于Perfect判定而不是Great/Miss判定，Loaded Notes获取变为10倍，Perfect判定数量加成Milthm维度1";
+				return "保留前4行里程碑和前6个Rotaeno里程碑，自动购买第一行loader3229可购买项且不消耗判定，第一行loader3229可购买基于Perfect判定而不是Great/Miss判定，Loaded Notes获取变为10倍，Perfect判定数量加成Milthm维度1";
+			},
+        },
+		{
+			requirementDescription: "第2次进化",
+            unlocked() {return player[this.layer].evolution.gte(2)},
+            done() {return player[this.layer].evolution.gte(2)}, // Used to determine when to give the milestone
+            effectDescription: function(){
+				return "自动购买第二行loader3229可购买项且不消耗Loaded Notes，Loaded Notes获取变为10倍，进化时保留一些升级";
 			},
         },
 	],
@@ -760,7 +788,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id))},
         display() { return "基于购买次数减少loader3229的设备断触率<br>价格："+format(this.cost())+" "+((player[this.layer].evolution.gte(1))?"Perfect":"Miss")+"<br>loader3229的设备基础断触率："+format(this.effect().mul(100))+"%"},
         title: "升级设备",
-        effect() {return Decimal.pow(0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
+        effect() {return Decimal.pow(player.lo.evolution.gte(1)?0.984:0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
         unlocked(){unlock=true
           return unlock
         },
@@ -882,8 +910,8 @@ clickables: {
 			if(hasUpgrade('lo',12)){
 				var c=player.points.add(1e10).log10().log10().pow(0.5).mul(player.lo.points.add(10).log10().pow(0.5)).div(Decimal.pow(0.1,new Decimal(1).sub(player.lo.stamina.div(2000))).mul(Decimal.pow(this.buyables[13].effect(),player.lo.stamina.div(2000))));
 				
-				var d=new Decimal(tmp.ch.note || 1).div(4).max(800);
-
+				var d=new Decimal(tmp.ch.note || 1).max(0).div(5).add(100);
+				if(d.gte(500))d = new Decimal(tmp.ch.note || 1).max(0).div(4);
 				if(c.gte(d)){
 					c = c.mul(d).mul(d).cbrt();
 					c = c.div(c.add(d.mul(3))).mul(4).mul(d);
@@ -900,13 +928,49 @@ clickables: {
 			player.lo.maxcombo_warn=new Decimal(0);
 			player.lo.stamina=player.lo.stamina.add(diff*1.5).min(2000);
 			if(hasUpgrade('lo',35)){
-				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff)).min(5e23);
+				player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff));
+				if(player.lo.evolution.lte(0))player.lo.note=player.lo.note.min(1e24);
+				if(player.lo.evolution.lte(1))player.lo.note=player.lo.note.min(1e28);
 			}
 			if(hasUpgrade('lo',74)){
-				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff)).min(3e15);
+				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));
+				if(player.lo.evolution.lte(0))player.a.sn=player.a.sn.min(1e15);
+				if(player.lo.evolution.lte(1))player.a.sn=player.a.sn.min(1e16);
 			}
 			if(hasUpgrade('lo',81)){
-				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff)).min(6e9);
+				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));
+				if(player.lo.evolution.lte(0))player.a.dr=player.a.dr.min(1e10);
+				if(player.lo.evolution.lte(1))player.a.dr=player.a.dr.min(2e10);
+			}
+			if(hasUpgrade('lo',105)){
+				function calc(rks,dif){
+					dif = dif.max(1);
+					let a=1.1**0.05;
+					if(hasUpgrade('ch',44))a=1.1**0.1;
+					if(hasUpgrade('ch',52))a=1.2**0.2;
+					let sco=rks.div(dif).max(0).sub(0.3).pow(0.3).mul(a).mul(1000000).mul(tmp.a.drEff5)
+					if(sco.gte(960000)) sco=sco.sub(960000).pow(0.75).add(960000).min(1000000)
+					let en=sco.div(1000000).pow(5).mul(dif).mul(3).div(5)
+					return en;
+				}
+				rks1=player.p.rks;
+				dif1=player.ch.dif1;
+				
+				if(calc(rks1,dif1.add(1)).gte(calc(rks1,dif1))){
+					layers.ch.clickables[11].onClick();
+					player.ch.dif2=player.ch.dif1;
+					player.ch.dif3=player.ch.dif1;
+				}
+
+				rks1=player.p.rks;
+				dif1=player.ch.dif1;
+
+				if(calc(rks1,dif1.sub(1)).gte(calc(rks1,dif1))){
+					layers.ch.clickables[21].onClick();
+					player.ch.dif2=player.ch.dif1;
+					player.ch.dif3=player.ch.dif1;
+				}
+
 			}
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
@@ -918,6 +982,11 @@ clickables: {
 			player.lo.buyables[11]=player.lo.buyables[11].max(player.lo.perfect.max(1).log2().floor().add(1));
 			player.lo.buyables[12]=player.lo.buyables[12].max(player.lo.perfect.max(1).log2().floor().add(1));
 			player.lo.buyables[13]=player.lo.buyables[13].max(player.lo.perfect.max(1).log2().floor().add(1));
+		}
+		if(player.lo.evolution.gte(2)){
+			player.lo.buyables[21]=player.lo.buyables[21].max(player.lo.note.max(1).log2().floor().add(1));
+			player.lo.buyables[22]=player.lo.buyables[22].max(player.lo.note.max(1).log2().floor().add(1));
+			player.lo.buyables[23]=player.lo.buyables[23].max(player.lo.perfect.max(1).log2().floor().add(1));
 		}
 	},
 })//Loader3229
