@@ -470,6 +470,13 @@ player.QqQe308="我是QqQe308，v我50更新音乐游戏树"}
    tooltip:"同时获得所有（前17行）Rot升级<br>奖励：解锁最后一个Rot升级",
    textStyle: {'color': '#054fb0'},
    },
+        108: {
+            name: "再次进化！",
+            done() {return player.lo.evolution.gte(2)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "让loader3229再次开始进化！",
+            textStyle: {'color': '#FFFFFF'},
+		},
        
        1001: {
             name: "隐藏成就1",
@@ -1761,7 +1768,7 @@ return eff
     42:{ 
       fullDisplay() {return "Abstruse Dilemma<br>基于RKS增益Notes<br>当前效果:"+format(this.effect())+"×<br>需要：12.45 PTT"},
     canAfford() {return player.a.ptt.gte(12.45)},
-      effect() {return new Decimal(10).pow(player.p.rks.mul(20).pow(1.5).min(hasUpgrade('lo',96)?1e10:2000))},
+      effect() {return new Decimal(10).pow(player.p.rks.mul(20).pow(1.5).min(hasUpgrade('lo',96)?new Decimal("1e100000"):2000))},
     unlocked() { return hasChallenge('c',11)&&hasUpgrade('s',32)},},
     43:{ 
       fullDisplay() {return "Aegleseeker<br>基于源点降低诗篇的基本需求<br>当前效果:^"+format(this.effect())+"<br>需要：12.46 PTT"},
@@ -2002,6 +2009,7 @@ addLayer("l", {
     if(hasUpgrade('a',43))req=req.pow(upgradeEffect('a',43))
 	if (hasUpgrade('lo', 16)) req=req.pow(buyableEffect('lo',23))
 	req=req.pow(tmp.j.pdqja2)
+req = req.pow(buyableEffect('sp',22))
         if(hasUpgrade('lo',23)){req=req.times(1e-60)}
         if(buyableEffect('c',24).gt(1)) req = req.div(buyableEffect('c',24))
     return req},
@@ -2014,6 +2022,7 @@ addLayer("l", {
 		
 	if (hasUpgrade('lo', 16)) mult = mult.pow(buyableEffect('lo',23))
 	mult = mult.pow(tmp.j.pdqja2)
+mult = mult.pow(buyableEffect('sp',22))
 		
 	
 		return mult;
@@ -3760,6 +3769,7 @@ addLayer("ch", {
 		
 	if (hasUpgrade('lo', 61)) mult = mult.pow(buyableEffect('lo',22))
 	if (hasUpgrade('j', 23)) mult = mult.pow(0.95)
+	if (hasUpgrade('j',26)) mult = mult.pow(upgradeEffect('j',26))
 		
 if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
         if(buyableEffect('c',32).gt(1))mult =mult.div(buyableEffect('c',32))
@@ -3775,6 +3785,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
 		
 	if (hasUpgrade('lo', 61)) mult = mult.pow(buyableEffect('lo',22))
 	if (hasUpgrade('j', 23)) mult = mult.pow(0.95)
+	if (hasUpgrade('j',26)) mult = mult.pow(upgradeEffect('j',26))
 		
 	
 		return mult;
@@ -4801,7 +4812,7 @@ buyables:{
 				title: "获得一个Rotaeno曲包",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = n(2).pow(x.pow(0.8)).mul(1e41)
+     let cost = n(2).pow(x.pow(0.8)).mul(1e40*(player.lo.evolution.lt(1)?5:1))
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4817,7 +4828,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.r.points.max(10).div(1e41).log(2).root(0.8)
+					let tempBuy = player.r.points.max(10).div(1e40*(player.lo.evolution.lt(1)?5:1)).log(2).root(0.8)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4828,8 +4839,8 @@ buyables:{
 				title: "Arcaea曲包专精",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = n('1e36000')
-     cost=cost.times(n(1e100).pow(x.pow(1.5)))
+     let cost = n('1e360000')
+     cost=cost.times(n('1e1000').pow(x.pow(1.5)))
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return n(2).pow(gba('sp',11)).pow(x).max(1)},
@@ -4845,7 +4856,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.a.points.div("1e36000").log(1e100).root(1.5)
+					let tempBuy = player.a.points.div("1e360000").log('1e1000').root(1.5)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4856,13 +4867,13 @@ buyables:{
 				title: "Lanota曲包专精",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = n(8.5).add(n(x).div(10)).pow(6)
+     let cost = n(4).add(n(x).div(10)).pow(6)
     return cost.floor()
                 },
-				effect(x=player[this.layer].buyables[this.id]) {return n(gba('sp',12).mul(x)).pow(0.2).max(1).sub(1).div(10).add(1)},
+				effect(x=player[this.layer].buyables[this.id]) {return n(gba('sp',12).mul(x)).pow(0.2).max(1).sub(1).div(10).add(1).pow(-0.5)},
 				display() { // Everything else displayed in the buyable button after the title
        let data = tmp[this.layer].buyables[this.id]
-       return (("需要 " + format(data.cost) + " 诗篇")+"<br>数量: " + format(player[this.layer].buyables[this.id]) + "<br>Lanota曲包以×" +format(this.effect(),3) + "的增益提升诗篇获取量")
+       return (("需要 " + format(data.cost) + " 诗篇")+"<br>数量: " + format(player[this.layer].buyables[this.id]) + "<br>Lanota曲包以^" +format(this.effect(),3) + "的增益提升诗篇获取量")
                 },
       unlocked() { return hasUpgrade('j',27)}, 
       canAfford() {
@@ -4872,7 +4883,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.l.points.root(6).sub(8.5).mul(10);
+					let tempBuy = player.l.points.root(6).sub(4).mul(10);
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4883,8 +4894,8 @@ buyables:{
 				title: "Phigros曲包专精",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = n('1e1900')
-     cost=cost.times(n(1e45).pow(x.pow(1.25)))
+     let cost = n('1e38000')
+     cost=cost.times(n('1e900').pow(x.pow(1.25)))
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return n(1.6).pow(gba('sp',13)).pow(x).max(1)},
@@ -4900,7 +4911,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.p.points.div("1e1900").log(1e50).root(1.25)
+					let tempBuy = player.p.points.div("1e38000").log('1e900').root(1.25)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4911,8 +4922,8 @@ buyables:{
 				title: "Cytus曲包专精",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = n('1e850')
-     cost=cost.times(n(1e15).pow(x.pow(1.25)))
+     let cost = n('1e4250')
+     cost=cost.times(n(1e75).pow(x.pow(1.25)))
     return cost
                 },
 				effect(x=player[this.layer].buyables[this.id]) {return n(1.5).pow(gba('sp',14)).pow(x).max(1)},
@@ -4928,7 +4939,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.c.points.div("1e850").log(1e10).root(1.25)
+					let tempBuy = player.c.points.div("1e4250").log(1e75).root(1.25)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4939,7 +4950,7 @@ buyables:{
 				title: "Rotaeno曲包专精",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = n('1e40')
+     let cost = n('1e50')
      cost=cost.times(n(10).pow(x.pow(1.5)))
     return cost
                 },
@@ -4956,7 +4967,7 @@ buyables:{
                 },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.c.points.div("1e40").log(10).root(1.5)
+					let tempBuy = player.c.points.div("1e50").log(10).root(1.5)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -5249,7 +5260,7 @@ onPurchase() {setBuyableAmount('sp',15,gba('sp',15).sub(25))},
       },
 },
 57:{ 
-    fullDisplay() {return "57<br>基于Rotaeno曲包增益曲包获取量，Notes^1.001<br>当前效果：×"+format(this.effect())+"<br>需要：41 Rotaeno曲包"},
+    fullDisplay() {return "57<br>基于Rotaeno曲包增益旋律获取量，Notes^1.001<br>当前效果：×"+format(this.effect())+"<br>需要：41 Rotaeno曲包"},
     unlocked(){return hasUpgrade('j',26)||gba('sp',15).gte(40)},
 onPurchase() {setBuyableAmount('sp',15,gba('sp',15).sub(41))},
  canAfford() {return gba('sp',15).gte(41)},

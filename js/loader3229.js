@@ -32,6 +32,7 @@ addLayer("lo", {
 		note: new Decimal(0),
 		evolution: new Decimal(0),
 		jdim1: new Decimal(0),
+		jdim2: new Decimal(0),
 		play: false,
     }},
     color: "#ffffff",
@@ -76,7 +77,7 @@ addLayer("lo", {
         mult = new Decimal(1)
 		if(hasUpgrade('lo',56))mult = mult.mul(player.points.add(10).log10().pow(0.25));
 		else mult = mult.mul(player.points.add(10).log10().add(10).log10());
-		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',52)?2:1));
+		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',114)?2.5:hasUpgrade('lo',52)?2:1));
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
 		if(hasUpgrade('m',19))mult = mult.mul(upgradeEffect('m',19));
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
@@ -98,12 +99,15 @@ addLayer("lo", {
     jdimMult(n) {
         mult = new Decimal(1)
 		if(hasUpgrade('lo',103)&&n==1)mult = mult.mul(challengeEffect('r',11));
+		if(hasUpgrade('lo',112)&&n==2)mult = mult.mul(challengeEffect('r',11));
 		if(hasUpgrade('j',18)&&n==1)mult = mult.mul(upgradeEffect('j',18));
+		if(hasUpgrade('j',28)&&n==2)mult = mult.mul(upgradeEffect('j',18));
 		if(player.lo.evolution.gte(2)&&n==1) {
 			mult = mult.mul(player.points.add(10).log10());
 			mult = mult.mul(Decimal.pow(hasUpgrade('lo',43)?1.25:1.2,player.lo.points));
 			mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',43)?2:0));
 		}
+		if(n==1)mult = mult.mul(player.lo.jdim2.add(1));
 		return mult
     },
     gainExp() { 
@@ -229,7 +233,8 @@ addLayer("lo", {
     ["display-text",
 	   function() {
 		   if(player.j.pdqja.gt(479) && player.lo.evolution.lt(2))return '完成J层级的479ms判定区间挑战以解锁下一个判定类型：Perfect+';
-		   return '在进化次数2下完成J层级的???判定区间挑战以解锁下一个判定类型：S-Perfect';
+		   if(player.j.pdqja.gt(441) && player.lo.evolution.lt(3))return '在进化次数2下完成J层级的441ms判定区间挑战以解锁下一个判定类型：S-Perfect';
+		   return '';
 	}],"blank",
 	["display-text",
       function() {return 'loader3229的精力：' + formatWhole(player.lo.stamina) + '/2,000'}],
@@ -240,35 +245,35 @@ addLayer("lo", {
 	[["column",[
 	["display-text","判定类型"],
 	["display-text",function(){if(player.j.pdqja.lte(-1))return 'S-Perfect+';return '';}],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return 'S-Perfect';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return 'S-Perfect';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return 'Perfect+';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return 'Perfect';return '';}],
 	]],
 	["column",[
 	["display-text","|"],
 	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return '|';return '';}],
 	]],
 	["column",[
 	["display-text","打出次数"],
 	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return formatWhole(player.lo.jdim2.floor())+'(+'+format(layers.lo.jdimMult(2).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return formatWhole(player.lo.jdim1.floor())+'(+'+format(layers.lo.jdimMult(1).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return formatWhole(player.lo.perfect.floor())+'(+'+format(n(1).sub(buyableEffect('lo',12)).mul(tmp.lo.gainMult2).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
 	]],["blank"],
 	["column",[
 	["display-text","|"],
 	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return '|';return '';}],
 	]],
 	["column",[
 	["display-text","加成"],
 	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return '为Perfect+判定和Milthm维度3提供×' + formatWhole(player.lo.jdim2.floor().add(1)) + '加成';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return '为Perfect及以下判定和Milthm维度2提供×' + formatWhole(player.lo.jdim1.floor().add(1)) + '加成';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return '为Milthm维度1提供×' + formatWhole(player.lo.perfect.floor().add(1)) + '加成';return '';}],
 	]]],
@@ -624,7 +629,7 @@ addLayer("lo", {
     91:{ 
 		description: "Loaded Points提升Milthm获取",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?85:93);
+					return new Decimal(player[this.layer].evolution.gte(2)?84:player[this.layer].evolution.gte(1)?85:93);
 				},
     unlocked() { return (hasUpgrade('r',37))},
                 effect() {
@@ -635,7 +640,7 @@ addLayer("lo", {
     92:{ 
 		description: "第一个loader3229可购买项对Cyten也有效",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(1)?88:95);
+					return new Decimal(player[this.layer].evolution.gte(2)?85:player[this.layer].evolution.gte(1)?88:95);
 				},
     unlocked() { return (hasUpgrade('r',37))},
 			},
@@ -677,12 +682,16 @@ addLayer("lo", {
 			},
     103:{ 
 		description: "增加Rotaeno挑战RC1的上限，Rotaeno挑战RC1的效果也对Perfect+判定的获取生效",
-                cost: new Decimal(95),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(2)?91:95);
+				},
     unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479))},
 			},
     104:{ 
 		description: "增加Phigros挑战“IN”、“AT”和“SP”的上限",
-                cost: new Decimal(90),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(2)?88:90);
+				},
     unlocked() { return (player.lo.evolution.gte(1) && hasUpgrade('r',47))},
 			},
     105:{ 
@@ -692,7 +701,9 @@ addLayer("lo", {
 			},
     106:{ 
 		description: "第一个loader3229可购买项对Milthm也有效",
-                cost: new Decimal(97),
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(2)?94:97);
+				},
     unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479))},
 			},
     111:{ 
@@ -701,6 +712,27 @@ addLayer("lo", {
 					return new Decimal(player[this.layer].evolution.gte(2)?49:101);
 				},
     unlocked() { return (player.lo.evolution.gte(1))},
+			},
+    112:{ 
+		description: "增加Rotaeno挑战RC1的上限，批量完成Rotaeno挑战RC1，Rotaeno挑战RC1的效果也对S-Perfect判定的获取生效",
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(2)?91:91);
+				},
+    unlocked() { return (player.lo.evolution.gte(2) && player.j.pdqja.lte(441))},
+			},
+    113:{ 
+		description: "loader3229 又 要 去除软上限了！Rotaeno升级树升级21的效果软上限延迟到1e333333开始！",
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(2)?95:95);
+				},
+    unlocked() { return (player.lo.evolution.gte(2) && hasUpgrade('j',28))},
+			},
+    114:{ 
+		description: "Loaded Points对Loaded Notes的获取速度加成变得更好",
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(2)?96:96);
+				},
+    unlocked() { return (player.lo.evolution.gte(2) && hasUpgrade('j',28))},
 			},
 	},
   softcap:new Decimal ("10^^1000"),
@@ -902,6 +934,9 @@ clickables: {
 			var f=player.lo.stamina.min(diff);
 			
 			if(hasUpgrade('lo',102)){
+				if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3)){
+					player.lo.jdim2=player.lo.jdim2.add(f.mul(this.jdimMult(2)));
+				}
 				if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2)){
 					player.lo.jdim1=player.lo.jdim1.add(f.mul(this.jdimMult(1)));
 				}
@@ -944,22 +979,24 @@ clickables: {
 			if(hasUpgrade('lo',74)){
 				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));
 				if(player.lo.evolution.lte(0))player.a.sn=player.a.sn.min(1e15);
-				if(player.lo.evolution.lte(1))player.a.sn=player.a.sn.min(1e16);
+				if(player.lo.evolution.lte(2))player.a.sn=player.a.sn.min(1e16);
 			}
 			if(hasUpgrade('lo',81)){
 				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));
 				if(player.lo.evolution.lte(0))player.a.dr=player.a.dr.min(1e10);
-				if(player.lo.evolution.lte(1))player.a.dr=player.a.dr.min(2e10);
+				if(player.lo.evolution.lte(2))player.a.dr=player.a.dr.min(2e10);
 			}
 		}
 		if(hasUpgrade('lo',35) && player[this.layer].evolution.gte(2)){
 			player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff));
+			if(player.lo.evolution.lte(2))player.lo.note=player.lo.note.min(1e30);
 		}
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
 		if(hasUpgrade('lo',62))player.p.rks=player.p.rks.max(tmp.lo.rks);
 		if(hasUpgrade('lo',65))player.ch.en=player.ch.en.max(6);
 		if(hasUpgrade('lo',42)&&player.p.activeChallenge==11)player.p.challenges[11]=new Decimal(player.p.challenges[11]).max(player.a.points.add(1).log10().div(4).sub(1).floor()).min(layers.p.challenges[11].completionLimit()).toNumber();
 		if(hasUpgrade('lo',42)&&player.p.activeChallenge==12)player.p.challenges[12]=new Decimal(player.p.challenges[12]).max(player.points.add(1).log10().div(20).add(0.5).floor()).min(layers.p.challenges[12].completionLimit()).toNumber();
+		if(hasUpgrade('lo',112)&&player.r.activeChallenge==11)player.r.challenges[11]=new Decimal(player.r.challenges[11]).max(player.c.power.add(1).log10().div(50).sub(23).floor()).min(layers.r.challenges[11].completionLimit()).toNumber();
 		if(player.lo.evolution.gte(1)){
 			player.lo.buyables[11]=player.lo.buyables[11].max(player.lo.perfect.max(1).log2().floor().add(1));
 			player.lo.buyables[12]=player.lo.buyables[12].max(player.lo.perfect.max(1).log2().floor().add(1));

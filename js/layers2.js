@@ -55,6 +55,7 @@ chalBox: {
         if(hasUpgrade('sp',36)) mult = mult.times(upgradeEffect('sp',36))
         if(hasUpgrade('sp',37)) mult = mult.times(upgradeEffect('sp',37))
         if(hasUpgrade('sp',56)) mult = mult.times(upgradeEffect('sp',56))
+        if(hasUpgrade('sp',57)) mult = mult.times(upgradeEffect('sp',57))
         if(hasUpgrade('m',15)) mult = mult.times(upgradeEffect('m',15))
         if (gcs("r",111)==1) mult = mult.times(clickableEffect("r", 111))
         if(hasUpgrade('mi',15)) mult = mult.times(upgradeEffect('mi',15))
@@ -398,19 +399,30 @@ return mult
            display() {return "累计旋律数量增益Note获取量<br>价格: 1 Rot点数<br>效果: ×"+format(this.effect())},
            effect() {
             let a=player.r.total.max(10)
+			if(!hasUpgrade('lo',113)){
             if(a.gte(1e15)) a = n(10).pow(a.log10().sub(15).pow(0.5).add(15))//sc
+			}
            eff=n("1e1000").pow(a.pow(0.8))
+			if(!hasUpgrade('lo',113)){
            if(a.gte(1.14e114)) return a.pow(3000)//sc5
             if(eff.log10().gte(10000)) eff = n(10).pow(eff.log10().sub(10000).pow(0.8).add(10000))//sc
+			}
          if (gcs("r",53)==1) eff = eff.pow(clickableEffect("r", 53))
          if(!hasUpgrade('r',16)) eff=eff.min("1e100000")
+			if(!hasUpgrade('lo',113)){
          if(eff.log10().gte(100000)) eff = n(10).pow(eff.log10().sub(100000).pow(0.8).add(99999))//sc2
          if(eff.log10().gte(250000)) eff = n(10).pow(eff.log10().sub(250000).pow(0.5).add(250000))//sc3
          if(eff.log10().gte(300000)) eff = n(10).pow(eff.log10().sub(300000).pow(0.1).add(300000).min(300005))
+			}else{
+         if(eff.log10().gte(333333)) eff = n(10).pow(eff.log10().sub(333333).pow(0.05).add(333333))
+         if (gcs("r",53)==1&&hasUpgrade('r',24)) eff = eff.pow(clickableEffect("r", 53).pow(0.25))
+			 return eff.max(1).max(a.pow(3000));
+			}
          if (gcs("r",53)==1&&hasUpgrade('r',24)) eff = eff.pow(clickableEffect("r", 53).pow(0.25))
             return eff.max(1)
            },
            tooltip() {
+			  if(hasUpgrade('lo',113)) return "购买要求: 无<br>软上限：1e333333"
             if(hasUpgrade('r',16)&&this.effect().gte('1e300005')) return "购买要求: 无<br>软上限1：1e10000，软上限2：1e100000，软上限3：1e250000，软上限4：1e300000，硬上限：1e300005"
             if(hasUpgrade('r',16)&&this.effect().gte('1e300000')) return "购买要求: 无<br>软上限1：1e10000，软上限2：1e100000，软上限3：1e250000，软上限4：1e300000"
             if(hasUpgrade('r',16)&&this.effect().gte('1e250000')) return "购买要求: 无<br>软上限1：1e10000，软上限2：1e100000，软上限3：1e250000"
@@ -1352,7 +1364,7 @@ if(eff.log10().gte(500)) eff = n(10).pow(eff.log10().sub(500).pow(0.8).add(500))
         unlocked(){return hasUpgrade('r',17)},
         onEnter() {layers.r.clickables[11].onClick()},
         completionLimit(){
-          return new Decimal(5).add(hasUpgrade('lo',101)?15:0).add(hasUpgrade('lo',103)?20:0)},
+          return new Decimal(5).add(hasUpgrade('lo',101)?15:0).add(hasUpgrade('lo',103)?20:0).add(hasUpgrade('lo',112)?260:0)},
         canComplete: function() {
           return player.c.power.gte(new Decimal("1e1200").mul(new Decimal(1e50).pow(new Decimal(challengeCompletions(this.layer,this.id)))))},
         },
@@ -1421,8 +1433,7 @@ if(eff.log10().gte(500)) eff = n(10).pow(eff.log10().sub(500).pow(0.8).add(500))
           return "所有非静态层级资源和Notes获取量变为原来的log10，全局速率锁定为1，别忘了重新购买Rot升级树中的升级<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/"+formatWhole(this.completionLimit());},
         goalDescription(){return this.a().add(n(challengeCompletions(this.layer,this.id)).mul(60000))+" Notes每秒"},
        a() {
-	   if(challengeCompletions(this.layer,this.id)<=1) return n(1000000)
-        if(challengeCompletions(this.layer,this.id)>1) return n(1930000)
+	   return n(1000000)
        },
         rewardDescription(){return "前两次完成分别解锁3个曲包升级<br>后三次完成基于完成次数和判定线增益旋律获取量，当前效果：×"+format(challengeEffect(this.layer,this.id))},
         rewardEffect() {
@@ -1434,7 +1445,7 @@ if(eff.log10().gte(500)) eff = n(10).pow(eff.log10().sub(500).pow(0.8).add(500))
         unlocked(){return hasUpgrade('j',17)},
         onEnter() {layers.r.clickables[11].onClick()},
         completionLimit(){
-          return n(2)},
+          return n(player.lo.evolution.gte(2)?5:2)},
         canComplete: function() {
           return getPointGen().gte(this.a().add(n(challengeCompletions(this.layer,this.id)).mul(60000)))},
       }, 
@@ -1835,6 +1846,7 @@ doReset(resettingLayer) {
 				effect(x=player[this.layer].buyables[this.id]) {
 				let a = player.mi.buyBoost
 				eff = a.pow(x.sub(1))
+				eff=eff.mul(player.lo.jdim2.add(1))
 				eff=eff.mul(layers.mi.dimBoost())
 				if(hasUpgrade('mi',16)) eff=eff.pow(1.03)
 				return eff.max(0)
@@ -2467,9 +2479,9 @@ doReset(resettingLayer) {
     }
   },
     21:{ 
-    fullDisplay() {return "未影人2004<br>Milthm增益Notes获取量（判定区间挑战内削弱）<br>当前效果: ×"+format(this.effect())+"<br>需求：通过436ms判定区间挑战"},
+    fullDisplay() {return "未影人2004<br>Milthm增益Notes获取量（判定区间挑战内削弱）<br>当前效果: ×"+format(this.effect())+"<br>需求：通过"+(player.lo.evolution.gte(2)?449:436)+"ms判定区间挑战"},
     unlocked() {return hasMilestone('j',6)},
-    canAfford() {return player.j.pdqja.lte(436)},
+    canAfford() {return player.j.pdqja.lte(player.lo.evolution.gte(2)?449:436)},
     effect() {let m=player.mi.points
      let a=m.pow(10)
      //if(a.log10().gte(10000)) a = n(10).pow(a.log10().sub(10000).pow(0.8).add(9999))//sc
@@ -2478,19 +2490,19 @@ doReset(resettingLayer) {
     }
   },
     22:{ 
-    fullDisplay() {return "DJGunBuster<br>第二个魔王曲升级效果变成原来的100次方<br>需求：通过435ms判定区间挑战"},
+    fullDisplay() {return "DJGunBuster<br>第二个魔王曲升级效果变成原来的100次方<br>需求：通过"+(player.lo.evolution.gte(2)?447:435)+"ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',21)},
-    canAfford() {return player.j.pdqja.lte(435)},
+    canAfford() {return player.j.pdqja.lte(player.lo.evolution.gte(2)?447:435)},
   },
     23:{ 
-    fullDisplay() {return "Maintain7716<br>谱面需求^0.95<br>需求：通过434ms判定区间挑战"},
+    fullDisplay() {return "Maintain7716<br>谱面需求^0.95<br>需求：通过"+(player.lo.evolution.gte(2)?445:434)+"ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',22)},
-    canAfford() {return player.j.pdqja.lte(434)},
+    canAfford() {return player.j.pdqja.lte(player.lo.evolution.gte(2)?445:434)},
   },
     24:{ 
-    fullDisplay() {return "アルストロメリア<br>前三个PTT升级的效果变成原来的100次方<br>需求：通过430ms判定区间挑战"},
+    fullDisplay() {return "アルストロメリア<br>前三个PTT升级的效果变成原来的100次方<br>需求：通过"+(player.lo.evolution.gte(2)?439:430)+"ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',23)},
-    canAfford() {return player.j.pdqja.lte(430)},
+    canAfford() {return player.j.pdqja.lte(player.lo.evolution.gte(2)?439:430)},
   },
     25:{ 
     fullDisplay() {return "空游呀<br>基于超过e3800000的Notes增益Cytus力量<br>当前效果: ×"+format(this.effect())+"<br>需求：通过425ms判定区间挑战"},
@@ -2503,20 +2515,25 @@ doReset(resettingLayer) {
     }
   },
     26:{ 
-    fullDisplay() {return "水銀_metalslime<br>解锁一个曲包升级，基于判定线增益谱面获取量<br>当前效果: ×"+format(this.effect(),3)+"<br>需求：通过400ms判定区间挑战"},
+    fullDisplay() {return "水銀_metalslime<br>解锁一个曲包升级，基于判定线增益谱面获取量<br>当前效果: ^"+format(this.effect(),3)+"<br>需求：通过420ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',25) && player.lo.evolution.gte(2)},
-    canAfford() {return player.j.pdqja.lte(400)},
+    canAfford() {return player.j.pdqja.lte(420)},
     effect() {
      a=player.j.points.max(1)
-     a=a.log(10).div(40).add(1).pow(2)
+     a=a.log(10).div(40).add(1).pow(-1)
      return a
     }
   },
     27:{ 
-    fullDisplay() {return "“QqQe308”<br>解锁曲包专精，自动最大购买Rotaeno曲包，升级“空游呀”不再有下限e3800000<br>需求：通过400ms判定区间挑战"},
+    fullDisplay() {return "“QqQe308”<br>解锁曲包专精，自动最大购买Rotaeno曲包，升级“空游呀”不再有下限e3800000<br>需求：通过414ms判定区间挑战"},
     unlocked() {return hasUpgrade('j',26) && player.lo.evolution.gte(2)},
     tooltip:"曲包专精代替了原计划的Milthm曲包",
-    canAfford() {return player.j.pdqja.lte(400)},
+    canAfford() {return player.j.pdqja.lte(414)},
+  },
+    28:{ 
+    fullDisplay() {return "“qq1010903229”<br>本层级名称为loader3229的升级对S-Perfect判定也生效，解锁新的loader3229升级<br>需求：通过410ms判定区间挑战"},
+    unlocked() {return player.lo.evolution.gte(2)},
+    canAfford() {return player.j.pdqja.lte(410)},
   },
     31:{ 
     fullDisplay() {return "AUTOPLAY<br>自动购买五个曲包专精可购买和三个获得Rot点数的可购买<br><br>解ͤ̀҉̷̸͍̺̟̳͔̞̙̳̳͕͖̬̮̳͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̕̚ͅͅ锁ͤ̀҉̷̸̨͍̺̟̳͔̞̙̳̳͕͖̬̮̳̥͖͕͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪̱ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̊́̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̜͍͍̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̄̕̚ͅͅ ̷̦̖̘̤̇ͣ̿͗͆̓.̵̥͈̝͚̘̣̘͍̘͎̟̳̺̗̬̰̤̪̮̞̝̯̣̖̂̿ͫͣ̊̔ͯ́̋̍͞͠҉̴̧̲̗̭̼̩͊ͤ͋͐́̋͡ ̡̢̛̫͈̺̗̗̭̮͎̗̫̫͉͉͇͚͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̃͛̔͒̒ͥ̇͂̽̌̈̎̀͆͑͆ͨͬ̽̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̚͘̕̚ͅͅͅ下ͤ̀҉̷̸͍̺̟̳͔̞̙̳̳͕͖̬̮̳͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̕̚ͅͅ一ͤ̀҉̷̸̨͍̺̟̳͔̞̙̳̳͕͖̬̮̳̥͖͕͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪̱ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̊́̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̜͍͍̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̄̕̚ͅͅ ̷̦̖̘̤̇ͣ̿͗͆̓.̵̥͈̝͚̘̣̘͍̘͎̟̳̺̗̬̰̤̪̮̞̝̯̣̖̂̿ͫͣ̊̔ͯ́̋̍͞͠҉̴̧̲̗̭̼̩͊ͤ͋͐́̋͡ ̡̢̛̫͈̺̗̗̭̮͎̗̫̫͉͉͇͚͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̃͛̔͒̒ͥ̇͂̽̌̈̎̀͆͑͆ͨͬ̽̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̚͘̕̚ͅͅͅ个ͤ̀҉̷̸͍̺̟̳͔̞̙̳̳͕͖̬̮̳͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̕̚ͅͅ层ͤ̀҉̷̸̨͍̺̟̳͔̞̙̳̳͕͖̬̮̳̥͖͕͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪̱ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̊́̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̜͍͍̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̄̕̚ͅͅ ̷̦̖̘̤̇ͣ̿͗͆̓.̵̥͈̝͚̘̣̘͍̘͎̟̳̺̗̬̰̤̪̮̞̝̯̣̖̂̿ͫͣ̊̔ͯ́̋̍͞͠҉̴̧̲̗̭̼̩͊ͤ͋͐́̋͡ ̡̢̛̫͈̺̗̗̭̮͎̗̫̫͉͉͇͚͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̃͛̔͒̒ͥ̇͂̽̌̈̎̀͆͑͆ͨͬ̽̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̚͘̕̚ͅͅͅ级ͤ̀҉̷̸͍̺̟̳͔̞̙̳̳͕͖̬̮̳͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̕̚ͅͅ，???ͤ̀҉̷̸̨͍̺̟̳͔̞̙̳̳͕͖̬̮̳̥͖͕͂̿͆ͯ̋̒̇ͨ́͋̄̃͌̉̈ͮ̿͟͠ ̷͇͚̝̘̞̯̦̾ͬ̋̌̂͑ͤ̓ͭ̀͒̌̑̒̎͊͆ͬͬ҉̶̴̩̥͎͖̻̜̰̪̙̝̺͕͓̹̱͚̪̱ͦͣ͐́͆̀̀ͪ̍ͫ͂̇ͬ̑̉̓̍̋ͦ͗̌̌̊͊̊́̚͞.̢͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̜͍͍̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̀̄̕̚ͅͅ ̷̦̖̘̤̇ͣ̿͗͆̓.̵̥͈̝͚̘̣̘͍̘͎̟̳̺̗̬̰̤̪̮̞̝̯̣̖̂̿ͫͣ̊̔ͯ́̋̍͞͠҉̴̧̲̗̭̼̩͊ͤ͋͐́̋͡ ̡̢̛̫͈̺̗̗̭̮͎̗̫̫͉͉͇͚͔̮̖̠͇̝̳̪̩̩̥͎͔̞̳̣̻͓̃͛̔͒̒ͥ̇͂̽̌̈̎̀͆͑͆ͨͬ̽̐̊̔́̀͛̎̑͌̓͑̿́̏ͭͫ̀͋͋̐̍ͦͦ̚͘̕̚ͅͅͅ<br>需求：通过399ms判定区间挑战"},
