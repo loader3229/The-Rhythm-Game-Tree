@@ -11,33 +11,49 @@ let modInfo = {
 }
 // Set your version in num and name
 let VERSION = {
-	num: "0.4",
-	name: "Judgmental",
+	num: "0.5",
+	name: "Riztime",
 }
 
-let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：e4194304 Notes，下一个更新:新层级！`
+let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请期待下一个更新！<br>当前结局：e7350000 Notes，下一个更新:新层级！`
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte('e4194304')
+	return player.points.gte('e7350000')
+//	return false
 }
 
 // Display extra things at the top of the page
 var displayThings = [
   function() {
+   let b=""
+   if(gcs('t',31)) b=b+"<br>存档长度: "+JSON.stringify(player).length+"<br>编码后存档长度: "+formatsave.encode(player).length
+   if(gcs('S',11)) b=b+"<br>PTT: "+format(player.a.ptt)
+   if(gcs('S',12)) b=b+"<br>RKS: "+format(player.p.rks)
+   if(gcs('S',13)) b=b+"<br>Cytus力量: "+format(player.c.power)
+   if(gcs('S',14)) b=b+"<br>课题力量: "+format(player.ch.enp)
+   if(gcs('S',15)) b=b+"<br>填充Notes: "+format(player.r.notes)
+   let a= "v0.5游戏结局: e7350000 Notes！"
+   if(inChallenge('r',12)&&player.devSpeed.eq(0)) a=a+"<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+  if(isEndgame()) a=a+"<br>已达到该版本结局！Dot硬上限：1.5e17"
+  
 	  if(player.lo.evolution.lte(1)){
-		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)));
+		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)))+b;
 	  }
 	  
-   let a= "v0.4游戏结局: e4194304（10^2^22）Notes！"
-   if(inChallenge('r',12)&&player._devSpeed.eq(0)) return a+"<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
-  if(isEndgame()) return a+"<br>已达到该版本结局！"
-   else return a
+   return a+b
   }
 ]
 
 let changelog = `<h1>更新日志</h1><br>
-<h2>v0.4 Judgement 2024/4/1-2024/6/27<br>
+<h2>v0.5 Riztime 2024/6/28-2024/7/9<br>
+<h3>- 添加1个层级：Rizline<br>
+- 添加1+12=13个里程碑，7+21=28个升级，1个挑战，3个可购买<br>
+- 添加了一些Qol功能，增加了更多统计和测试层内容<br>
+- 重新平衡部分内容并优化代码<br>
+- 更改了存档编码方式，减少了存档长度，原存档仍然可以正常导入<br>
+- 游戏结局：e7350000 Notes<br><br>
+<h2>v0.4 Judgment 2024/4/1-2024/6/25<br>
 <h3>- 添加1个层级：判定，添加判定区间挑战<br>
 - 添加7个里程碑，8+15=21个升级，1个挑战，6个可购买，Rot升级树中的2个“升级”<br>
 - 游戏结局：e4194304 Notes<br><br>
@@ -136,6 +152,7 @@ if (hasUpgrade('l', 17)) gain = gain.times(upgradeEffect('l', 17))
 if (hasUpgrade('a', 45)) gain = gain.times(upgradeEffect('a', 45))
 if (hasMilestone('ch', 0)) gain = gain.times('1e960')
 if (hasMilestone('ch', 1)) gain = gain.times('1e1145')
+if (hasMilestone('ri', 9)) gain = gain.times('1e1000')
 	if (hasUpgrade('ch', 13)) gain = gain.times(upgradeEffect('ch', 13))
 	if (hasUpgrade('a', 46)) gain = gain.times(upgradeEffect('a',46))
 	if (hasUpgrade('ch', 35)) gain = gain.times(upgradeEffect('ch', 35))
@@ -146,6 +163,7 @@ if (hasMilestone('ch', 1)) gain = gain.times('1e1145')
 	if(tmp.a.snEff4.gte(1)) gain=gain.times(tmp.a.snEff4)
 if (hasUpgrade('sp', 21)) gain = gain.times(upgradeEffect('sp', 21))
 if (hasUpgrade('j', 21)) gain = gain.times(upgradeEffect('j', 21))
+if (hasUpgrade('j', 37)) gain = gain.times(upgradeEffect('j', 37))
 if (gcs("r",21)==1) gain = gain.times(clickableEffect("r", 21))
 
 if (hasUpgrade('a', 18)) gain = gain.times(upgradeEffect('a', 18))
@@ -181,7 +199,6 @@ if(inChallenge('c',14)&&!hasMilestone('r',0))gain= gain.pow(0.05)
 if(inChallenge('r',11))gain= gain.pow(0.1)
 if(gcs('j',11)==1) gain=gain.pow(tmp.j.pdqj1)
 
-	//if(player.devSpeed.neq(0)) gain=gain.min(n('e4194304').div(player.devSpeed))
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
 	
 	gain=gain.min(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)))
@@ -191,20 +208,20 @@ if(inChallenge('r',13))gain= gain.min(player.mi.points)
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
  timePlayed:new Decimal(0),
- 
-  QqQ:"QqQe308",
-  banana:"3.8642180e38642180",
-  Liu:"6.666666666666666666666666e308",
-  fufu:['cutefu~','c','u','t','e','f','u','~'],
-  Loader:"loader3229祝您龙年快乐！",
-  yszqzls:"催更PEIT，元素周期增量树，@Bana3864[]，@Liu e308",
-  yyyxs:"音乐游戏树，鱼鱼永相随，游泳一小时，原原原x神",
-  Genshin:"启动！",
-  Phigros:"2月2号，音乐游戏树和Phigros一起更新",
-  long2024:"龙年马上要到了！祝大家新年龙腾虎跃，龙飞凤舞，龙批一个，事业有成，学业顺利，身体健康，财源滚滚，音游全AP，考试全满分，工作全加薪，玩树全通关，再次献上音乐游戏树全体作者（共1人）的真挚祝福！！！！！！！！！！",
-  QqQe308:"我是QqQe308，v我50更新音乐游戏树",
-	_devSpeed: new Decimal(1),
+ shiftDown:false,//对于手机版玩家是否按下Shift的Qol
+_devSpeed: new Decimal(1),
 }}
+ var QqQ="QqQe308"
+ var banana="3.8642180e38642180"
+ var Liu="6.666666666666666666666666e308"
+ var fufu=['cutefu~','c','u','t','e','f','u','~'] 
+ var Loader="loader3229现在正在做他的第168个BanG Dream! 自制谱，看一下吧！" 
+ var yszqzls="催更PEIT，元素周期增量树，@Bana3864[]，@Liu e308" 
+ var yyyxs="音乐游戏树，鱼鱼永相随，游泳一小时，原原原x神" 
+ var Genshin="启动！" 
+ var Phigros="2月2号，音乐游戏树和Phigros一起更新"
+ var long2024="龙年马上要到了！祝大家新年龙腾虎跃，龙飞凤舞，龙批一个，事业有成，学业顺利，身体健康，财源滚滚，音游全AP，考试全满分，工作全加薪，玩树全通关，再次献上音乐游戏树全体作者（共1人）的真挚祝福！！！！！！！！！！"
+ var QqQe308="我是QqQe308，v我50更新音乐游戏树" 
 //彩蛋区
 
 
@@ -221,7 +238,7 @@ var backgroundStyle = {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
+	return n(1e308) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
@@ -250,8 +267,8 @@ var eight = new Decimal(8)
 var nine = new Decimal(9)
 var ten = new Decimal(10)
 //快捷定义
-function n(num){
-    return new Decimal(num)
+function n(a) {
+ return new Decimal(a)
 }
 //检测旁边的升级是否被购买
 function checkAroundUpg(UPGlayer,place){

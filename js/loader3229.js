@@ -1007,7 +1007,7 @@ clickables: {
 			player.lo.buyables[22]=player.lo.buyables[22].max(player.lo.note.div(1e10).max(1).log2().floor().add(1));
 			player.lo.buyables[23]=player.lo.buyables[23].max(player.lo.note.div(1e12).max(1).log2().floor().add(1));
 		}
-		if(hasUpgrade('lo',105)){
+		if(hasUpgrade('lo',105) && gcs('t',18)!=1){
 			function calc(rks,dif){
 				dif = dif.max(1);
 				let a=1.1**0.05;
