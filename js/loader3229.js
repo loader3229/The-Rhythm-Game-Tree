@@ -1172,6 +1172,17 @@ clickables: {
 
 
     update(diff) {
+		// options.theme bug fix
+		if(gcs('j',11)==1){
+			options.theme='judgment';
+			changeTheme();
+			resizeCanvas();
+		}else if(options.theme=='judgment'){
+			options.theme='default';
+			changeTheme();
+			resizeCanvas();
+		}
+		
 		if(hasUpgrade('lo',64))diff=upgradeEffect('lo',64).mul(diff).toNumber();
 		if(hasUpgrade('lo',26))diff*=15;
 		if(hasUpgrade('lo',126))diff*=15;
