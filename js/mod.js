@@ -19,7 +19,7 @@ let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请�
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte('e7350000')
+	return player.points.gte('e6000000')
 //	return false
 }
 
@@ -34,10 +34,10 @@ var displayThings = [
    if(gcs('S',14)) b=b+"<br>课题力量: "+format(player.ch.enp)
    if(gcs('S',15)) b=b+"<br>填充Notes: "+format(player.r.notes)
    let a= "v0.5游戏结局: e7350000 Notes！"
-   if(inChallenge('r',12)&&player.devSpeed.eq(0)) a=a+"<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
-  if(isEndgame()) a=a+"<br>已达到该版本结局！Dot硬上限：1.5e17"
+   if(inChallenge('r',12)&&player._devSpeed.eq(0)) a=a+"<br>你需要在Rot升级树里选择升级，并且点击升级12确定以开始挑战！"
+  if(isEndgame()) a=a+"<br>已达到该版本结局！"//Dot硬上限：1.5e17"
   
-	  if(player.lo.evolution.lte(1)){
+	  if(player.lo.evolution.lte(3)){
 		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)))+b;
 	  }
 	  
@@ -152,7 +152,7 @@ if (hasUpgrade('l', 17)) gain = gain.times(upgradeEffect('l', 17))
 if (hasUpgrade('a', 45)) gain = gain.times(upgradeEffect('a', 45))
 if (hasMilestone('ch', 0)) gain = gain.times('1e960')
 if (hasMilestone('ch', 1)) gain = gain.times('1e1145')
-if (hasMilestone('ri', 9)) gain = gain.times('1e1000')
+if (hasMilestone('ri', 9)) gain = gain.times('1e30000')
 	if (hasUpgrade('ch', 13)) gain = gain.times(upgradeEffect('ch', 13))
 	if (hasUpgrade('a', 46)) gain = gain.times(upgradeEffect('a',46))
 	if (hasUpgrade('ch', 35)) gain = gain.times(upgradeEffect('ch', 35))

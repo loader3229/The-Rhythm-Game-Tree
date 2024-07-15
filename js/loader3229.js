@@ -33,6 +33,7 @@ addLayer("lo", {
 		evolution: new Decimal(0),
 		jdim1: new Decimal(0),
 		jdim2: new Decimal(0),
+		jdim3: new Decimal(0),
 		play: false,
     }},
     color: "#ffffff",
@@ -45,39 +46,30 @@ addLayer("lo", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 	base(){
-		if(player.lo.evolution.gte(2))return Decimal.pow(10,5000000/(101**3.2));
-		if(player.lo.evolution.gte(1))return Decimal.pow(10,4000000/(101**3.1));
-		return new Decimal(1000)
+		if(player.lo.evolution.gte(3))return Decimal.pow(10,6000000/(103**3.3));
+		if(player.lo.evolution.gte(2)&&player.lo.points.gte(100))return 73.84349121836063;
+		if(player.lo.evolution.gte(2))return 84.75;
+		if(player.lo.evolution.gte(1))return 280.006236628471;
+		return 1000;
 	},
     exponent(){
-		if(player.lo.evolution.gte(2))return new Decimal(3.2);
-		if(player.lo.evolution.gte(1))return new Decimal(3.1);
-		return new Decimal(3)
+		if(player.lo.evolution.gte(3))return 3.3;
+		if(player.lo.evolution.gte(2))return 3.2;
+		if(player.lo.evolution.gte(1))return 3.1;
+		return 3;
 	},
     // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        mult = new Decimal(1)
-		return mult
+        return new Decimal(1);
     },
     gainMult2() {
-        mult = new Decimal(1)
-		mult = mult.mul(player.points.add(10).log10());
-		mult = mult.mul(Decimal.pow(hasUpgrade('lo',43)?1.25:1.2,player.lo.points));
-		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',43)?2:0));
-		if(hasUpgrade('lo',44))mult = mult.mul(layers.ch.note().add(1));
-		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
-		if(hasUpgrade('lo',16))mult = mult.mul(upgradeEffect('lo',16));
-		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
-		mult = mult.mul(challengeEffect('r',11));
-		mult = mult.mul(player.lo.jdim1.add(1));
-		if(hasUpgrade('j',18))mult = mult.mul(upgradeEffect('j',18));
-		return mult
+        return this.jdimMult(0);
     },
     gainMult3() {
         mult = new Decimal(1)
 		if(hasUpgrade('lo',56))mult = mult.mul(player.points.add(10).log10().pow(0.25));
 		else mult = mult.mul(player.points.add(10).log10().add(10).log10());
-		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',114)?2.5:hasUpgrade('lo',52)?2:1));
+		mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',114)?3:hasUpgrade('lo',52)?2:1));
 		if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
 		if(hasUpgrade('m',19))mult = mult.mul(upgradeEffect('m',19));
 		if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
@@ -93,21 +85,41 @@ addLayer("lo", {
 	    if(getClickableState("r",112)==1) mult = mult.mul(clickableEffect("r", 112))
 		if(player.lo.evolution.gte(1)) mult = mult.mul(10)
 		if(player.lo.evolution.gte(2)) mult = mult.mul(10)
+		if(player.lo.evolution.gte(3)) mult = mult.mul(10)
 		if(hasUpgrade('j',18))mult = mult.mul(upgradeEffect('j',18));
+		if(hasUpgrade('ri',25))mult = mult.mul(upgradeEffect('ri',25));
 		return mult
     },
     jdimMult(n) {
         mult = new Decimal(1)
-		if(hasUpgrade('lo',103)&&n==1)mult = mult.mul(challengeEffect('r',11));
-		if(hasUpgrade('lo',112)&&n==2)mult = mult.mul(challengeEffect('r',11));
-		if(hasUpgrade('j',18)&&n==1)mult = mult.mul(upgradeEffect('j',18));
-		if(hasUpgrade('j',28)&&n==2)mult = mult.mul(upgradeEffect('j',18));
-		if(player.lo.evolution.gte(2)&&n==1) {
+		if(n==0 || (player.lo.evolution.gte(2)&&n==1)||(player.lo.evolution.gte(3)&&n==2)) {
 			mult = mult.mul(player.points.add(10).log10());
 			mult = mult.mul(Decimal.pow(hasUpgrade('lo',43)?1.25:1.2,player.lo.points));
 			mult = mult.mul(Decimal.pow(player.lo.points.add(1),hasUpgrade('lo',43)?2:0));
 		}
+		if(n==0 || (hasUpgrade('lo',123)&&n==1) || (hasUpgrade('lo',125)&&n==2)){
+			if(hasUpgrade('lo',44))mult = mult.mul(layers.ch.note().add(1));
+			if(hasUpgrade('lo',51))mult = mult.mul(upgradeEffect('lo',51));
+			if(hasUpgrade('lo',16))mult = mult.mul(upgradeEffect('lo',16));
+			if(hasUpgrade('lo',66))mult = mult.mul(upgradeEffect('lo',66));
+		}
+		
+		if(n==0)mult = mult.mul(challengeEffect('r',11));
+		if(hasUpgrade('lo',103)&&n==1)mult = mult.mul(challengeEffect('r',11));
+		if(hasUpgrade('lo',112)&&n==2)mult = mult.mul(challengeEffect('r',11));
+		if(hasUpgrade('lo',131)&&n==3)mult = mult.mul(challengeEffect('r',11));
+		
+		if(n==0)mult = mult.mul(player.lo.jdim1.add(1));
 		if(n==1)mult = mult.mul(player.lo.jdim2.add(1));
+		if(n==2)mult = mult.mul(player.lo.jdim3.add(1));
+		
+		if(hasUpgrade('j',18)&&n==0)mult = mult.mul(upgradeEffect('j',18));
+		if(hasUpgrade('j',18)&&n==1)mult = mult.mul(upgradeEffect('j',18));
+		if(hasUpgrade('j',28)&&n==2)mult = mult.mul(upgradeEffect('j',18));
+		if(hasUpgrade('j',38)&&n==3)mult = mult.mul(upgradeEffect('j',18));
+		
+		if(hasUpgrade('lo',135))mult = mult.mul(upgradeEffect('lo',135));
+		
 		return mult
     },
     gainExp() { 
@@ -168,7 +180,7 @@ addLayer("lo", {
         content: [ ["infobox","introBox2"],
           "main-display",
     ["display-text",
-      function() {return 'loader3229的精力： ' + formatWhole(player.lo.stamina) + '/2,000'},
+      function() {if(player[this.layer].evolution.gte(3))return '';return 'loader3229的精力： ' + formatWhole(player.lo.stamina) + '/2,000'},
      {"color": "#ff5eee", "font-size": "20px", "font-family": "Comic Sans MS"}],
     ["display-text",
 	 function() {return 'loader3229现在' + (player.lo.play?'正':'不') + '在打歌。'},
@@ -206,7 +218,7 @@ addLayer("lo", {
 	   function() {return '当loader3229不在打歌时，loader3229将会制作自制谱，并且为你产生Loaded Notes。Loaded Notes对notes有加成。'},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
-      function() {return '你有' + formatWhole(player.lo.note.floor()) + '个Loaded Notes。(+' + format(tmp.lo.gainMult3.mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1)) + '/s)'},
+      function() {return '你有' + formatWhole(player.lo.note.floor()) + '个Loaded Notes。(+' + format(tmp.lo.gainMult3.mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1).mul(hasUpgrade('lo',126)?15:1)) + '/s)'},
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
 	 function() {return '你的Loaded Notes使note获取变为原来的' + format(tmp.lo.noteEffect) + '倍，并且使谱面需求除以' + format(tmp.lo.noteEffect2) + '。'},
@@ -234,45 +246,46 @@ addLayer("lo", {
 	   function() {
 		   if(player.j.pdqja.gt(479) && player.lo.evolution.lt(2))return '完成J层级的479ms判定区间挑战以解锁下一个判定类型：Perfect+';
 		   if(player.j.pdqja.gt(441) && player.lo.evolution.lt(3))return '在进化次数2下完成J层级的441ms判定区间挑战以解锁下一个判定类型：S-Perfect';
+		   if(player.j.pdqja.gt(376) && player.lo.evolution.lt(4))return '在进化次数3下完成J层级的376ms判定区间挑战以解锁下一个判定类型：S-Perfect+';
 		   return '';
 	}],"blank",
 	["display-text",
-      function() {return 'loader3229的精力：' + formatWhole(player.lo.stamina) + '/2,000'}],
+      function() {if(player[this.layer].evolution.gte(3))return '';return 'loader3229的精力：' + formatWhole(player.lo.stamina) + '/2,000'}],
     ["display-text",
 	   function() {return 'loader3229现在' + (player.lo.play?'正':'不') + '在打歌。'
 	}],"blank",
 	["row",
 	[["column",[
 	["display-text","判定类型"],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return 'S-Perfect+';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(376) && player.lo.evolution.gte(3)) || player.lo.evolution.gte(4))return 'S-Perfect+';return '';}],
 	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return 'S-Perfect';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return 'Perfect+';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return 'Perfect';return '';}],
 	]],
 	["column",[
 	["display-text","|"],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(376) && player.lo.evolution.gte(3)) || player.lo.evolution.gte(4))return '|';return '';}],
 	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return '|';return '';}],
 	]],
 	["column",[
 	["display-text","打出次数"],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
-	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return formatWhole(player.lo.jdim2.floor())+'(+'+format(layers.lo.jdimMult(2).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
-	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return formatWhole(player.lo.jdim1.floor())+'(+'+format(layers.lo.jdimMult(1).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
-	["display-text",function(){if(player.j.pdqja.lte(501))return formatWhole(player.lo.perfect.floor())+'(+'+format(n(1).sub(buyableEffect('lo',12)).mul(tmp.lo.gainMult2).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1))+'/s)';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(376) && player.lo.evolution.gte(3)) || player.lo.evolution.gte(4))return formatWhole(player.lo.jdim3.floor())+'(+'+format(layers.lo.jdimMult(3).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1).mul(hasUpgrade('lo',126)?15:1))+'/s)';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return formatWhole(player.lo.jdim2.floor())+'(+'+format(layers.lo.jdimMult(2).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1).mul(hasUpgrade('lo',126)?15:1))+'/s)';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return formatWhole(player.lo.jdim1.floor())+'(+'+format(layers.lo.jdimMult(1).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1).mul(hasUpgrade('lo',126)?15:1))+'/s)';return '';}],
+	["display-text",function(){if(player.j.pdqja.lte(501))return formatWhole(player.lo.perfect.floor())+'(+'+format(n(1).sub(buyableEffect('lo',12)).mul(tmp.lo.gainMult2).mul(hasUpgrade('lo',64)?upgradeEffect('lo',64):1).mul(hasUpgrade('lo',26)?15:1).mul(hasUpgrade('lo',126)?15:1))+'/s)';return '';}],
 	]],["blank"],
 	["column",[
 	["display-text","|"],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(376) && player.lo.evolution.gte(3)) || player.lo.evolution.gte(4))return '|';return '';}],
 	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return '|';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return '|';return '';}],
 	]],
 	["column",[
 	["display-text","加成"],
-	["display-text",function(){if(player.j.pdqja.lte(-1))return '|';return '';}],
+	["display-text",function(){if((player.j.pdqja.lte(376) && player.lo.evolution.gte(3)) || player.lo.evolution.gte(4))return '为S-Perfect判定和Milthm维度4提供×' + formatWhole(player.lo.jdim3.floor().add(1)) + '加成';return '';}],
 	["display-text",function(){if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3))return '为Perfect+判定和Milthm维度3提供×' + formatWhole(player.lo.jdim2.floor().add(1)) + '加成';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(479) || player.lo.evolution.gte(2))return '为Perfect及以下判定和Milthm维度2提供×' + formatWhole(player.lo.jdim1.floor().add(1)) + '加成';return '';}],
 	["display-text",function(){if(player.j.pdqja.lte(501))return '为Milthm维度1提供×' + formatWhole(player.lo.perfect.floor().add(1)) + '加成';return '';}],
@@ -355,7 +368,7 @@ addLayer("lo", {
 			},
     31:{ 
                 description: "最高连击数增加Cytus力量获取",
-                cost: new Decimal(15),
+                cost(){return new Decimal(player[this.layer].evolution.gte(3)?11:15)},
     unlocked() { return player.c.unlocked()},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -364,17 +377,17 @@ addLayer("lo", {
 			},
     32:{ 
                 description: "第一个loader3229可购买项对Phidata也有效",
-                cost: new Decimal(28),
+                cost(){return new Decimal(player[this.layer].evolution.gte(3)?12:28)},
     unlocked() { return player.ch.unlocked()},
 			},
     33:{ 
                 description: "第一个loader3229可购买项对Cytus力量也有效",
-                cost: new Decimal(32),
+                cost(){return new Decimal(player[this.layer].evolution.gte(3)?13:32)},
     unlocked() { return player.ch.unlocked()},
 			},
     34:{ 
                 description: "最高连击数增加Cyten获取",
-                cost(){return new Decimal(player[this.layer].evolution.gte(1)?21:22)},
+                cost(){return new Decimal(player[this.layer].evolution.gte(3)?14:player[this.layer].evolution.gte(1)?21:22)},
     unlocked() { return player.c.unlocked()},
                 effect() {
              return player.lo.maxcombo.add(1).pow(1.5)
@@ -383,7 +396,7 @@ addLayer("lo", {
 			},
     35:{ 
                 description: "解锁loader3229的制谱功能",
-                cost(){return new Decimal(player[this.layer].evolution.gte(1)?20:22)},
+                cost(){return new Decimal(player[this.layer].evolution.gte(3)?15:player[this.layer].evolution.gte(1)?20:22)},
     unlocked() { return player.ch.unlocked()},
 			},
     41:{ 
@@ -412,7 +425,7 @@ addLayer("lo", {
 			},
     45:{ 
 		description: "增加Phigros挑战“IN”和“AT”的上限",
-                cost: new Decimal(22),
+                cost(){return new Decimal(player[this.layer].evolution.gte(3)?20:22)},
     unlocked() { return player.ch.unlocked()},
 			},
     51:{ 
@@ -444,7 +457,7 @@ addLayer("lo", {
 			},
     55:{ 
                 description: "Loaded Notes效果2变为原来的平方",
-                cost: new Decimal(29),
+                cost(){return new Decimal(player[this.layer].evolution.gte(3)?28:29)},
     unlocked() { return (hasUpgrade('lo', 35))},
 			},
     61:{ 
@@ -629,7 +642,7 @@ addLayer("lo", {
     91:{ 
 		description: "Loaded Points提升Milthm获取",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(2)?84:player[this.layer].evolution.gte(1)?85:93);
+					return new Decimal(player[this.layer].evolution.gte(3)?82:player[this.layer].evolution.gte(2)?84:player[this.layer].evolution.gte(1)?85:93);
 				},
     unlocked() { return (hasUpgrade('r',37))},
                 effect() {
@@ -640,7 +653,7 @@ addLayer("lo", {
     92:{ 
 		description: "第一个loader3229可购买项对Cyten也有效",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(2)?85:player[this.layer].evolution.gte(1)?88:95);
+					return new Decimal(player[this.layer].evolution.gte(3)?80:player[this.layer].evolution.gte(2)?85:player[this.layer].evolution.gte(1)?88:95);
 				},
     unlocked() { return (hasUpgrade('r',37))},
 			},
@@ -683,14 +696,14 @@ addLayer("lo", {
     103:{ 
 		description: "增加Rotaeno挑战RC1的上限，Rotaeno挑战RC1的效果也对Perfect+判定的获取生效",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(2)?91:95);
+					return new Decimal(player[this.layer].evolution.gte(3)?81:player[this.layer].evolution.gte(2)?91:95);
 				},
-    unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479))},
+    unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479)) || player.lo.evolution.gte(3)},
 			},
     104:{ 
 		description: "增加Phigros挑战“IN”、“AT”和“SP”的上限",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(2)?88:90);
+					return new Decimal(player[this.layer].evolution.gte(3)?83:player[this.layer].evolution.gte(2)?88:90);
 				},
     unlocked() { return (player.lo.evolution.gte(1) && hasUpgrade('r',47))},
 			},
@@ -702,7 +715,7 @@ addLayer("lo", {
     106:{ 
 		description: "第一个loader3229可购买项对Milthm也有效",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(2)?94:97);
+					return new Decimal(player[this.layer].evolution.gte(3)?88:player[this.layer].evolution.gte(2)?94:97);
 				},
     unlocked() { return (player.lo.evolution.gte(1) && player.j.pdqja.lte(479))},
 			},
@@ -723,16 +736,93 @@ addLayer("lo", {
     113:{ 
 		description: "loader3229 又 要 去除软上限了！Rotaeno升级树升级21的效果软上限延迟到1e333333开始！",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(2)?95:95);
+					return new Decimal(player[this.layer].evolution.gte(3)?86:95);
 				},
-    unlocked() { return (player.lo.evolution.gte(2) && hasUpgrade('j',28))},
+    unlocked() { return (player.lo.evolution.gte(2) && hasUpgrade('j',28)) || player.lo.evolution.gte(3)},
 			},
     114:{ 
 		description: "Loaded Points对Loaded Notes的获取速度加成变得更好",
                 cost(){
-					return new Decimal(player[this.layer].evolution.gte(2)?96:96);
+					return new Decimal(player[this.layer].evolution.gte(3)?89:96);
 				},
     unlocked() { return (player.lo.evolution.gte(2) && hasUpgrade('j',28))},
+			},
+    115:{ 
+		description: "解锁新的loader3229可购买项",
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(3)?90:97);
+				},
+    unlocked() { return (player.lo.evolution.gte(2) && hasUpgrade('j',28))},
+			},
+    116:{ 
+		description: "黄键、红键和长条变得更便宜",
+                cost(){
+					return new Decimal(player[this.layer].evolution.gte(3)?94:99);
+				},
+    unlocked() { return (player.lo.evolution.gte(2) && hasUpgrade('j',31))},
+			},
+    121:{ 
+		description: "去除Phigros挑战“EZ”、“HD”的上限，并且自动完成Phigros挑战“EZ”、“HD”，Phigros挑战“EZ”、“HD”的效果变为原来的10次方",
+                cost: new Decimal(84),
+    unlocked() { return (player.lo.evolution.gte(3))},
+			},
+    122:{ 
+		description: "判定区间升级“loader3229”的效果在判定挑战外生效",
+                cost: new Decimal(85),
+    unlocked() { return (player.lo.evolution.gte(3) && hasUpgrade('j',18))},
+			},
+    123:{ 
+		description: "前10行里面增加loader3229判定获取的升级对Perfect+判定也有效",
+                cost: new Decimal(87),
+    unlocked() { return (player.lo.evolution.gte(3))},
+			},
+    124:{ 
+		description: "解锁新的loader3229可购买项",
+                cost: new Decimal(93),
+    unlocked() { return (player.lo.evolution.gte(3) && hasUpgrade('j',31))},
+			},
+    125:{ 
+		description: "前10行里面增加loader3229判定获取的升级对S-Perfect判定也有效",
+                cost: new Decimal(96),
+    unlocked() { return (player.lo.evolution.gte(3))},
+			},
+    126:{ 
+		description: "本层级的速度变为原来的15倍",
+                cost: new Decimal(97),
+    unlocked() { return (player.lo.evolution.gte(3))},
+			},
+    131:{ 
+		description: "增加Rotaeno挑战RC1的上限，Rotaeno挑战RC1的效果也对S-Perfect+判定的获取生效",
+                cost: new Decimal(98),
+    unlocked() { return (player.lo.evolution.gte(3) && hasUpgrade('j',38))},
+			},
+    132:{ 
+		description: "Rotaeno升级树升级161不再有限制",
+                cost: new Decimal(99),
+    unlocked() { return (player.lo.evolution.gte(3) && hasUpgrade('j',38))},
+			},
+    133:{ 
+		description: "解锁新的loader3229可购买项",
+                cost: new Decimal(100),
+    unlocked() { return (player.lo.evolution.gte(3) && hasUpgrade('j',31))},
+			},
+    134:{ 
+		description: "让loader3229第三次帮“您”打课题模式。Loaded Points增加课题能量获取。",
+                cost: new Decimal(101),
+    unlocked() { return (player.lo.evolution.gte(3) && hasUpgrade('j',31))},
+                effect() {
+             return Decimal.pow(1.002,player.lo.points);
+                },
+     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
+			},
+    135:{ 
+		description: "Loaded Notes增加所有判定获取。",
+                cost: new Decimal(102),
+    unlocked() { return (player.lo.evolution.gte(3) && hasUpgrade('j',31))},
+                effect() {
+             return Decimal.pow(player.lo.note.add(1),0.1);
+                },
+     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"×" },
 			},
 	},
   softcap:new Decimal ("10^^1000"),
@@ -749,13 +839,14 @@ clickables: {
       display() {return "点击以让loader3229开始或停止打歌"},
       canClick() {return true},
       onClick() {player.lo.play=!player.lo.play;},
+	  unlocked(){return player.lo.evolution.lt(3);}
     },
     12: {
       title() {return "让loader3229开始进化"},
       display() {return "需要"+formatWhole(player[this.layer].evolution.add(101))+" Loaded Points"},
       canClick() {return player.lo.points.gte(player[this.layer].evolution.add(101))},
       onClick() {
-		  if(player.lo.evolution.gte(2))return alert('loader3229暂时不能进行第3次进化。');
+		  if(player.lo.evolution.gte(3))return alert('loader3229暂时不能进行第4次进化。');
 		if(player.lo.points.gte(player[this.layer].evolution.add(101))){
 			if(confirm("确实要让loader3229开始进化吗？")){
 				layerDataReset('s',['milestones']);
@@ -767,13 +858,23 @@ clickables: {
 				layerDataReset('c',['milestones']);
 				layerDataReset('ch',['milestones']);
 				layerDataReset('sp',['milestones']);
-				layerDataReset('r',[]);
-				layerDataReset('mi',[]);
-				layerDataReset('j',[]);
+				if(player.lo.evolution.gte(2)){
+					layerDataReset('r',['milestones']);
+					layerDataReset('mi',['milestones']);
+					layerDataReset('j',['milestones']);
+				}else{
+					layerDataReset('r',[]);
+					layerDataReset('mi',[]);
+					layerDataReset('j',[]);
+				}
+				layerDataReset('ri',[]);
 				player.points=new Decimal(0);
 				player.lo.evolution = player.lo.evolution.add(1);
 				if(player.lo.evolution.gte(2)){
 					player.lo.upgrades=[11,12,13,14,15,16,21,22,23,24,25,42,61,62,65,102,105];
+				}
+				if(player.lo.evolution.gte(3)){
+					player.lo.upgrades=[11,12,13,14,15,16,21,22,23,24,25,31,32,33,34,35,41,42,43,44,45,61,62,65,102,105];
 				}
 			}
 		}
@@ -794,6 +895,14 @@ clickables: {
             done() {return player[this.layer].evolution.gte(2)}, // Used to determine when to give the milestone
             effectDescription: function(){
 				return "自动购买第二行loader3229可购买项且不消耗Loaded Notes，Loaded Notes获取变为10倍，进化时保留一些升级，开始时即解锁Perfect+判定并且Notes和Loaded Points对判定的加成对Perfect+判定生效，loader3229开始制作自制谱时直接获得第二行loader3229可购买项各1个，打歌时也可以获得Loaded Notes";
+			},
+        },
+		{
+			requirementDescription: "第3次进化",
+            unlocked() {return player[this.layer].evolution.gte(3)},
+            done() {return player[this.layer].evolution.gte(3)}, // Used to determine when to give the milestone
+            effectDescription: function(){
+				return "保留前5行里程碑和前3个Rizline里程碑，Loaded Notes获取变为10倍，进化时保留更多升级，进化时直接完成所有Arcaea挑战和5次所有Phigros挑战，开始时即解锁S-Perfect判定并且Notes和Loaded Points对判定的加成对S-Perfect判定生效，loader3229将会自动进行打歌且不再消耗精力，开始时即有1.79e308 Milthm";
 			},
         },
 	],
@@ -830,7 +939,7 @@ clickables: {
         cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id))},
         display() { return "基于购买次数减少loader3229的设备断触率<br>价格："+format(this.cost())+" "+((player[this.layer].evolution.gte(1))?"Perfect":"Miss")+"<br>loader3229的设备基础断触率："+format(this.effect().mul(100))+"%"},
         title: "升级设备",
-        effect() {return Decimal.pow(player.lo.evolution.gte(2)?0.988:player.lo.evolution.gte(1)?0.984:0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
+        effect() {return Decimal.pow(player.lo.evolution.gte(3)?0.992:player.lo.evolution.gte(2)?0.988:player.lo.evolution.gte(1)?0.984:0.98,getBuyableAmount(this.layer,this.id).add(hasUpgrade('lo',21)?upgradeEffect('lo',21):0)).mul(0.1)},
         unlocked(){unlock=true
           return unlock
         },
@@ -924,16 +1033,62 @@ clickables: {
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
         },
     },
+    41: {
+        cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e30)},
+        display() { return "基于购买次数增加旋律获取<br>价格："+format(this.cost())+" Loaded Notes<br>效果：×"+format(this.effect())},
+        title: "Rotaeno自制谱",
+        effect() {return Decimal.pow(3,getBuyableAmount(this.layer,this.id))},
+        unlocked(){unlock=hasUpgrade('lo',115);
+          return unlock
+        },
+        canAfford() { return player[this.layer].note.gte(this.cost()) },
+        buy() {
+            player[this.layer].note = player[this.layer].note.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+    },
+    42: {
+        cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e32)},
+        display() { return "基于购买次数提升所有Milthm维度<br>价格："+format(this.cost())+" Loaded Notes<br>效果：×"+format(this.effect())},
+        title: "Milthm自制谱",
+        effect() {return Decimal.pow(10,getBuyableAmount(this.layer,this.id))},
+        unlocked(){unlock=hasUpgrade('lo',124);
+          return unlock
+        },
+        canAfford() { return player[this.layer].note.gte(this.cost()) },
+        buy() {
+            player[this.layer].note = player[this.layer].note.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+    },
+    43: {
+        cost(){return Decimal.pow(2,getBuyableAmount(this.layer,this.id)).mul(1e35)},
+        display() { return "基于购买次数提升Dot获取<br>价格："+format(this.cost())+" Loaded Notes<br>效果：×"+format(this.effect())},
+        title: "Rizline自制谱",
+        effect() {return Decimal.pow(1.25,getBuyableAmount(this.layer,this.id))},
+        unlocked(){unlock=hasUpgrade('lo',133);
+          return unlock
+        },
+        canAfford() { return player[this.layer].note.gte(this.cost()) },
+        buy() {
+            player[this.layer].note = player[this.layer].note.sub(this.cost())
+            setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        },
+    },
 },
 
 
     update(diff) {
 		if(hasUpgrade('lo',64))diff=upgradeEffect('lo',64).mul(diff).toNumber();
 		if(hasUpgrade('lo',26))diff*=15;
+		if(hasUpgrade('lo',126))diff*=15;
 		if(player.lo.play){
 			var f=player.lo.stamina.min(diff);
 			
 			if(hasUpgrade('lo',102)){
+				if((player.j.pdqja.lte(376) && player.lo.evolution.gte(3)) || player.lo.evolution.gte(4)){
+					player.lo.jdim3=player.lo.jdim3.add(f.mul(this.jdimMult(3)));
+				}
 				if((player.j.pdqja.lte(441) && player.lo.evolution.gte(2)) || player.lo.evolution.gte(3)){
 					player.lo.jdim2=player.lo.jdim2.add(f.mul(this.jdimMult(2)));
 				}
@@ -949,7 +1104,7 @@ clickables: {
 			player.lo.great=player.lo.great.add(g.mul(this.gainMult2()));
 			f=f.sub(g);
 			player.lo.perfect=player.lo.perfect.add(f.mul(this.gainMult2()));
-			player.lo.stamina=player.lo.stamina.sub(diff);
+			if(player[this.layer].evolution.lt(3))player.lo.stamina=player.lo.stamina.sub(diff);
 			if(player.lo.stamina.lte(0))player.lo.play=false;
 			player.lo.stamina=player.lo.stamina.max(0);
 			if(hasUpgrade('lo',12)){
@@ -976,12 +1131,12 @@ clickables: {
 				if(player.lo.evolution.lte(0))player.lo.note=player.lo.note.min(1e24);
 				if(player.lo.evolution.lte(1))player.lo.note=player.lo.note.min(1e28);
 			}
-			if(hasUpgrade('lo',74)){
+			if(hasUpgrade('lo',74) && player[this.layer].evolution.lt(3)){
 				player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));
 				if(player.lo.evolution.lte(0))player.a.sn=player.a.sn.min(1e15);
 				if(player.lo.evolution.lte(2))player.a.sn=player.a.sn.min(1e16);
 			}
-			if(hasUpgrade('lo',81)){
+			if(hasUpgrade('lo',81) && player[this.layer].evolution.lt(3)){
 				player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));
 				if(player.lo.evolution.lte(0))player.a.dr=player.a.dr.min(1e10);
 				if(player.lo.evolution.lte(2))player.a.dr=player.a.dr.min(2e10);
@@ -989,13 +1144,24 @@ clickables: {
 		}
 		if(hasUpgrade('lo',35) && player[this.layer].evolution.gte(2)){
 			player.lo.note=player.lo.note.add(tmp.lo.gainMult3.mul(diff));
-			if(player.lo.evolution.lte(2))player.lo.note=player.lo.note.min(1e30);
+			if(player.lo.evolution.lte(2))player.lo.note=player.lo.note.min(1e32);
+			if(player.lo.evolution.lte(3))player.lo.note=player.lo.note.min(5e36);
 		}
+		if(hasUpgrade('lo',74) && player[this.layer].evolution.gte(3)){
+			player.a.sn=player.a.sn.add(this.upgrades[74].effect().mul(diff));
+			player.a.sn=player.a.sn.min(1e17);
+		}
+		if(hasUpgrade('lo',81) && player[this.layer].evolution.gte(3)){
+			player.a.dr=player.a.dr.add(this.upgrades[81].effect().mul(diff));
+			player.a.dr=player.a.dr.min(1e11);
+		}
+		if(player[this.layer].evolution.gte(3))player.lo.play=true;
+		if(player[this.layer].evolution.gte(3))player.mi.points=player.mi.points.max(Number.MAX_VALUE);
 		if(hasUpgrade('lo',25))player.a.ptt=player.a.ptt.max(tmp.lo.ptt);
 		if(hasUpgrade('lo',62))player.p.rks=player.p.rks.max(tmp.lo.rks);
 		if(hasUpgrade('lo',65))player.ch.en=player.ch.en.max(6);
-		if(hasUpgrade('lo',42)&&player.p.activeChallenge==11)player.p.challenges[11]=new Decimal(player.p.challenges[11]).max(player.a.points.add(1).log10().div(4).sub(1).floor()).min(layers.p.challenges[11].completionLimit()).toNumber();
-		if(hasUpgrade('lo',42)&&player.p.activeChallenge==12)player.p.challenges[12]=new Decimal(player.p.challenges[12]).max(player.points.add(1).log10().div(20).add(0.5).floor()).min(layers.p.challenges[12].completionLimit()).toNumber();
+		if((hasUpgrade('lo',42)&&player.p.activeChallenge==11) || hasUpgrade('lo',121))player.p.challenges[11]=new Decimal(player.p.challenges[11]).max(player.a.points.add(1).log10().div(4).sub(1).floor()).min(layers.p.challenges[11].completionLimit()).toNumber();
+		if((hasUpgrade('lo',42)&&player.p.activeChallenge==12) || hasUpgrade('lo',121))player.p.challenges[12]=new Decimal(player.p.challenges[12]).max(player.points.add(1).log10().div(20).add(0.5).floor()).min(layers.p.challenges[12].completionLimit()).toNumber();
 		if(hasUpgrade('lo',112)&&player.r.activeChallenge==11)player.r.challenges[11]=new Decimal(player.r.challenges[11]).max(player.c.power.add(1).log10().div(50).sub(23).floor()).min(layers.r.challenges[11].completionLimit()).toNumber();
 		if(player.lo.evolution.gte(1)){
 			player.lo.buyables[11]=player.lo.buyables[11].max(player.lo.perfect.max(1).log2().floor().add(1));
@@ -1006,6 +1172,17 @@ clickables: {
 			player.lo.buyables[21]=player.lo.buyables[21].max(player.lo.note.div(1e10).max(1).log2().floor().add(1));
 			player.lo.buyables[22]=player.lo.buyables[22].max(player.lo.note.div(1e10).max(1).log2().floor().add(1));
 			player.lo.buyables[23]=player.lo.buyables[23].max(player.lo.note.div(1e12).max(1).log2().floor().add(1));
+		}
+		if(player.lo.evolution.gte(3)){
+			player.a.challenges[11]=Math.max(player.a.challenges[11],1);
+			player.a.challenges[12]=Math.max(player.a.challenges[12],1);
+			player.a.challenges[13]=Math.max(player.a.challenges[13],1);
+			player.a.challenges[14]=Math.max(player.a.challenges[14],1);
+			player.p.challenges[11]=Math.max(player.p.challenges[11],5);
+			player.p.challenges[12]=Math.max(player.p.challenges[12],5);
+			player.p.challenges[13]=Math.max(player.p.challenges[13],5);
+			player.p.challenges[14]=Math.max(player.p.challenges[14],5);
+			player.p.challenges[15]=Math.max(player.p.challenges[15],5);
 		}
 		if(hasUpgrade('lo',105) && gcs('t',18)!=1){
 			function calc(rks,dif){
@@ -1023,19 +1200,17 @@ clickables: {
 			
 			if(calc(rks1,dif1.add(1)).gte(calc(rks1,dif1))){
 				layers.ch.clickables[11].onClick();
-				player.ch.dif2=player.ch.dif1;
-				player.ch.dif3=player.ch.dif1;
 			}
-
+			
 			rks1=player.p.rks;
 			dif1=player.ch.dif1;
-
+			
 			if(calc(rks1,dif1.sub(1)).gte(calc(rks1,dif1))){
 				layers.ch.clickables[21].onClick();
-				player.ch.dif2=player.ch.dif1;
-				player.ch.dif3=player.ch.dif1;
 			}
-
+			
+			player.ch.dif2=player.ch.dif1;
+			player.ch.dif3=player.ch.dif1;
 		}
 	},
 })//Loader3229

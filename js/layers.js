@@ -514,6 +514,13 @@ player.QqQ=0;player.banana=0;player.Liu=0;player.fufu=0;player.Loader=0;player.y
    textStyle: {'color': '#3b4f7c'},
    },
        
+        118: {
+            name: "loader3229 居然全连了 Testify？",
+            done() {return player.lo.maxcombo.gte(2221)},
+           onComplete(){player.A.ach=player.A.ach.add(1)},
+            tooltip: "使loader3229的最高连击数达到2221。PS：Testify是Arcaea的魔王曲，其Beyond难度物量为2221。 ",
+            textStyle: {'color': '#FFFFFF'},
+		},
        1001: {
      name: "隐藏成就1",
      done() {return player.t.points.gte(100)},
@@ -782,10 +789,10 @@ QqQ="a";banana="b";Liu="c";fufu=['d'];Loader="e";yszqzls="f";yyyxs="g";Genshin="
     41: {
     title(){return "强制切换Shift"},
     display() { let a="没有"
-    if(player.shitDown) a="正在"
+    if(player.shiftDown) a="正在"
     return "手机版Qol，目前"+a+"按下shift<br>冷知识：按下Shift再点击层级可以锁定显示层级资源（测试层级除外）！（需要开启设置相关功能）"},
     onClick() {
-    player.shitDown=!player.shitDown
+    player.shiftDown=!player.shiftDown
     },
     canClick() {return true},
     unlocked() {return true},
@@ -2336,6 +2343,7 @@ addLayer("l", {
 	if (hasUpgrade('lo', 16)) req=req.pow(buyableEffect('lo',23))
 	req=req.pow(tmp.j.pdqja2)
 req = req.pow(buyableEffect('sp',22))
+req = req.pow(tmp.ri.la1);
         if(hasUpgrade('lo',23)){req=req.times(1e-60)}
         if(buyableEffect('c',24).gt(1)) req = req.div(buyableEffect('c',24))
     return req},
@@ -2349,6 +2357,7 @@ req = req.pow(buyableEffect('sp',22))
 	if (hasUpgrade('lo', 16)) mult = mult.pow(buyableEffect('lo',23))
 	mult = mult.pow(tmp.j.pdqja2)
 mult = mult.pow(buyableEffect('sp',22))
+mult = mult.pow(tmp.ri.la1);
 		
 	
 		return mult;
@@ -2693,12 +2702,12 @@ addLayer("p", {
       11: {
         name: "EZ",
         challengeDescription(){
-			return "歌曲和源点获取为原来的平方根<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/"+formatWhole(this.completionLimit());
+			return "歌曲和源点获取为原来的平方根<br>完成次数:"+challengeCompletions(this.layer,this.id)+(hasUpgrade('lo',121)?"":"/"+formatWhole(this.completionLimit()));
 			
 			},
         goalDescription(){return "1e"+new Decimal(8).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(4))+"源点"},
         rewardDescription(){return "根据挑战完成次数增益源点（软上限前）<br>效果：×"+challengeEffect(this.layer,this.id).floor()},
-		rewardEffect() {eff= new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?15:10)
+		rewardEffect() {eff= new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?15:10).pow(hasUpgrade('lo',121)?10:1)
           if(hasMilestone('sp',1)) eff=eff.pow(2)
           return eff
         },
@@ -2706,7 +2715,8 @@ addLayer("p", {
         if(hasUpgrade('p',13)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0).add(hasUpgrade('lo',101)?15000:0);
+			if(hasUpgrade('lo',121))return Decimal.dInf;
+          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0).add(hasUpgrade('lo',101)?15000:0).add(hasUpgrade('lo',121)?180000:0).toNumber();
 		  },
         canComplete: function() {
    return player.a.points.gte(n(10).pow(8).mul(n(10).pow(n(challengeCompletions(this.layer,this.id)).mul(4))))},
@@ -2714,12 +2724,12 @@ addLayer("p", {
       12: {
         name: "HD",
        challengeDescription(){
-          return "Note、歌曲和源点获取^0.1<br>完成次数:"+challengeCompletions(this.layer,this.id)+"/"+formatWhole(this.completionLimit());
+          return "Note、歌曲和源点获取^0.1<br>完成次数:"+challengeCompletions(this.layer,this.id)+(hasUpgrade('lo',121)?"":"/"+formatWhole(this.completionLimit()));
 		  
 		  },
         goalDescription(){return "1e"+new Decimal(10).add(new Decimal(challengeCompletions(this.layer,this.id)).mul(20))+" Notes"},
         rewardDescription(){return "根据挑战完成次数增益Phidata<br>效果：×"+challengeEffect(this.layer,this.id).floor()},
-		rewardEffect() {eff= new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?3:2)
+		rewardEffect() {eff= new Decimal( challengeCompletions(this.layer,this.id)).add(1).pow(hasUpgrade('lo',42)?3:2).pow(hasUpgrade('lo',121)?10:1)
           if(hasMilestone('sp',1)) eff=eff.pow(2)
           if(gcs("r",82)==1) eff = eff.pow(clickableEffect("r", 82))
           return eff
@@ -2728,7 +2738,8 @@ addLayer("p", {
         if(hasUpgrade('p',14)) unlock=true
           return unlock },
         completionLimit(){
-          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0).add(hasUpgrade('lo',101)?15000:0);
+			if(hasUpgrade('lo',121))return Decimal.dInf;
+          return new Decimal(hasUpgrade('p',21)?10:2).add(hasUpgrade('lo',42)?990:0).add(hasMilestone('sp',1)?4000:0).add(hasUpgrade('lo',101)?15000:0).add(hasUpgrade('lo',121)?180000:0).toNumber();
 		},
         canComplete: function() { return player.points.gte(new Decimal(10).pow(10).mul(new Decimal(10).pow(20).pow(challengeCompletions(this.layer,this.id))))}
         },
@@ -4100,6 +4111,7 @@ addLayer("ch", {
 	if (hasUpgrade('lo', 61)) mult = mult.pow(buyableEffect('lo',22))
 	if (hasUpgrade('j', 23)) mult = mult.pow(0.95)
 	if (hasUpgrade('j',26)) mult = mult.pow(upgradeEffect('j',26))
+	mult = mult.pow(tmp.j.pdqja6)
 		
 if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
         if(buyableEffect('c',32).gt(1))mult =mult.div(buyableEffect('c',32))
@@ -4116,6 +4128,7 @@ if (hasUpgrade('lo', 35))mult =mult.div(tmp.lo.noteEffect2)
 	if (hasUpgrade('lo', 61)) mult = mult.pow(buyableEffect('lo',22))
 	if (hasUpgrade('j', 23)) mult = mult.pow(0.95)
 	if (hasUpgrade('j',26)) mult = mult.pow(upgradeEffect('j',26))
+	mult = mult.pow(tmp.j.pdqja6)
 		
 	
 		return mult;
@@ -4704,7 +4717,7 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
 				title: "获得一个黄键",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = x.mul(3).pow(2.5).div(3)
+     let cost = x.mul(3).pow(hasUpgrade('lo',116)?2:2.5).div(3)
     return cost
          },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4720,7 +4733,7 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
          },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.ch.pnote.max(1).mul(3).root(2.5).div(3)
+					let tempBuy = player.ch.pnote.max(1).mul(3).root(hasUpgrade('lo',116)?2:2.5).div(3)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4733,7 +4746,7 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
 				title: "获得一个红键",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = x.mul(2.5).pow(2.5).div(2.5)
+     let cost = x.mul(2.5).pow(hasUpgrade('lo',116)?2:2.5).div(2.5)
     return cost
          },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4749,7 +4762,7 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
          },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.ch.pnote.max(1).mul(2.5).root(2.5).div(2.5)
+					let tempBuy = player.ch.pnote.max(1).mul(2.5).root(hasUpgrade('lo',116)?2:2.5).div(2.5)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4762,7 +4775,7 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
 				title: "获得一个长条",
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
      if (x.gte(25)) x = x.pow(2).div(25)
-     let cost = x.mul(3).pow(2).div(2)
+     let cost = x.mul(hasUpgrade('lo',116)?2:3).pow(2).div(2)
     return cost
          },
 				effect(x=player[this.layer].buyables[this.id]) {return x},
@@ -4778,7 +4791,7 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
          },
      buyMax() {
 					if (!this.canAfford()) return;
-					let tempBuy = player.ch.pnote.max(1).mul(2).root(2).div(3)
+					let tempBuy = player.ch.pnote.max(1).mul(2).root(2).div(hasUpgrade('lo',116)?2:3)
 					if (tempBuy.gte(25)) tempBuy = tempBuy.times(25).sqrt();
 					let target = tempBuy.plus(1).floor();
 					player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
@@ -4837,13 +4850,13 @@ onPurchase() {player.ch.enp=player.ch.enp.sub(1e20)},
       canClick() {return true},
       onClick() {player.ch.sco=tmp.ch.keti
         player.ch.difa=player.ch.dif1.add(player.ch.dif2).add(player.ch.dif3)
-        player.ch.en=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5).max(player.ch.en)
-        player.ch.ennow=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5)
+        player.ch.en=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5).mul(hasUpgrade('lo',134)?upgradeEffect('lo',134):1).max(player.ch.en)
+        player.ch.ennow=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5).mul(hasUpgrade('lo',134)?upgradeEffect('lo',134):1)
       },
       onHold() {player.ch.sco=tmp.ch.keti
         player.ch.difa=player.ch.dif1.add(player.ch.dif2).add(player.ch.dif3)
-        player.ch.en=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5).max(player.ch.en)
-        player.ch.ennow=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5)
+        player.ch.en=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5).mul(hasUpgrade('lo',134)?upgradeEffect('lo',134):1).max(player.ch.en)
+        player.ch.ennow=player.ch.sco.div(3000000).pow(5).mul(player.ch.difa).div(5).mul(hasUpgrade('lo',134)?upgradeEffect('lo',134):1)
       },
       style: {'height':'100px','width':'180px'},
     },
@@ -5207,7 +5220,7 @@ buyables:{
      let cost = n(4).add(n(x).div(10)).pow(6)
     return cost.floor()
                 },
-				effect(x=player[this.layer].buyables[this.id]) {return n(gba('sp',12).mul(x)).pow(0.2).max(1).sub(1).div(10).add(1).pow(-0.5)},
+				effect(x=player[this.layer].buyables[this.id]) {return n(gba('sp',12).mul(x)).pow(0.2).max(1).sub(1).div(10).add(1).pow(-0.5).pow(tmp.j.pdqja7)},
 				display() { // Everything else displayed in the buyable button after the title
        let data = tmp[this.layer].buyables[this.id]
        return (("需要 " + format(data.cost) + " 诗篇")+"<br>数量: " + format(player[this.layer].buyables[this.id]) + "<br>Lanota曲包以^" +format(this.effect(),3) + "的增益提升诗篇获取量")
