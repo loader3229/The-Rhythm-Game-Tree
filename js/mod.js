@@ -19,7 +19,7 @@ let winText = `恭喜通关！你已经完成了你的音游之旅…吗？请�
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte('e6000000')
+	return player.points.gte('e7350000')
 //	return false
 }
 
@@ -38,7 +38,7 @@ var displayThings = [
   if(isEndgame()) a=a+"<br>已达到该版本结局！"//Dot硬上限：1.5e17"
   
 	  if(player.lo.evolution.lte(3)){
-		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)))+b;
+		  return "Note获取速度上限："+format(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1).max(player.lo.evolution.mul(2e6).add(1))))+b;
 	  }
 	  
    return a+b
@@ -201,7 +201,7 @@ if(gcs('j',11)==1) gain=gain.pow(tmp.j.pdqj1)
 
 if(inChallenge('r',13))gain= gain.min(player.mi.points)
 	
-	gain=gain.min(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1)))
+	gain=gain.min(Decimal.pow(10,player.lo.evolution.mul(1e6).add(3e6+1).max(player.lo.evolution.mul(2e6).add(1))))
 
 	return gain
 }
