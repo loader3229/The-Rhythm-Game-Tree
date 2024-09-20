@@ -136,10 +136,20 @@ addLayer("lo", {
       return exp
     },
     ptt() {
+		if(player[this.layer].evolution.gte(5))return new Decimal(13);
         mult = new Decimal(10.8).add(player.lo.points.sqrt().mul(0.02).min(0.11));
 		return mult
     },
     rks() {
+		if(player[this.layer].evolution.gte(5))return new Decimal(14).add(player[this.layer].evolution.div(5));
+        mult = softcap(player.lo.points,new Decimal(36),new Decimal(0.25)).mul(3).add(40).sqrt().min(12.62);
+		return mult
+    },
+    ptt2() {
+        mult = new Decimal(10.8).add(player.lo.points.sqrt().mul(0.02).min(0.11));
+		return mult
+    },
+    rks2() {
         mult = softcap(player.lo.points,new Decimal(36),new Decimal(0.25)).mul(3).add(40).sqrt().min(12.62);
 		return mult
     },
@@ -174,10 +184,19 @@ addLayer("lo", {
       function() {return '你有 ' + format(player.points) + ' Notes'},
      {"color": "#ffffff", "font-size": "14px", "font-family": "Comic Sans MS"}],
     ["display-text",
-	 function() {if(!player.l.unlocked)return '';return 'loader3229的PTT：' + format(tmp.lo.ptt) + '（31个Loaded Points时达到上限）'},
+	 function() {
+		 if(player[this.layer].evolution.gte(5))return 'loader3229的PTT：' + format(tmp.lo.ptt2) + '+'+format(tmp.lo.ptt.sub(tmp.lo.ptt2)) + '（进化加成）'
+		 if(!player.l.unlocked)return '';
+		return 'loader3229的PTT：' + format(tmp.lo.ptt) + '（31个Loaded Points时达到上限）'
+	 },
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     ["display-text",
-	 function() {if(!player.c.unlocked())return '';return 'loader3229的RKS：' + format(tmp.lo.rks) + '（54个Loaded Points时达到上限）'},
+	 function() {
+		 
+		 if(player[this.layer].evolution.gte(5))return 'loader3229的RKS：' + format(tmp.lo.rks2) + '+'+format(tmp.lo.rks.sub(tmp.lo.rks2)) + '（进化加成）'
+		 if(!player.c.unlocked())return '';
+			return 'loader3229的RKS：' + format(tmp.lo.rks) + '（54个Loaded Points时达到上限）'
+	 },
      {"color": "#ff9af6", "font-size": "15px", "font-family": "Comic Sans MS"}],
     "upgrades",
 
